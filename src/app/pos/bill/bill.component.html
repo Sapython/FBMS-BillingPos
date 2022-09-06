@@ -1,0 +1,167 @@
+<form>
+    <div class="products" [@billItems]="expandedBillView" [@dishCardStagger]="products.length">
+        <app-bill-product-card [@dishCardState]="card.deleting ? 'deleted' : 'default'" #card
+            *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : products"
+            (deleted)="delete(product.id,card)" (quantityChanged)="calculateTaxAndPrices(); updateBill()" [product]="product">
+        </app-bill-product-card>
+    </div>
+    <div id="bill">
+        <!-- <img src="./assets/logo.svg"> -->
+        <h3 style="text-align: center;font-style:bold;">{{dataProvider.currentProject.projectName}}</h3>
+        <h4 style="text-align: center" *ngIf="dataProvider.currentProject.address">{{dataProvider.currentProject.address}}</h4>
+        <h4 style="text-align: center" *ngIf="dataProvider.currentProject.phoneNumber"><mat-icon>call</mat-icon> {{dataProvider.currentProject.phoneNumber}}</h4>
+        <h4 style="text-align: center" *ngIf="dataProvider.currentProject.gstNo">GST No. {{dataProvider.currentProject.gstNo}}</h4>
+        <h4 style="text-align: center" *ngIf="dataProvider.currentProject.fssaiNo">FSSAI No. {{dataProvider.currentProject.fssaiNo}}</h4>
+        <h4 style="text-align: center" *ngIf="dataProvider.currentProject.counterNo">Counter No. {{dataProvider.currentProject.counterNo}}</h4>
+        <h4 style="text-align: center" *ngIf="dataProvider.currentProject.cashierName">Cashier. {{dataProvider.currentProject.cashierName}}</h4>
+        <h4 style="text-align: center" *ngIf="dataProvider.currentProject.deviceName">Device Name. {{dataProvider.currentProject.deviceName}}</h4>
+        <h4 style="text-align: center" *ngIf="today">{{today | date:'long'}}</h4>
+        <h4 style="text-align: center" *ngIf="currentBill.id">Bill Id: {{currentBill.id}}</h4>
+        <hr>
+        <h4 style="text-align: center" *ngIf="customerInfoForm.value.fullName">Name: {{customerInfoForm.value.fullName}}</h4>
+        <h4 style="text-align: center" *ngIf="customerInfoForm.value.phoneNumber">Phone: {{customerInfoForm.value.phoneNumber}}</h4>
+        <hr>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Amt</th>
+            </tr>
+            <hr>
+            <tr *ngFor="let product of products">
+                <td>{{product.dishName}}</td>
+                <td>{{product.quantity}}</td>
+                <td>{{product.shopPrice}}.00</td>
+                <td>{{product.shopPrice * product.quantity}}.00</td>
+            </tr>
+        </table>
+        <hr>
+        <div class="total">
+            <p>Taxable Amount</p>
+            <p>{{taxableValue}}.00</p>
+        </div>
+        <hr>
+        <div class="total">
+            <p>Total Tax</p>
+            <p>{{totalTaxAmount}}</p>
+        </div>
+        <div class="total">
+            <p>Grand Total</p>
+            <p>{{total}}</p>
+        </div>
+        <hr>
+        <p>Thanks for visiting {{dataProvider.currentProject.projectName || 'us !!'}}</p>
+    </div>
+    <div id="billKot">
+        <h3 style="text-align: center">{{dataProvider.currentProject.projectName}}</h3>
+        <h4 style="text-align: center">{{today | date:'long'}}</h4>
+        <h4 style="text-align: center">Bill Id: {{currentBill.id}}</h4>
+        <h3>HOTEL KOT</h3>
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+            </tr>
+            <tr *ngFor="let product of products">
+                <td>{{product.dishName}}</td>
+                <td>{{product.quantity}}</td>
+            </tr>
+        </table>
+    </div>
+</form>
+<div class="billActions" [@billSlider]="expandedBillView">
+    <button class="slideToggle"
+        (click)="expandedBillView=='closed' ? expandedBillView='open' : expandedBillView='closed' ">
+        <mat-icon>{{expandedBillView=='closed' ? 'expand_less' : 'expand_more'}}</mat-icon>
+    </button>
+    <div class="mainBillContainer">
+        <div class="topBill">
+            <!-- <div class="allActions" >
+                <button mat-raised-button>
+                    <mat-icon>add</mat-icon> Add Extra Charge
+                </button>
+                <button mat-raised-button>
+                    <mat-icon>add</mat-icon> Apply Coupons/Offers
+                </button>
+            </div> -->
+            <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+                <mat-button-toggle value="cash">Cash</mat-button-toggle>
+                <mat-button-toggle value="card">Card</mat-button-toggle>
+                <mat-button-toggle value="due">Due</mat-button-toggle>
+                <mat-button-toggle value="other">Other</mat-button-toggle>
+                <mat-button-toggle value="part">Part</mat-button-toggle>
+            </mat-button-toggle-group>
+            <mat-button-toggle-group>
+                <mat-button-toggle color="primary" value="dineIn">Dine In</mat-button-toggle>
+                <mat-button-toggle value="delivery">Delivery</mat-button-toggle>
+                <mat-button-toggle value="pickUp">Pick Up</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <div class="money">
+            <span class="total">
+                <p>Total</p> <b>&#x20B9;{{taxableValue}}</b>
+            </span>
+            <ul uk-accordion>
+                <li>
+                    <a class="uk-accordion-title" href="#"><h4>Customer Info</h4></a>
+                    <div class="uk-accordion-content">
+                        <form [formGroup]="customerInfoForm">
+                            <mat-form-field appearance="outline">
+                                <input type="text" placeholder="Full Name" matInput formControlName="fullName">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <input type="text" placeholder="Phone Number" matInput formControlName="phoneNumber">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <input type="text" placeholder="Email" matInput formControlName="email">
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <input type="text" placeholder="Gender" matInput formControlName="gender">
+                            </mat-form-field>
+                        </form>
+                    </div>
+                </li>
+            </ul>            
+            <!-- <span class="additionalCharges">
+                <p>Additional Charges</p> <b>&#x20B9;{{additionalCharges}}</b>
+            </span>
+            <div>
+                <span class="tip">
+                    <div>
+                        <p>Tip</p>
+                        <button mat-flat-button>
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+                    <b>&#x20B9;{{tip}}</b>
+                </span>
+            </div> -->
+            <!-- <span class="grandTotal">
+                <p>Grand Total</p> <b>&#x20B9;{{grandTotal}}</b>
+            </span>
+            <h3>With taxes and charges</h3>
+            <h5>Charges</h5>
+            <span class="sgst" *ngFor="let charge of filteredCharges">
+                <p>{{charge.name}}</p> <b>&#x20B9;{{charge.amount}}</b>
+            </span>
+            <h5>Taxes</h5>
+            <span class="sgst" *ngFor="let charge of filteredTaxes">
+                <p>{{charge.name}}</p> <b>&#x20B9;{{charge.amount}}</b>
+            </span> -->
+            <!-- <span class="grandTotalWithtaxes">
+                <p>Grand Total With Taxes</p> <b>&#x20B9;{{grandTotalWithTaxes}}</b>
+            </span> -->
+            <!-- <span class="finalWords">
+                <p>In Words</p> <b>{{convertToWords(grandTotal) + ' rupees only' | titlecase}}</b>
+            </span> -->
+        </div>
+        <div class="finalActions">
+            <button mat-raised-button color="primary" (click)="updateBill(); deductStockItems()">Save</button>
+            <button mat-raised-button color="primary" (click)="printKotAndBill()">Print KOT And Bill</button>
+            <button mat-raised-button color="primary" (click)="printKot()">Print KOT</button>
+            <button mat-raised-button color="primary" (click)="printBill()">Print Bill</button>
+            <button mat-raised-button color="primary" (click)="cancel()">Cancel</button>
+        </div>
+    </div>
+</div>

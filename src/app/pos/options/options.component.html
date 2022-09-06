@@ -1,0 +1,63 @@
+<main>
+    <mat-tab-group>
+        <mat-tab label="Saved Orders">
+            <div class="savedOrdersContainer">
+                <div class="savedOrder" *ngFor="let savedMenu of savedBills">
+                    <p>Total Products: {{savedMenu.products.length}}</p>
+                    <p>User Id: {{savedMenu.user}}</p>
+                    <p>Date: {{savedMenu.date.toDate() | date}}</p>
+                    <p *ngIf="savedMenu.date.table">Table No: {{savedMenu.date.table.tableNo}}</p>
+                    <button mat-flat-button color="primary">Complete</button>
+                </div>
+            </div>
+        </mat-tab>
+        <!-- <mat-tab label="Old KOTs">
+            <div class="oldKotsContainer">
+                <div class="kot" *ngFor="let kot of kots">
+                    <p>Table No: {{kot.tableNo}}</p>
+                    <p>Waiter: {{kot.waiter}}</p>
+                    <p>Time: {{kot.time | date}}</p>
+                    <p>Products: {{kot.products.length}}</p>
+                    <table>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                        </tr>
+                        <tr *ngFor="let product of kot.products">
+                            <td>{{product.dishName}}</td>
+                            <td>{{product.quantity}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </mat-tab> -->
+        <mat-tab label="Customers">
+            <div class="customerContainer">
+                <div class="customer" *ngFor="let bill of savedBills">
+                    <img src="assets/person.svg">
+                    <p>{{bill.fullName || 'N/P'}}</p>
+                    <p>{{bill.email || 'N/P'}}</p>
+                    <p>{{bill.phoneNumber || 'N/P'}}</p>
+                    <p>Products: {{bill.products.length}}</p>
+                    <p>Table: {{bill.table.name}}</p>
+                    <p>Date: {{bill.date.toDate() | date}}</p>
+                    <!-- <p>{{18/02/1996}}</p> -->
+                    <!-- <p></p> -->
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="Cancelled Orders">
+            <div class="savedOrdersContainer">
+                <ng-container *ngFor="let savedMenu of savedBills">
+                    <div class="savedOrder" *ngIf="savedMenu.deleted">
+                        <p>Total Products: {{savedMenu.products.length}}</p>
+                        <p>User Id: {{savedMenu.user}}</p>
+                        <p>Date: {{savedMenu.date.toDate() | date}}</p>
+                        <p *ngIf="savedMenu.date.table">Table No: {{savedMenu.date.table.tableNo}}</p>
+                        <button mat-flat-button color="primary">Recover</button>
+                    </div>
+                </ng-container>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</main>

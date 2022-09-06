@@ -1,0 +1,79 @@
+@keyframes slideUp {
+  0% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+main {
+  width: 90vw;
+  height: 70vh;
+  animation: slideUp 0.3s ease-in-out;
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+  border: 5px solid var(--primary);
+  section {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 20px;
+    .booked{
+      display: flex;
+      flex-direction: column;
+      background: var(--primary);
+      color: white;
+      border-radius: 5px;
+      padding: 20px;
+      font-size: 25px;
+      text-align: center;
+      transition: all .2s ease-in;
+      &:hover{
+        scale: 1.08;
+      }
+      span{
+        // border:2px 
+        background: white;
+        border-radius: 20px;
+        padding:10px;
+        color:var(--primary);
+        font-size: 17px;
+      }
+    }
+    .available{
+      display: flex;
+      flex-direction: column;
+      background: var(--secondary);
+      color: white;
+      border-radius: 5px;
+      padding: 20px;
+      font-size: 25px;
+      text-align: center;
+      transition: all .2s ease-in;
+      cursor: pointer;
+      &:hover{
+        scale: 1.08;
+      }
+      span{
+        // border:2px 
+        background: white;
+        border-radius: 20px;
+        padding:10px;
+        color:var(--primary);
+        font-size: 17px;
+      }
+    }
+  }
+  h1 {
+    text-align: center;
+  }
+  div {
+    box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);
+    background: white;
+    border: 2px solid var(--primary);
+    width: fit-content;
+    height: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+  }
+}

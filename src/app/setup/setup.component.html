@@ -1,0 +1,76 @@
+<img src="./assets/setup.jpg" class="background" alt="">
+<main>
+    <section>
+        <h1 class="uk-light">Welcome To Viraj</h1>
+        <ng-container *ngIf="loginStatus.status != 'withProject'">
+            <ng-container *ngIf="loginStatus.status == 'loggedOut'">
+                <p>
+                    Login To Continue
+                </p>
+                <form [formGroup]="loginForm" (ngSubmit)="login()">
+                    <input autocomplete="new-password" type="email" formControlName="email" placeholder="Email">
+                    <input autocomplete="new-password" type="password" formControlName="password" placeholder="Password">
+                    <button type="submit" [disabled]="!loginForm.valid">Login</button>
+                    <!-- <button type="button" (click)="authService.signInWithGoogle()">Google Login</button> -->
+                </form>
+            </ng-container>
+            <ng-container *ngIf="loginStatus.status == 'deviceNotRegistered'">
+                <p>
+                    Currently This device is not registered
+                </p>
+                <button>Register Now</button>
+            </ng-container>
+            <ng-container *ngIf="loginStatus.status == 'withProejcts'">
+                <form [formGroup]="secondStepForm" (ngSubmit)="finishStepTwo()">
+                    <input type="text" formControlName="deviceName" placeholder="Device Name">
+                    <input type="text" formControlName="address" placeholder="Address">
+                    <input type="text" formControlName="phoneNumber" placeholder="Phone Number">
+                    <input type="text" formControlName="gstNo" placeholder="GST No">
+                    <input type="text" formControlName="counterNo" placeholder="Counter No">
+                    <input type="text" formControlName="fssaiNo" placeholder="FSSAI No">
+                    <input type="text" formControlName="cashierName" placeholder="Cashier Name">
+                    <input type="file" [(ngModel)]="logoFile" placeholder="Company Logo" hidden #image>
+                    <button mat-outline-button (click)="image.click()">Upload File</button>
+                    <!-- <div>
+                        <p>Allow Analytics</p>
+                        <i class="ri-checkbox-blank-circle-line" *ngIf="!allowAnalytics.value"
+                            (click)="allowAnalytics.setValue(true)"></i>
+                        <i class="ri-checkbox-circle-fill" *ngIf="allowAnalytics.value"
+                            (click)="allowAnalytics.setValue(false)"></i>
+                    </div>
+                    <div>
+                        <p>Allow Offline Mode</p>
+                        <i class="ri-checkbox-blank-circle-line" *ngIf="!offlineMode.value"
+                            (click)="offlineMode.setValue(true)"></i>
+                        <i class="ri-checkbox-circle-fill" *ngIf="offlineMode.value"
+                            (click)="offlineMode.setValue(false)"></i>
+                    </div>
+                    <div>
+                        <p>Enable Tutorial</p>
+                        <i class="ri-checkbox-blank-circle-line" *ngIf="!startTutorial.value"
+                            (click)="startTutorial.setValue(true)"></i>
+                        <i class="ri-checkbox-circle-fill" *ngIf="startTutorial.value"
+                            (click)="startTutorial.setValue(false)"></i>
+                    </div>
+                    <div>
+                        <p>Enable Notifications</p>
+                        <i class="ri-checkbox-blank-circle-line" *ngIf="!enableNotifications.value"
+                            (click)="enableNotifications.setValue(true)"></i>
+                        <i class="ri-checkbox-circle-fill" *ngIf="enableNotifications.value"
+                            (click)="enableNotifications.setValue(false)"></i>
+                    </div> -->
+                    <button mat-raised-button type="submit" [disabled]="!secondStepForm.valid">Next</button>
+                </form>
+            </ng-container>
+            <ng-container *ngIf="loginStatus.status == 'withProject' || loginStatus.status == 'withoutProject'">
+                <h2>Viraj POS system setup is complete</h2>
+                <p>
+                    You can now continue to the system.
+                </p>
+                <button (click)="finishSetup()">Continue</button>
+            </ng-container>
+        </ng-container>
+        <mat-spinner *ngIf="loginStatus.status == 'loading'"></mat-spinner>
+        <button routerLink="../pos" *ngIf="loginStatus.status == 'withProject'">Continue to Viraj</button>
+    </section>
+</main>

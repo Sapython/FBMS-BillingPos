@@ -1,0 +1,10 @@
+<ul>
+    <div>
+        Categories
+    </div>
+    <li *ngFor="let category of searchedProducts.length > 0 ? searchedProducts : categories" (click)="dataProvider.selectedCategory.next(category)">
+        <p>{{category.name | titlecase}}</p>
+        <i class="ri-arrow-right-s-line"></i>
+    </li>
+    <mat-spinner *ngIf="categories.length == 0"></mat-spinner>
+</ul>

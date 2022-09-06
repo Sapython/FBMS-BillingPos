@@ -1,1 +1,153 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+$ssspay-palette: (
+ 50: #ffeccf,
+ 100: #ffce7a,
+ 200: #51ffd1,
+ 300: #0dffbe,
+ 400:rgb(12, 202, 151),
+ 500:#00be8b,
+ 600:#03a479,
+ 700:#f56606,
+ 800:#016e51,
+ 900:#008d67,
+ contrast: (
+   50: rgba(black, 0.87),
+   100: rgba(black, 0.87),
+   200: rgba(black, 0.87),
+   300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+ )
+);
+$my-primary: mat.define-palette($ssspay-palette, 700);
+$my-accent: mat.define-palette(mat.$cyan-palette, A200, A100, A400);
+$my-foreground: mat.define-palette($ssspay-palette, 700);
+
+$my-theme: mat.define-light-theme((
+ color: (
+   primary: $my-primary,
+   accent:$my-accent,
+       
+ )
+));
+
+.mat-button-toggle {
+  // background-color: mat-color($my-accent);
+  // color: mat-color($my-accent);
+}
+
+.mat-button-toggle-checked {
+  background-color: #f56606 !important;
+  color:white !important;
+}
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($my-theme);
+
 /* You can add global styles to this file, and also import other style files */
+:root{
+    --primary:#F56606;
+    --secondary:#FF8A00;
+    --success:#00C853;
+    --danger:#ff5151;
+    --contrast:rgb(24, 27, 31);
+    --primary-contrast: #FFFFFF;
+    --secondary-contrast: #FFFFFF;
+}
+html,body{
+    margin: 0%;
+    padding: 0%;
+    font-family: 'Poppins', sans-serif;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hidden; }
+
+#bill{
+  visibility: hidden;
+}
+@page { 
+  size: auto;
+  margin: 1cm;
+  margin-right: 0mm;
+}
+@media print { 
+  body{ 
+    visibility: hidden;
+    margin: 0%;
+    padding: 0%;
+  }
+  #bill,#billKot{
+    visibility: visible;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    box-shadow: none;
+    font-size: 20px;
+    h3{
+      font-size: 35px !important;
+      font-weight: 700 !important;
+    }
+    h4{
+      font-size: 25px !important;
+      font-weight: 600 !important;
+    }
+    img{
+      position: relative;
+      top: 0;
+      margin: 30px;
+      height: 200px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    table{
+      border-top: 2px solid black;
+      position: relative;
+      width: 100%;
+      tr{
+        th{
+          font-size: 25px;
+          font-weight: 600;
+          padding: 10px;
+          border-bottom: 2px solid black;
+        }
+        tr{
+          border-bottom: 2px solid black;
+        }
+        th,td{
+          text-align: center;
+        }
+      }
+    }
+    // hr{
+    //   border: 3px solid black;
+    //   height: 0px;
+    //   padding:0px;
+    //   width: 100%;
+    // }
+    .total{
+      font-size: 30px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 20px;
+      border-top: 2px solid black;
+      
+    }
+  }
+}

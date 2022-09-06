@@ -1,0 +1,28 @@
+{
+  "targets": {
+    "virajhomes-96e2d": {
+      "hosting": {
+        "FBMS-BillingPos": [
+          "virajhomes-96e2d"
+        ]
+      }
+    },
+    "maha-jans": {
+      "hosting": {
+        "FBMS-BillingPos": [
+          "virajpos"
+        ]
+      }
+    },
+    "fbms-shreeva-demo": {
+      "hosting": {
+        "FBMS-BillingPos": [
+          "fbms-shreeva-demo"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "fbms-shreeva-demo"
+  }
+}

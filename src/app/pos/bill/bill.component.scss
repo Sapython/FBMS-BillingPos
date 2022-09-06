@@ -1,0 +1,120 @@
+form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+
+  div.products {
+    box-shadow: inset 5px 5px 20px rgba(0, 0, 0, 0.101);
+    overflow-y: auto;
+  }
+  #bill{
+    display: flex;
+    flex-direction: column;
+    table{ 
+      tr{
+        hr{
+          border-bottom: 1px solid rgb(82, 82, 82);
+        }
+      }
+    }
+  }
+}
+
+.billActions {
+  width: calc(35vw - 20px);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: calc(40vh - 20px);
+  top: 60vh;
+  row-gap: 10px;
+  background: rgb(249, 249, 249);
+  border-top: 2px solid slategray;
+  // border-left: 2px solid slategray;
+  .slideToggle {
+    background: transparent;
+    color: rgb(39, 39, 39);
+    border: none;
+    width: min-content;
+    padding: 0px 20px;
+    margin: 0 auto;
+  }
+
+  .mainBillContainer {
+    overflow-y: auto;
+    display: flex;
+    height: 100%;
+    padding-bottom: 20px;
+    flex-direction: column;
+    justify-content: space-between;
+    .topBill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap:20px;
+      mat-button-toggle-group {
+        flex: 2;
+        width: 90%;
+
+        mat-button-toggle {
+          flex: 2;
+        }
+      }
+
+      .allActions {
+        flex: 2;
+        display: flex;
+        column-gap: 20px;
+      }
+    }
+
+    .finalActions {
+      display: flex;
+      padding-bottom: 20px;
+      column-gap: 20px;
+        justify-content: center;
+    }
+    .money{
+        div{
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            column-gap: 20px;
+        }
+        text-align: end;
+        padding: 20px;
+        color:rgb(50, 50, 50);
+        .total{
+            font-size: 25px;
+            color:rgb(46, 46, 46);
+        }
+        .grandTotalWithtaxes{
+            font-size: 25px;
+            color:rgb(52, 52, 52);
+        }
+        b{
+            // font-weight: 600;
+            color:var(--success)
+        }
+        span{
+            display: flex;
+            align-items: center;
+            width:100%;
+            justify-content: space-between;
+            border-bottom: 2px rgb(40, 42, 49) solid;
+        }
+    }
+  }
+}
+
+.uk-accordion-content{
+  form{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap:20px;
+    width: 100%;
+    mat-form-field{
+      width: 100%;
+    }
+  }
+}

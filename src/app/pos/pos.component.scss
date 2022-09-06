@@ -1,0 +1,19 @@
+.main{
+    display: grid;
+    grid-template-columns: 15vw 50vw 35vw;
+    .column{
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 6fr 4fr;
+        max-height: 100vh;
+        app-products{
+            flex: 6;
+        }
+        app-options{
+            flex: 4;
+        }
+    }
+}
+.rooms{
+    grid-template-columns: 65vw 35vw;
+}

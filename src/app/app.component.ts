@@ -1,4 +1,11 @@
 import { Component } from '@angular/core';
+import { User } from '@angular/fire/auth';
+import { Router } from '@angular/router';
+import { take } from 'rxjs';
+import { AuthenticationService } from './services/authentication.service';
+import { DataProviderService } from './services/data-provider.service';
+
+const appNotify = new Event("app-notify");
 
 @Component({
   selector: 'app-root',
@@ -6,5 +13,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  isElectron:boolean = false
+  routepath:string = window.location.pathname;
+  
+  notAllowedPages:string[] = ['/projectSelector','/setup']
+  constructor(public dataProvider:DataProviderService,public authService:AuthenticationService,private router:Router){
+    this.router.events.subscribe((val) => {
+      this.routepath = window.location.pathname;
+    })
+  }
   title = 'FBMS-BillingPos';
+  notify(){
+    document.dispatchEvent(appNotify);
+  }
 }

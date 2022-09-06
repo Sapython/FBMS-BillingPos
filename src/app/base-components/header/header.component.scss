@@ -1,0 +1,104 @@
+header {
+  width: 100vw;
+  height: 66px;
+  border-bottom: 2px solid slategray;
+  z-index: 1000;
+  position: relative;
+  nav {
+    border-bottom: 2px solid slategray;
+    width: 100%;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 0.6fr auto auto 2fr;
+    grid-auto-rows: 1fr;
+    column-gap: 20px;
+    width: calc(100vw - 20px);
+    justify-content: space-between;
+    background-color: white;
+    align-items: center;
+    .branding {
+      i {
+        color: var(--primary);
+        font-size: 20px;
+      }
+      span {
+        font-size: 30px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-left: 30px;
+      }
+    }
+    .buttons {
+      display: flex;
+      // justify-content: space-between;
+      gap: 10px;
+      button {
+        font-size: 18px;
+        border-radius: 7px;
+        padding: 10px;
+        border: none;
+        background-color: var(--primary);
+        color: white;
+        transition: all 0.3s ease;
+        &:hover {
+          scale: 1.1;
+        }
+      }
+      .search {
+        width: 250px;
+        border: 2px solid var(--primary);
+        transition: all 0.3s ease;
+        padding: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 7px;
+        input {
+          border: none;
+          font-size: 18px;
+          width: 190px;
+          &:focus,
+          &:active {
+            outline: none;
+          }
+        }
+        i {
+          color: var(--primary);
+          font-size: 20px;
+          cursor: pointer;
+        }
+      }
+      .active {
+        width: 350px;
+      }
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      button {
+        font-size: 18px;
+        border-radius: 7px;
+        padding: 10px;
+        border: none;
+        background: transparent;
+        transition: all 0.3s ease;
+        &:hover {
+          scale: 1.1;
+          background: whitesmoke;
+        }
+        i {
+          font-size: 20px;
+          color: var(--primary);
+          cursor: pointer;
+        }
+      }
+    }
+    .support{
+        display: flex;
+        column-gap: 20px;
+        width: 100%;
+        justify-content: center;
+    }
+  }
+}

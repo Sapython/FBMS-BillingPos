@@ -1,0 +1,9 @@
+<img src="/assets/locked.jpg" alt="">
+<div>
+    <h1>POS system is locked</h1>
+    <p>Enter your password to unlock</p>
+    <form>
+        <input type="text" name="app-lock" autocomplete="off" [(ngModel)]="password">
+        <button (click)="unlock()">Unlock</button>
+    </form>
+</div>
