@@ -60,13 +60,14 @@ $my-theme: mat.define-light-theme((
 
 /* You can add global styles to this file, and also import other style files */
 :root{
-    --primary:#F56606;
+    --primary:#ea7c69;
     --secondary:#FF8A00;
     --success:#00C853;
     --danger:#ff5151;
     --contrast:rgb(24, 27, 31);
     --primary-contrast: #FFFFFF;
     --secondary-contrast: #FFFFFF;
+    --primary-font: "Barlow", sans-serif;
 }
 html,body{
     margin: 0%;
