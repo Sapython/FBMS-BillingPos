@@ -11,9 +11,10 @@ main {
   height: 70vh;
   animation: slideUp 0.3s ease-in-out;
   background: white;
-  padding: 20px;
-  border-radius: 20px;
-  border: 5px solid var(--primary);
+  padding: 15px;
+  border-radius: 15px;
+  border: 2px solid var(--primary);
+  font-family: var(--primary-font);
   section {
     display: flex;
     flex-wrap: wrap;
@@ -24,8 +25,8 @@ main {
       background: var(--primary);
       color: white;
       border-radius: 5px;
-      padding: 20px;
-      font-size: 25px;
+      padding: 15px;
+      font-size: 15px;
       text-align: center;
       transition: all .2s ease-in;
       &:hover{
@@ -34,10 +35,10 @@ main {
       span{
         // border:2px 
         background: white;
-        border-radius: 20px;
-        padding:10px;
+        border-radius: 10px;
+        padding: 05px;
         color:var(--primary);
-        font-size: 17px;
+        font-size: 15px;
       }
     }
     .available{
@@ -46,7 +47,7 @@ main {
       background: var(--secondary);
       color: white;
       border-radius: 5px;
-      padding: 20px;
+      padding: 05px;
       font-size: 25px;
       text-align: center;
       transition: all .2s ease-in;
@@ -57,15 +58,16 @@ main {
       span{
         // border:2px 
         background: white;
-        border-radius: 20px;
-        padding:10px;
+        border-radius: 10px;
+        padding: 05px;
         color:var(--primary);
-        font-size: 17px;
+        font-size: 15px;
       }
     }
   }
-  h1 {
+  h3 {
     text-align: center;
+    font-family: var(--primary-font);
   }
   div {
     box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);
@@ -75,5 +77,14 @@ main {
     height: fit-content;
     padding: 10px;
     border-radius: 10px;
+  }
+  .empty{
+    background-color: #fff;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 5px 10px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-family: var(--primary-font);
   }
 }

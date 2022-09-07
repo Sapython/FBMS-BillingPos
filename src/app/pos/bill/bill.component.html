@@ -107,18 +107,10 @@
                     <a class="uk-accordion-title" href="#"><h4>Customer Info</h4></a>
                     <div class="uk-accordion-content">
                         <form [formGroup]="customerInfoForm">
-                            <mat-form-field appearance="outline">
-                                <input type="text" placeholder="Full Name" matInput formControlName="fullName">
-                            </mat-form-field>
-                            <mat-form-field appearance="outline">
-                                <input type="text" placeholder="Phone Number" matInput formControlName="phoneNumber">
-                            </mat-form-field>
-                            <mat-form-field appearance="outline">
-                                <input type="text" placeholder="Email" matInput formControlName="email">
-                            </mat-form-field>
-                            <mat-form-field appearance="outline">
-                                <input type="text" placeholder="Gender" matInput formControlName="gender">
-                            </mat-form-field>
+                                <input type="text" placeholder="Full Name" formControlName="fullName">
+                                <input type="text" placeholder="Phone Number" formControlName="phoneNumber">
+                                <input type="text" placeholder="Email" formControlName="email">
+                                <input type="text" placeholder="Gender" formControlName="gender">
                         </form>
                     </div>
                 </li>
@@ -157,11 +149,11 @@
             </span> -->
         </div>
         <div class="finalActions">
-            <button mat-raised-button color="primary" (click)="updateBill(); deductStockItems()">Save</button>
-            <button mat-raised-button color="primary" (click)="printKotAndBill()">Print KOT And Bill</button>
-            <button mat-raised-button color="primary" (click)="printKot()">Print KOT</button>
-            <button mat-raised-button color="primary" (click)="printBill()">Print Bill</button>
-            <button mat-raised-button color="primary" (click)="cancel()">Cancel</button>
+            <button (click)="updateBill(); deductStockItems()">Save</button>
+            <button (click)="printKotAndBill()">Print KOT And Bill</button>
+            <button (click)="printKot()">Print KOT</button>
+            <button (click)="printBill()">Print Bill</button>
+            <button (click)="cancel()">Cancel</button>
         </div>
     </div>
 </div>

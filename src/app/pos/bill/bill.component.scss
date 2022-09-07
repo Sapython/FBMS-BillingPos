@@ -4,6 +4,7 @@ form {
   row-gap: 20px;
 
   div.products {
+    margin-top: 10px;
     box-shadow: inset 5px 5px 20px rgba(0, 0, 0, 0.101);
     overflow-y: auto;
   }
@@ -55,6 +56,7 @@ form {
       mat-button-toggle-group {
         flex: 2;
         width: 90%;
+        font-size: 15px;
 
         mat-button-toggle {
           flex: 2;
@@ -70,9 +72,23 @@ form {
 
     .finalActions {
       display: flex;
+      flex-wrap: wrap;
       padding-bottom: 20px;
-      column-gap: 20px;
-        justify-content: center;
+      column-gap: 10px;
+      justify-content: center;
+      button{
+        background: transparent;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+        padding: 5px 10px;
+        font-family: var(--primary-font);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: .3s;
+        &:hover{
+          transform: scale(1.08);
+        }
+      }
     }
     .money{
         div{
@@ -85,7 +101,8 @@ form {
         padding: 20px;
         color:rgb(50, 50, 50);
         .total{
-            font-size: 25px;
+            font-size: 20px;
+            font-family: var(--primary-font);
             color:rgb(46, 46, 46);
         }
         .grandTotalWithtaxes{
@@ -113,6 +130,14 @@ form {
     grid-template-columns: 1fr 1fr;
     gap:20px;
     width: 100%;
+    font-family: var(--primary-font);
+    input{
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      background: transparent;
+    }
     mat-form-field{
       width: 100%;
     }

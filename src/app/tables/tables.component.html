@@ -1,5 +1,5 @@
 <main>
-    <h1>Tables</h1>
+    <h3>Tables</h3>
     <section>
         <div *ngFor="let table of dataProvider.tables" (click)="!table.booked ? selectRoom(table) : {}" [class]="table.booked ? 'booked' : 'available'">
             <!-- <p>Name: {{table.name}}</p> -->
@@ -7,7 +7,7 @@
             <span *ngIf="table.booked">Booked</span>
             <span *ngIf="!table.booked">Available</span>
             <!-- <p>Max: {{table.maxOccupancy}}</p> -->
-            <button mat-raised-button *ngIf="table.booked" (click)="table.booked=false">Mark As Empty</button>
+            <button class="empty" *ngIf="table.booked" (click)="table.booked=false">Mark As Empty</button>
         </div>
     </section>
 </main>

@@ -1,11 +1,13 @@
 .main{
     display: grid;
     grid-template-columns: 15vw 50vw 35vw;
+    overflow-y: auto;
     .column{
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: 6fr 4fr;
+        grid-template-rows: 4.5fr 5.5fr;
         max-height: 100vh;
+        padding: 5px;
         app-products{
             flex: 6;
         }

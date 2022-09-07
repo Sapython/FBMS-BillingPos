@@ -9,8 +9,9 @@ div.product{
     box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
     img{
         // flex: 1;
-        width: 100px;
-        height: 100px;
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
         border-radius: 10px;
     }
     div.detail{
@@ -27,16 +28,17 @@ div.product{
             width: 70px;
             box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
             padding:5px;
-            font-size: 17px;
+            font-size: 13px;
             font-weight: 500px;
             color:var(--primary);
         }
         p.price{
-            font-size: 23px;
+            font-size: 15px;
+            font-family: var(--primary-font);
             color:var(--success)
         }
         .delete{
-            color:var(--danger);
+            color:var(--primary);
             cursor: pointer;
         }
     }

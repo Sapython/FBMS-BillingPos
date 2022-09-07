@@ -28,7 +28,7 @@ const numWords = require('num-words');
         'open',
         style({
           height: 'calc(60vh - 30px)',
-          top: '45vh',
+          top: '40vh',
           position: 'absolute',
           boxShadow: '0px -5px 40px rgba(0,0,0,0.3)',
         })
@@ -37,7 +37,7 @@ const numWords = require('num-words');
         'closed',
         style({
           height: 'calc(40vh - 20px)',
-          top: '60vh',
+          top: '53vh',
           position: 'absolute',
         })
       ),

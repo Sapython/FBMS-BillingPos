@@ -1,5 +1,6 @@
 <ul>
     <div>
+        <mat-icon aria-hidden>dashboard </mat-icon>
         Categories
     </div>
     <li *ngFor="let category of searchedProducts.length > 0 ? searchedProducts : categories" (click)="dataProvider.selectedCategory.next(category)">
