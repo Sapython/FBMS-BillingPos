@@ -1,21 +1,26 @@
-.main{
-    display: grid;
-    grid-template-columns: 15vw 50vw 35vw;
-    overflow-y: auto;
-    .column{
+main{
+    max-height: 100vh;
+    overflow-y: hidden;
+    .main{
         display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: 4.5fr 5.5fr;
-        max-height: 100vh;
-        padding: 5px;
-        app-products{
-            flex: 6;
-        }
-        app-options{
-            flex: 4;
+        grid-template-columns: 15vw 50vw 35vw;
+        overflow-y: hidden;
+        .column{
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto;
+            max-height: 90vh;
+            padding: 5px;
+            app-products{
+                max-height: 50vh;
+            }
+            app-options{
+                max-height:40vh;
+                overflow-y: auto;
+            }
         }
     }
-}
-.rooms{
-    grid-template-columns: 65vw 35vw;
+    .rooms{
+        grid-template-columns: 65vw 35vw;
+    }
 }
