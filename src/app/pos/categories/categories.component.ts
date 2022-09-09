@@ -16,6 +16,7 @@ export class CategoriesComponent implements OnInit {
   constructor(private databaseService:DatabaseService,public dataProvider:DataProviderService) { }
   categories:any[] = []
   products:any[] = []
+  currentSelectedCategory:any = null;
   ngOnInit(): void {
     // this.databaseService.getCategories().then((docs)=>{
     //   docs.forEach((doc:any)=>{
@@ -25,15 +26,16 @@ export class CategoriesComponent implements OnInit {
     // })
     this.databaseService.getRecipes().then((docs)=>{
       docs.forEach((doc:any)=>{
-        console.log("recipes",doc.data())
+        // console.log("recipes",doc.data())
         this.products.push({...doc.data(),id:doc.id})
         this.categories.push(doc.data().categories)
       })
       let filteredCat:any[] = []
       this.categories = this.categories.filter((item, index) => {
         let found = false
+        console.log(item)
         filteredCat.forEach((item2) => {
-          if (item2.id == item.id) {
+          if (item2.name == item.name) {
             found = true
           }
         })
@@ -43,7 +45,7 @@ export class CategoriesComponent implements OnInit {
       })
       console.log("categories",filteredCat)
       this.categories = filteredCat
-      console.log("products",this.products)
+      // console.log("products",this.products)
       this.dataProvider.categories = this.categories
       this.dataProvider.products = this.products
     })

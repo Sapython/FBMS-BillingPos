@@ -1,11 +1,15 @@
 <ul>
-    <div>
+    <div style="position: sticky;">
         <mat-icon aria-hidden>dashboard </mat-icon>
         Categories
     </div>
-    <li *ngFor="let category of searchedProducts.length > 0 ? searchedProducts : categories" (click)="dataProvider.selectedCategory.next(category)">
+    <hr>
+    <li *ngFor="let category of searchedProducts.length > 0 ? searchedProducts : categories" [ngClass]="{'active':currentSelectedCategory == category}" (click)="dataProvider.selectedCategory.next(category); currentSelectedCategory = category">
         <p>{{category.name | titlecase}}</p>
         <i class="ri-arrow-right-s-line"></i>
     </li>
+    <li></li>
+    <li></li>
+    <li></li>
     <mat-spinner *ngIf="categories.length == 0"></mat-spinner>
 </ul>

@@ -2,13 +2,14 @@
     <mat-tab-group>
         <mat-tab label="Saved Orders">
             <div class="savedOrdersContainer">
-                <div class="savedOrder" *ngFor="let savedMenu of savedBills">
-                    <p>Total Products: {{savedMenu.products.length}}</p>
-                    <p>User Id: {{savedMenu.user}}</p>
-                    <p>Date: {{savedMenu.date.toDate() | date}}</p>
+                <div class="savedOrder" *ngFor="let savedMenu of kots">
+                    <p><b>Total Products:</b> {{savedMenu.kots?.length}}</p>
+                    <p><b>User Id:</b> {{savedMenu.user}}</p>
+                    <p><b>Date:</b> {{savedMenu.date.toDate() | date}}</p>
                     <p *ngIf="savedMenu.date.table">Table No: {{savedMenu.date.table.tableNo}}</p>
                     <button color="primary">Complete</button>
                 </div>
+                <h3 *ngIf="kots.length==0">No customers found</h3>
             </div>
         </mat-tab>
         <!-- <mat-tab label="Old KOTs">
@@ -33,30 +34,34 @@
         </mat-tab> -->
         <mat-tab label="Customers">
             <div class="customerContainer">
-                <div class="customer" *ngFor="let bill of savedBills">
+                <div class="customer" *ngFor="let bill of customers">
                     <img src="assets/person.svg">
-                    <p>{{bill.fullName || 'N/P'}}</p>
-                    <p>{{bill.email || 'N/P'}}</p>
-                    <p>{{bill.phoneNumber || 'N/P'}}</p>
-                    <p>Products: {{bill.products.length}}</p>
+                    <p>{{bill.customerInfoForm.fullName || 'N/P'}}</p>
+                    <p>{{bill.customerInfoForm.email || 'N/P'}}</p>
+                    <p>{{bill.customerInfoForm.phoneNumber || 'N/P'}}</p>
+                    <p>Products: {{bill.kots?.length}}</p>
                     <p>Table: {{bill.table.name}}</p>
                     <p>Date: {{bill.date.toDate() | date}}</p>
                     <!-- <p>{{18/02/1996}}</p> -->
                     <!-- <p></p> -->
                 </div>
+                <h3 *ngIf="customers.length==0">No customers found</h3>
+                <p>*Records are based on customer data inside bills.</p>
             </div>
         </mat-tab>
         <mat-tab label="Cancelled Orders">
             <div class="savedOrdersContainer">
-                <ng-container *ngFor="let savedMenu of savedBills">
-                    <div class="savedOrder" *ngIf="savedMenu.deleted">
-                        <p>Total Products: {{savedMenu.products.length}}</p>
-                        <p>User Id: {{savedMenu.user}}</p>
-                        <p>Date: {{savedMenu.date.toDate() | date}}</p>
-                        <p *ngIf="savedMenu.date.table">Table No: {{savedMenu.date.table.tableNo}}</p>
-                        <button mat-flat-button color="primary">Recover</button>
+                <ng-container *ngFor="let deletedMenu of cancelledBills">
+                    <div class="savedOrder" *ngIf="deletedMenu.deleted">
+                        <p><b>Total Products:</b> {{deletedMenu.products.length}}</p>
+                        <p><b>User Id:</b> {{deletedMenu.user}}</p>
+                        <p><b>Reason:</b> {{deletedMenu.reason}}</p>
+                        <p><b>Date:</b> {{deletedMenu.date.toDate() | date}}</p>
+                        <p *ngIf="deletedMenu.date.table">Table No: {{deletedMenu.date.table.tableNo}}</p>
+                        <button mat-flat-button color="primary" (click)="recover(deletedMenu)">Recover</button>
                     </div>
                 </ng-container>
+                <h3 *ngIf="cancelledBills.length==0">No customers found</h3>
             </div>
         </mat-tab>
     </mat-tab-group>

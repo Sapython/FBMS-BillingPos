@@ -14,12 +14,13 @@ const appNotify = new Event("app-notify");
 })
 export class AppComponent {
   isElectron:boolean = false
-  routepath:string = window.location.pathname;
+  routepath:string = window.location.pathname.split('/')[(window.location.pathname.split('/')).length-1];
   
-  notAllowedPages:string[] = ['/projectSelector','/setup']
+  notAllowedPages:string[] = ['projectSelector','setup']
   constructor(public dataProvider:DataProviderService,public authService:AuthenticationService,private router:Router){
     this.router.events.subscribe((val) => {
-      this.routepath = window.location.pathname;
+      this.routepath = window.location.pathname.split('/')[(window.location.pathname.split('/')).length-1]
+      console.log("routepath",this.routepath)
     })
   }
   title = 'FBMS-BillingPos';

@@ -18,6 +18,7 @@ import { OptionsComponent } from './options/options.component';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { RoomsComponent } from './rooms/rooms.component'; 
+import { TablesComponent } from '../tables/tables.component';
 
 @NgModule({
   declarations: [

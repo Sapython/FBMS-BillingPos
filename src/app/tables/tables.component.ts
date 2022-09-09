@@ -9,15 +9,27 @@ import { DatabaseService } from '../services/database.service';
 })
 export class TablesComponent implements OnInit {
   constructor(
-    public dataProvider: DataProviderService
+    public dataProvider: DataProviderService,
+    public databaseService:DatabaseService
   ) {
     
   }
   close: EventEmitter<any> = new EventEmitter<any>();
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+    console.log('shivam', this.dataProvider.tables);
+  }
 
   selectRoom(table: any) {
     this.dataProvider.tableChanged.next(table);
+    this.close.emit();
+  }
+  emptyTable(table:any){
+    this.databaseService.emptyTable(table.id);
+    this.close.emit();
+  }
+  selectMenu(table:any){
+    this.dataProvider.menuSelected.next(table);
     this.close.emit();
   }
 }

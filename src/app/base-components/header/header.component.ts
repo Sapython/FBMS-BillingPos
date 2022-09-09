@@ -36,10 +36,23 @@ export class HeaderComponent implements OnInit {
   selectedTable:any;
   placeholder:string = this.placeholders[0];
   constructor(public dataProvider:DataProviderService,private dialog:Dialog) { }
-
+  syncing:boolean = false;
   ngOnInit(): void {
+    this.dataProvider.openTable.subscribe((data)=>{
+      const inst = this.dialog.open(TablesComponent)
+      inst.componentInstance?.close.subscribe(()=>{
+        inst.close()
+      })
+    })
+    this.dataProvider.syncer.subscribe((data)=>{
+      this.syncing = data;
+    })
     this.dataProvider.tableChanged.subscribe((table:string)=>{
       this.selectedTable = table;
+      // alert(table)
+    })
+    this.dataProvider.menuSelected.subscribe((data) => {
+      this.selectedTable = data;
     })
     setInterval(() => {
       this.placeholder = this.placeholders[Math.floor(Math.random() * this.placeholders.length)];

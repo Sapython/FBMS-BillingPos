@@ -1,6 +1,6 @@
-<main>
+<main >
     <ng-container *ngIf="table">
-        <button class="productCard" *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : filteredProducts"  (click)="addToBill(product)">
+        <button class="uk-animation-fast productCard" *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : filteredProducts"  (click)="addToBill(product)">
             <div class="info">
                 <p class="name">{{product.dishName | titlecase}}</p>
                 <div class="priceBar">
@@ -12,7 +12,7 @@
         </button>
     </ng-container>
     <ng-container *ngIf="!table">
-        <p class="noTable">Please select a table</p>
-        <p class="noTable">New Order > Select Table</p>
+        <!-- <p class="noTable">Please select a table</p> -->
+        <p class="noTable">Viraj Systems</p>
     </ng-container>
 </main>

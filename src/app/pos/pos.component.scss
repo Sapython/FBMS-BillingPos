@@ -6,17 +6,19 @@ main{
         grid-template-columns: 15vw 50vw 35vw;
         overflow-y: hidden;
         .column{
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: auto auto;
-            max-height: 90vh;
-            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 60px);
             app-products{
-                max-height: 50vh;
+                // height: 60%;
+                flex: 6;
             }
             app-options{
-                max-height:40vh;
-                overflow-y: auto;
+                flex:4;
+                // height:40%;
+                overflow-y: hidden;
+                // position: relative;
+                // bottom: 0px;
             }
         }
     }

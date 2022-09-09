@@ -15,7 +15,6 @@ export class PosComponent implements OnInit {
   billStreamSubscription:Subscription = Subscription.EMPTY;
   ngOnInit(): void {
     this.databaseService.getTables().then((data:any) => {
-      
       data.forEach((doc: any) => {
         this.allTables.push({ id: doc.id, ...doc.data() });
       });
@@ -38,6 +37,10 @@ export class PosComponent implements OnInit {
           }
         });
         console.log("new tables",this.dataProvider.tables);
+        // sort all tables on the basis of tableNo
+        this.dataProvider.tables.sort((a: any, b: any) => {
+          return a.tableNo - b.tableNo;
+        })
       });
     });
   }

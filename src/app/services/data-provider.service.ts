@@ -33,6 +33,9 @@ export class DataProviderService {
   public currentPage:string = '';
   public setupComplete:boolean = false;
   public tables:any[] = []
+  public syncer:Subject<boolean> = new Subject();
+  public openTable:Subject<boolean> = new Subject();
+  public menuSelected:Subject<any> = new Subject();
   constructor(){
     setInterval(()=>{
       this.deviceData = JSON.parse(localStorage.getItem('deviceData') || '{}');

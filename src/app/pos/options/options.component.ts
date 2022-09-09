@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from 'src/app/services/database.service';
+import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts-and-notifications.service';
 
 @Component({
   selector: 'app-options',
@@ -87,19 +88,48 @@ export class OptionsComponent implements OnInit {
     },
   ]
   kots: any[] = [];
-  constructor(private databaseService:DatabaseService) { }
-  savedBills:any[] = []
+  constructor(private databaseService:DatabaseService,private alertify:AlertsAndNotificationsService) { }
+  customers:any[] = []
+  cancelledBills:any[] = []
   ngOnInit(): void {
-    this.databaseService.getBills().then((docs)=>{
+    this.getBills()
+    this.getKots()
+    this.getCancelledBills()
+  }
+
+  getBills(){
+    this.databaseService.getCustomers().subscribe((docs)=>{
+      this.customers = []
       docs.forEach((doc:any)=>{
         console.log("savedBills",doc.data())
-        this.savedBills.push({...doc.data(),id:doc.id})
+        this.customers.push({...doc.data(),id:doc.id})
       })
     })
-    this.databaseService.getKots().then((docs:any)=>{
+  }
+
+  getKots(){
+    this.databaseService.getBills().subscribe((docs:any)=>{
+      this.kots = []
       docs.forEach((element:any) => {
         this.kots.push({...element.data(),id:element.id})
       });
+    })
+  }
+
+  getCancelledBills(){
+    this.databaseService.getCancelledBills().subscribe((docs)=>{
+      this.cancelledBills = []
+      docs.forEach((doc:any)=>{
+        this.cancelledBills.push({...doc.data(),id:doc.id})
+      })
+    })
+  }
+
+  recover(deletedMenu:any){
+    this.databaseService.recoverBill(deletedMenu.id).then(()=>{
+      this.alertify.presentToast("Bill Recovered",'info',3000)
+      this.getCancelledBills();
+      this.getBills();
     })
   }
 

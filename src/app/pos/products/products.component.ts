@@ -1,9 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DataProviderService } from 'src/app/services/data-provider.service';
 import { DatabaseService } from 'src/app/services/database.service';
-import Fuse from 'fuse.js'
+import Fuse from 'fuse.js';
 import { isEmpty } from 'rxjs';
 import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts-and-notifications.service';
+import { TablesComponent } from 'src/app/tables/tables.component';
+
+import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-products',
@@ -11,51 +14,53 @@ import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts
   styleUrls: ['./products.component.scss'],
 })
 export class ProductsComponent implements OnInit {
-  
-  constructor(private databaseService: DatabaseService,private dataProvider:DataProviderService,private alertify:AlertsAndNotificationsService) {}
+  constructor(
+    private databaseService: DatabaseService,
+    private dataProvider: DataProviderService,
+    private alertify: AlertsAndNotificationsService,
+    private dialog: Dialog
+  ) {}
   products: any[] = [];
-  filteredProducts:any[] = [];
-  searchedProducts:any[] = [];
-  table:any;
+  filteredProducts: any[] = [];
+  searchedProducts: any[] = [];
+  table: any;
   ngOnInit(): void {
-    this.dataProvider.tableChanged.subscribe((table:string)=>{
+    this.dataProvider.menuSelected.subscribe((data) => {
+      this.table = data;
+    })
+    this.dataProvider.tableChanged.subscribe((table: string) => {
       this.table = table;
-    })
-    this.dataProvider.selectedCategory.subscribe((data:any)=>{
-      if (!this.table){
-        this.alertify.presentToast('Please select a table first','error');
+    });
+    this.dataProvider.selectedCategory.subscribe((data: any) => {
+      if (!this.table) {
+        this.alertify.presentToast('Please select a table first', 'error');
+        this.dataProvider.openTable.next(true)
       }
-      this.filterProducts(data.id);
-    })
-    this.dataProvider.searchEvent.subscribe((data:string)=>{
-      console.log("searchEvent",data)
+      this.filterProducts(data.name);
+    });
+    this.dataProvider.searchEvent.subscribe((data: string) => {
+      console.log('searchEvent', data);
       const options = {
-        
-        keys: [
-          "name",
-          "displayName",
-          "sellingPrice",
-          "onlinePrice"
-        ]
+        keys: ['dishName', 'sellingPrice', 'onlinePrice'],
       };
-      const fuse = new Fuse(this.filteredProducts,options); // "list" is the item array
+      const fuse = new Fuse(this.dataProvider.products, options); // "list" is the item array
       const result = fuse.search(data);
       this.searchedProducts = [];
-      console.log("result",result)
-      result.forEach((product:any)=>{
+      console.log('result', result);
+      result.forEach((product: any) => {
         this.searchedProducts.push(product.item);
-      })
-    })
+      });
+    });
   }
-  filterProducts(mainCategory:string) {
-    this.filteredProducts = this.dataProvider.products.filter((item)=>{
-      return item.categories.id == mainCategory
-    })
+  filterProducts(mainCategory: string) {
+    this.filteredProducts = this.dataProvider.products.filter((item) => {
+      return item.categories.name == mainCategory;
+    });
   }
 
-  addToBill(product:any){
+  addToBill(product: any) {
     // console.log(product);
-    if (!product.quantity){
+    if (!product.quantity) {
       product.quantity = 1;
     }
     this.dataProvider.selectedProduct.next(product);

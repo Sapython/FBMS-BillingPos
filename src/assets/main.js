@@ -1,6 +1,6 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, shell, dialog, webContents } = require("electron");
-let remote = require("@electron/remote/main");
+const { app, BrowserWindow, ipcMain, shell, dialog, webContents,autoUpdater } = require("electron");
+// let remote = require("@electron/remote/main");
 const path = require("path");
 // const updater = require('electron-simple-updater');
 // updater.init('https://raw.githubusercontent.com/megahertz/electron-simple-updater/master/example/updates.json');

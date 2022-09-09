@@ -70,6 +70,7 @@
                 <button (click)="finishSetup()">Continue</button>
             </ng-container>
         </ng-container>
+        <ng-container *ngIf="loginStatus.status == 'noProjects'"></ng-container>
         <mat-spinner *ngIf="loginStatus.status == 'loading'"></mat-spinner>
         <button routerLink="../pos" *ngIf="loginStatus.status == 'withProject'">Continue to Viraj</button>
     </section>

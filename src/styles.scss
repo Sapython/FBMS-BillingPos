@@ -16,7 +16,7 @@ $ssspay-palette: (
  400:rgb(12, 202, 151),
  500:#00be8b,
  600:#03a479,
- 700:#f56606,
+ 700:#ea7c69,
  800:#016e51,
  900:#008d67,
  contrast: (
@@ -35,12 +35,13 @@ $ssspay-palette: (
 $my-primary: mat.define-palette($ssspay-palette, 700);
 $my-accent: mat.define-palette(mat.$cyan-palette, A200, A100, A400);
 $my-foreground: mat.define-palette($ssspay-palette, 700);
+$my-success: mat.define-palette($ssspay-palette, 600);
 
 $my-theme: mat.define-light-theme((
  color: (
    primary: $my-primary,
    accent:$my-accent,
-       
+    success: $my-success,
  )
 ));
 
@@ -50,7 +51,7 @@ $my-theme: mat.define-light-theme((
 }
 
 .mat-button-toggle-checked {
-  background-color: #f56606 !important;
+  background-color: #ea7c69 !important;
   color:white !important;
 }
 // Include theme styles for core and each component used in your app.
@@ -67,7 +68,7 @@ $my-theme: mat.define-light-theme((
     --contrast:rgb(24, 27, 31);
     --primary-contrast: #FFFFFF;
     --secondary-contrast: #FFFFFF;
-    --primary-font: "Barlow", sans-serif;
+    --primary-font: "Poppins", sans-serif;
     --normal-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
 }
@@ -78,7 +79,9 @@ html,body{
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hidden; }
-
+*{
+  font-family: var(--primary-font);
+}
 #bill{
   visibility: hidden;
 }
@@ -136,12 +139,30 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
         }
       }
     }
-    // hr{
-    //   border: 3px solid black;
-    //   height: 0px;
-    //   padding:0px;
-    //   width: 100%;
-    // }
+    hr{
+      border-bottom: 3px solid black;
+      height: 0px;
+      padding:0px;
+      width: 100%;
+    }
+    .info{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 25px;
+    }
+    .detail{
+      font-size: 20px;
+    }
+    .tax{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 25px;
+      p{
+        margin-bottom: 5px;
+      }
+    }
     .total{
       font-size: 30px;
       font-weight: bold;
@@ -149,8 +170,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
       justify-content: space-between;
       align-items: center;
       padding-right: 20px;
-      border-top: 2px solid black;
-      
+    }
+    p.thanking{
+      font-size: 30px;
+      font-weight: 500;
+      text-align: center;
     }
   }
 }

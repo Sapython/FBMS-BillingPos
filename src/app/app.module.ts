@@ -34,8 +34,9 @@ import { SelectProjectComponent } from './modals/select-project/select-project.c
 import { MatTabsModule } from '@angular/material/tabs';
 import { TablesComponent } from './tables/tables.component';
 import { MatButtonModule } from '@angular/material/button';
+import { AllKotsComponent } from './all-kots/all-kots.component';
 @NgModule({
-  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent],
+  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

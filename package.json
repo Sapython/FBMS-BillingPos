@@ -1,8 +1,13 @@
 {
   "name": "fbms-billing-pos",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "src/assets/main.js",
   "private": true,
+  "author": {
+    "name": "Shreeva Inc",
+    "email": "shreevainnovations@gmail.com",
+    "url": "https://shreeva.com"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -39,6 +44,7 @@
     "@types/jasmine": "~4.0.0",
     "electron": "^20.0.2",
     "electron-packager": "^15.5.2",
+    "electron-winstaller": "^5.0.0",
     "jasmine-core": "~4.1.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
