@@ -1,3 +1,11 @@
+@keyframes slideUp {
+  from{
+    transform: translateY(-100%);
+  }
+  to{
+    transform: translateY(0%);
+  }
+}
 main{
   height: 100%;
   box-shadow: -2px 0px 20px rgba(0, 0, 0, 0.061);
@@ -41,6 +49,7 @@ form {
   overflow-y: scroll;
   height: 40vh;
   padding:20px;
+  animation: slideUp .3s ease-in;
   // min-height: 300px;
   .mainBillContainer {
     overflow-y: auto;
@@ -135,4 +144,15 @@ form {
       width: 100%;
     }
   }
+}
+
+.nothing{
+  top:100px;
+  position: relative;
+  width: 80%;
+  margin-top:30px;  
+  height:auto;
+  margin: 0 auto;
+  display: block;
+
 }

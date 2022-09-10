@@ -1,8 +1,9 @@
 <main>
     <h3>Tables</h3>
     <section>
-        <div *ngFor="let table of dataProvider.tables" [class]="table.status != 'available' ? 'booked' : 'available'">
+        <div *ngFor="let table of dataProvider.tables" [class]="table.status== 'occupied' ? 'booked' : 'available'">
             <!-- <p>Name: {{table.name}}</p> -->
+            <!-- <p>{{table.status}}</p> -->
             <p>Table No <br> {{table.tableNo}}</p>
             <span *ngIf="table.status != 'available'">Booked</span>
             <span *ngIf="table.status == 'available'">Available</span>

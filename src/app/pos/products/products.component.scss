@@ -115,3 +115,10 @@ main {
     color: gray;
   }
 }
+.nothing{
+  margin: 0 auto;
+  width:50%;
+  height:auto;
+  filter: saturate(0%);
+  opacity: 0.2;
+}

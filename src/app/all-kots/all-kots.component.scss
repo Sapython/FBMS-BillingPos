@@ -3,6 +3,8 @@ main{
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 0 10px 0 rgba(0,0,0,0.2);
+    height:70vh;
+    overflow-y: auto;
     td:nth-child(1){
         text-align: start;
     }

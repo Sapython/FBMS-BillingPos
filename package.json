@@ -14,7 +14,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "package": "ng build --configuration production && npx electron-packager . VirajBillingPos"
+    "package": "ng build --configuration production && npx electron-packager . VirajBillingPos --overwrite"
   },
   "dependencies": {
     "@angular/animations": "^14.0.0",
@@ -43,7 +43,7 @@
     "@angular/compiler-cli": "^14.0.0",
     "@types/jasmine": "~4.0.0",
     "electron": "^20.0.2",
-    "electron-packager": "^15.5.2",
+    "electron-packager": "^16.0.0",
     "electron-winstaller": "^5.0.0",
     "jasmine-core": "~4.1.0",
     "karma": "~6.3.0",

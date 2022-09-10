@@ -87,30 +87,42 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
 }
 @page { 
   size: auto;
-  margin: 1cm;
-  margin-right: 0mm;
+  margin: 15px;
+  // margin-right: 0mm;
 }
 @media print { 
   body{ 
     visibility: hidden;
     margin: 0%;
+    // margin-right: 10px;
     padding: 0%;
   }
   #bill,#billKot{
     visibility: visible;
     position: absolute;
     top: 0px;
+    
     left: 0px;
     width: 100%;
     box-shadow: none;
-    font-size: 20px;
+    font-size: 10px;
+    *{
+      font-family: var(--primary-font) !important;
+      margin:3px !important;
+    }
     h3{
-      font-size: 35px !important;
+      font-size: 23px !important;
       font-weight: 700 !important;
     }
     h4{
-      font-size: 25px !important;
+      font-size: 16px !important;
       font-weight: 600 !important;
+    }
+    .topFields{
+      font-size: 14px !important;
+      text-align: start;
+      font-weight:600;
+      padding-left:10px;
     }
     img{
       position: relative;
@@ -126,7 +138,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
       width: 100%;
       tr{
         th{
-          font-size: 25px;
+          font-size: 12px;
           font-weight: 600;
           padding: 10px;
           border-bottom: 2px solid black;
@@ -136,11 +148,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
         }
         th,td{
           text-align: center;
+          font-size: 14px !important  ;
+          font-weight: 600;
+        }
+        td:nth-child(1){
+          text-align:start;
         }
       }
     }
     hr{
-      border-bottom: 3px solid black;
+      border-bottom: 2px solid black;
       height: 0px;
       padding:0px;
       width: 100%;
@@ -149,22 +166,28 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 25px;
+      font-size: 14px;
+      font-weight: 600;
     }
     .detail{
-      font-size: 20px;
+      font-size: 14px;
+      font-weight: 600;
     }
     .tax{
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 25px;
+      font-size: 13px;
+      margin-bottom: -5px;
       p{
-        margin-bottom: 5px;
+        margin-bottom: -5px;
+        padding:0px;
+        font-size: 13px;
+        font-weight: 600;
       }
     }
     .total{
-      font-size: 30px;
+      font-size: 17px;
       font-weight: bold;
       display: flex;
       justify-content: space-between;
@@ -172,7 +195,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
       padding-right: 20px;
     }
     p.thanking{
-      font-size: 30px;
+      font-size: 14px;
       font-weight: 500;
       text-align: center;
     }
