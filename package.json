@@ -1,6 +1,6 @@
 {
   "name": "fbms-billing-pos",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "src/assets/main.js",
   "private": true,
   "author": {
@@ -14,7 +14,16 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "builder":"electron-builder -p always",
+    "keygen":"cli.js create-self-signed-cert",
     "package": "ng build --configuration production && npx electron-packager . VirajBillingPos --overwrite"
+  },
+  "build":{
+    "publish":[{
+      "provider":"github",
+      "owner":"swayambhu-innovations",
+      "repo":"Packages"
+    }]
   },
   "dependencies": {
     "@angular/animations": "^14.0.0",
@@ -29,8 +38,10 @@
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
     "@electron/remote": "^2.0.8",
+    "electron-log": "^4.4.8",
     "electron-pos-printer": "^1.2.4",
     "electron-simple-updater": "^2.0.11",
+    "electron-updater": "^5.2.1",
     "fuse.js": "^6.6.2",
     "num-words": "^1.2.2",
     "rxjs": "~7.5.0",

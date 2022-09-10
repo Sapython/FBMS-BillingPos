@@ -14,7 +14,8 @@ export class PosComponent implements OnInit {
   constructor(private databaseService:DatabaseService,private dataProvider:DataProviderService) { }
   billStreamSubscription:Subscription = Subscription.EMPTY;
   ngOnInit(): void {
-    this.databaseService.getTables().then((data:any) => {
+    this.databaseService.getTables().subscribe((data:any) => {
+      this.allTables = []
       data.forEach((doc: any) => {
         this.allTables.push({ id: doc.id, ...doc.data() });
       });
@@ -25,7 +26,7 @@ export class PosComponent implements OnInit {
         bills = Array.from(bills);
         this.allTables.forEach((table: any) => {
           const bill: any = bills.filter((bill: any) => bill.table.id == table.id);
-          console.log("bill",bill);
+          // console.log("bill",bill);
           if (bill.length > 0) {
             if (bill.completed == false) {
               this.dataProvider.tables.push({...table,booked:false});

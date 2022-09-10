@@ -119,7 +119,7 @@ export class DatabaseService {
   }
 
   getTables() {
-    return getDocs(
+    return collectionSnapshots(
       query(
         collection(
           this.fs,
@@ -241,7 +241,20 @@ export class DatabaseService {
     );
   }
 
-  async finalizeKot(billData: any, id: string,billId:string){
+  async finalizeKot(billData: any, id: string,billId:string,tableId:string){
+    await updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/tables/tables/' +
+          tableId
+      ),
+      {
+        status: 'occupied',
+        bill: billId,
+      }
+    );
     await updateDoc(
       doc(
         this.fs,
@@ -254,6 +267,7 @@ export class DatabaseService {
         products:billData
       }
     );
+
     return await this.createKot([],billId);
   }
 

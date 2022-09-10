@@ -33,7 +33,7 @@ export class CategoriesComponent implements OnInit {
       let filteredCat:any[] = []
       this.categories = this.categories.filter((item, index) => {
         let found = false
-        console.log(item)
+        // console.log(item)
         filteredCat.forEach((item2) => {
           if (item2.name == item.name) {
             found = true
@@ -43,14 +43,14 @@ export class CategoriesComponent implements OnInit {
           filteredCat.push(item)
         }
       })
-      console.log("categories",filteredCat)
+      // console.log("categories",filteredCat)
       this.categories = filteredCat
       // console.log("products",this.products)
       this.dataProvider.categories = this.categories
       this.dataProvider.products = this.products
     })
     this.dataProvider.searchEvent.subscribe((data:string)=>{
-      console.log("searchEvent",data)
+      // console.log("searchEvent",data)
       const options = {
         keys: [
           "name",
@@ -60,7 +60,7 @@ export class CategoriesComponent implements OnInit {
       const fuse = new Fuse(this.categories,options); // "list" is the item array
       const result = fuse.search(data);
       this.searchedProducts = [];
-      console.log("result",result)
+      // console.log("result",result)
       result.forEach((product:any)=>{
         this.searchedProducts.push(product.item);
       })

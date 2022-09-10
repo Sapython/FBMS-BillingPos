@@ -1,12 +1,15 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, shell, dialog, webContents,autoUpdater } = require("electron");
+const { app, BrowserWindow, ipcMain, shell, dialog, webContents } = require("electron");
+const { autoUpdater } = require('electron-updater')
 // let remote = require("@electron/remote/main");
 const path = require("path");
+const log = require('electron-log');
+log.transports.file.resolvePath = () => path.join(__dirname,'logs/main.log')
 // const updater = require('electron-simple-updater');
 // updater.init('https://raw.githubusercontent.com/megahertz/electron-simple-updater/master/example/updates.json');
 // updater.checkForUpdates()
 // remote.initialize();
-
+log.info('Application version'+ app.getVersion())
 let mainWindow;
 if (process.defaultApp) {
   if (process.argv.length >= 2) {
@@ -34,6 +37,7 @@ if (!gotTheLock) {
   // Create mainWindow, load the rest of the app, etc...
   app.whenReady().then(() => {
     createWindow();
+    autoUpdater.checkForUpdatesAndNotify();
   });
 
   app.on("open-url", (event, url) => {
@@ -99,30 +103,27 @@ const sendStatusToWindow = (text) => {
   }
 };
 
-autoUpdater.on('checking-for-update', () => {
-  sendStatusToWindow('Checking for update...');
-});
-autoUpdater.on('update-available', info => {
-  sendStatusToWindow('Update available.');
-});
-autoUpdater.on('update-not-available', info => {
-  sendStatusToWindow('Update not available.');
-});
-autoUpdater.on('error', err => {
-  sendStatusToWindow(`Error in auto-updater: ${err.toString()}`);
-});
-autoUpdater.on('download-progress', progressObj => {
-  sendStatusToWindow(
-    `Download speed: ${progressObj.bytesPerSecond} - Downloaded ${progressObj.percent}% (${progressObj.transferred} + '/' + ${progressObj.total} + )`
-  );
-});
-autoUpdater.on('update-downloaded', info => {
-  sendStatusToWindow('Update downloaded; will install now');
-});
+autoUpdater.on('update-available',()=>{
+  log.info("update-available");
+})
 
-autoUpdater.on('update-downloaded', info => {
-  // Wait 5 seconds, then quit and install
-  // In your application, you don't need to wait 500 ms.
-  // You could call autoUpdater.quitAndInstall(); immediately
-  autoUpdater.quitAndInstall();
-});
+autoUpdater.on('before-quit-for-update',()=>{
+  log.info("before-quit-for-update");
+})
+
+autoUpdater.on('update-downloaded',()=>{
+  log.info("update-downloaded");
+})
+
+autoUpdater.on('update-not-available',()=>{
+  log.info("update-not-available");
+})
+
+autoUpdater.on('error',(err)=>{
+  log.info("error");
+  log.info(err);
+})
+
+autoUpdater.on('download-progress',(progress)=>{
+  log.info("Progress: ",progress)
+})
