@@ -13,7 +13,7 @@ import { DataProviderService } from 'src/app/services/data-provider.service';
 import { Dialog } from '@angular/cdk/dialog';
 import Fuse from 'fuse.js';
 import { DatabaseService } from 'src/app/services/database.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts-and-notifications.service';
 import { AllKotsComponent } from 'src/app/all-kots/all-kots.component';
 import { DocumentData, DocumentSnapshot } from '@angular/fire/firestore';
@@ -164,8 +164,8 @@ export class BillComponent implements OnInit, OnChanges {
   currentKot: any = {};
   customerInfoForm: FormGroup = new FormGroup({
     fullName: new FormControl(''),
-    phoneNumber: new FormControl(''),
-    email: new FormControl(''),
+    phoneNumber: new FormControl('', [Validators.pattern('^[0-9]*$')]),
+    email: new FormControl('', [Validators.email]),
     age: new FormControl(''),
     gender: new FormControl(''),
   });
@@ -208,7 +208,7 @@ export class BillComponent implements OnInit, OnChanges {
             });
           }
         } else {
-          alert(table.bill);
+          // alert(table.bill);
           this.dataProvider.pageSetting.blur = true;
           console.log('Table Bill', table.bill);
           if (table.bill) {
@@ -216,6 +216,7 @@ export class BillComponent implements OnInit, OnChanges {
               console.log('Yeraha bill', bill, bill.data());
               this.currentBill = { ...bill.data(), id: bill.id };
               this.table = table;
+              this.allKots = bill.data().kots;
               this.currentKot = bill.data().kots[bill.data().kots.length - 1];
               console.log(
                 'KOT verificaiton',
@@ -283,7 +284,7 @@ export class BillComponent implements OnInit, OnChanges {
             });
           }
         } else {
-          alert(table.bill);
+          // alert(table.bill);
           this.dataProvider.pageSetting.blur = true;
           console.log('Table Bill', table.bill);
           this.table = table;
@@ -294,6 +295,7 @@ export class BillComponent implements OnInit, OnChanges {
               console.log('Yeraha bill', bill, bill.data());
               this.currentBill = { ...bill.data(), id: bill.id };
               this.table = table;
+              this.allKots = bill.data().kots;
               this.currentKot = bill.data().kots[bill.data().kots.length - 1];
               console.log(
                 'KOT verificaiton',
@@ -321,7 +323,7 @@ export class BillComponent implements OnInit, OnChanges {
           }
         }
       }
-      this.calculateTaxAndPrices();
+      // this.calculateTaxAndPrices();
     });
     this.dataProvider.selectedProduct.subscribe((data) => {
       if (!this.currentBill) {
@@ -393,6 +395,7 @@ export class BillComponent implements OnInit, OnChanges {
         // alert('Bill created '+data.id)
         this.currentBill = { id: billId };
         console.log('currentBill', this.currentBill.id);
+        // this.calculateTaxAndPrices();
       })
       .catch((error) => {
         console.error('error', error);
@@ -403,27 +406,24 @@ export class BillComponent implements OnInit, OnChanges {
       });
   }
 
-  updateBill() {
+  async updateBill() {
     this.dataProvider.syncer.next(true);
-    this.databaseService
-      .updateBill(
+    try {
+      const data: any = await this.databaseService.updateBill(
         {
           table: this.table,
           kots: this.allKots,
           customerInfoForm: this.customerInfoForm.value,
         },
         this.currentBill.id
-      )
-      .then((data: any) => {
-        this.alertify.presentToast('Bill updated');
-        console.log('currentBill', this.currentKot.id);
-      })
-      .catch((error) => {
-        console.error('error', error);
-      })
-      .finally(() => {
-        this.dataProvider.syncer.next(false);
-      });
+      );
+
+      this.alertify.presentToast('Bill updated');
+    } catch (error) {
+      console.log('currentBill', this.currentKot.id);
+    } finally {
+      this.dataProvider.syncer.next(false);
+    }
   }
 
   addToKot() {
@@ -442,37 +442,41 @@ export class BillComponent implements OnInit, OnChanges {
       });
   }
 
-  finalizeKot() {
+  async finalizeKot() {
+    console.log('finalizeKot', this.allKots);
     this.dataProvider.pageSetting.blur = true;
     this.dataProvider.syncer.next(true);
-    alert('Table id ' + this.table.id);
-    this.databaseService
-      .finalizeKot(
+    // alert('Table id ' + this.table.id);
+    try {
+      console.log('%%', this.allKots);
+      const data: any = await this.databaseService.finalizeKot(
         this.products,
         this.currentKot.id,
         this.currentBill.id,
         this.table.id
-      )
-      .then((data: any) => {
-        this.alertify.presentToast('kot created ' + data.id);
-        this.currentKot = data;
-        this.allKots.push(this.currentKot);
-        this.updateBill();
-        console.log('currentBill', this.currentKot.id);
-        this.products = [];
-        this.calculateTaxAndPrices();
-      })
-      .catch((error) => {
-        console.error('error', error);
-      })
-      .finally(() => {
-        this.dataProvider.pageSetting.blur = false;
-        this.dataProvider.syncer.next(false);
-      });
+      );
+      console.log('%%', this.allKots);
+      this.alertify.presentToast('kot created ' + data.id);
+      this.currentKot = data;
+      this.allKots.push(this.currentKot);
+      console.log('%%', this.allKots);
+      await this.updateBill();
+      console.log('currentBill', this.currentKot.id);
+      this.products = [];
+      console.log('%%', this.allKots);
+      this.calculateTaxAndPrices();
+      await this.printKot();
+      console.log('%%', this.allKots);
+    } catch (error) {
+      console.error('error', error);
+    } finally {
+      this.dataProvider.pageSetting.blur = false;
+      this.dataProvider.syncer.next(false);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.calculateTaxAndPrices();
+    // this.calculateTaxAndPrices();
     if (this.expandedBillView == 'open') {
       this.productsViewHeight = (window.innerHeight / 100) * 40 - 66;
     } else {
@@ -519,14 +523,59 @@ export class BillComponent implements OnInit, OnChanges {
     console.log('data', this.products);
   }
 
-  calculateTaxAndPrices() {
+  async calculateTaxAndPrices() {
+    // alert('calculating');
     this.totalAmount = 0;
     this.taxableValue = 0;
     this.totalTaxAmount = 0;
-    this.ekdumConfirmProducts.forEach((product) => {
-      this.taxableValue += Number(product.shopPrice) * Number(product.quantity);
-      this.totalQuantity += Number(product.quantity);
-    });
+    if (this.products.length == 0 && this.ekdumConfirmProducts.length == 0) {
+      this.dataProvider.pageSetting.blur = true;
+      const bill: DocumentSnapshot<DocumentData> =
+        await this.databaseService.getBill(this.currentBill.id);
+      const data = bill.data();
+      let kots = [];
+      let products = [];
+      if (!data) {
+        this.alertify.presentToast('No bill found');
+        return;
+      } else if (data != undefined) {
+        for (const kotId of data['kots']) {
+          console.log('kotId', kotId);
+          console.log('bill', this.currentBill);
+          const data: any = await this.databaseService.getKot(
+            kotId.id,
+            this.currentBill.id
+          );
+          console.log('KOT: ', data.data(), data);
+          kots.push({
+            kotId: kotId.id,
+            kot: data.data(),
+          });
+          products.push(...data.data().products);
+        }
+        this.allBillProducts = products;
+        console.log('kots shivams', this.allBillProducts);
+      }
+      this.ekdumConfirmProducts = JSON.parse(
+        JSON.stringify(this.allBillProducts)
+      );
+      // alert('Products: '+this.ekdumConfirmProducts.length)
+      this.dataProvider.pageSetting.blur = false;
+    }
+    console.log('lelelo', this.ekdumConfirmProducts, this.products);
+    if (this.ekdumConfirmProducts.length > 0) {
+      this.ekdumConfirmProducts.forEach((product) => {
+        this.taxableValue +=
+          Number(product.shopPrice) * Number(product.quantity);
+        this.totalQuantity += Number(product.quantity);
+      });
+    } else if (this.products.length > 0) {
+      this.products.forEach((product) => {
+        this.taxableValue +=
+          Number(product.shopPrice) * Number(product.quantity);
+        this.totalQuantity += Number(product.quantity);
+      });
+    }
     // alert(this.taxableValue)
     this.filteredCharges = [];
     this.filteredTaxes = [];
@@ -607,52 +656,64 @@ export class BillComponent implements OnInit, OnChanges {
     this.dataProvider.pageSetting.blur = false;
     this.calculateTaxAndPrices();
     setTimeout(() => {
-      this.printBill();
-      this.printKot();
+      this.printBill(true);
+      this.printKot(true);
     }, 500);
   }
 
   async printKot(data: boolean = false) {
+    console.log('ye lo', this.allKots, this.currentKot);
     if (!data) {
       this.dataProvider.pageSetting.blur = true;
-      const bill: DocumentSnapshot<DocumentData> =
-        await this.databaseService.getBill(this.currentBill.id);
-      const data = bill.data();
-      let kots = [];
-      let products = [];
-      if (!data) {
-        this.alertify.presentToast('No bill found');
-        return;
-      } else if (data != undefined) {
-        for (const kotId of data['kots']) {
-          console.log('kotId', kotId);
-          console.log('bill', this.currentBill);
-          const data: any = await this.databaseService.getKot(
-            kotId.id,
+      try {
+        const bill: DocumentSnapshot<DocumentData> =
+          await this.databaseService.getKot(
+            this.allKots[this.allKots.length - 2].id,
             this.currentBill.id
           );
-          console.log('KOT: ', data.data(), data);
-          kots.push({
-            kotId: kotId.id,
-            kot: data.data(),
-          });
-          products.push(...data.data().products);
+        const data = bill.data();
+        console.log('KOT DETAILS: ', data);
+        let kots = [];
+        let products = [];
+        if (!data) {
+          this.alertify.presentToast('No bill found');
+          return;
+        } else if (data != undefined) {
+          console.log("data['kots']", data['kots']);
+          this.allBillProducts = data['products'];
+
+          // for (const kotId of data['kots']) {
+          //   console.log('kotId', kotId);
+          //   console.log('bill', this.currentBill);
+          //   const data: any = await this.databaseService.getKot(
+          //     kotId.id,
+          //     this.currentBill.id
+          //   );
+          //   console.log('KOT: ', data.data(), data);
+          //   kots.push({
+          //     kotId: kotId.id,
+          //     kot: data.data(),
+          //   });
+          //   products.push(...data.data().products);
+          // }
+          // this.allBillProducts = products;
+          console.log('kots shivams', this.allBillProducts);
+          document.getElementById('bill')!.style.display = 'none';
+          document.getElementById('billKot')!.style.display = 'block';
+          window.print();
+          document.getElementById('billKot')!.style.display = 'none';
+          document.getElementById('bill')!.style.display = 'none';
         }
-        this.allBillProducts = products;
-        console.log('kots shivams', this.allBillProducts);
+        this.ekdumConfirmProducts = JSON.parse(
+          JSON.stringify(this.allBillProducts)
+        );
+        // alert('Products: '+this.ekdumConfirmProducts.length)
+        this.dataProvider.pageSetting.blur = false;
+        this.calculateTaxAndPrices();
+      } catch (error) {
+        console.log(error);
       }
-      this.ekdumConfirmProducts = JSON.parse(
-        JSON.stringify(this.allBillProducts)
-      );
-      // alert('Products: '+this.ekdumConfirmProducts.length)
-      this.dataProvider.pageSetting.blur = false;
-      this.calculateTaxAndPrices();
     }
-    document.getElementById('bill')!.style.display = 'none';
-    document.getElementById('billKot')!.style.display = 'block';
-    window.print();
-    document.getElementById('billKot')!.style.display = 'none';
-    document.getElementById('bill')!.style.display = 'none';
   }
 
   async printBill(data: boolean = false) {
@@ -701,11 +762,18 @@ export class BillComponent implements OnInit, OnChanges {
 
   cancel() {
     const reason = prompt('Give us a reason to continue to delete this bill');
+    let phone = this.customerInfoForm.value.phoneNumber;
+    if (!phone) {
+      phone = prompt("Provide customer's phone number");
+      while (!phone && !phone.test(/^[0-9]{10}$/)) {
+        phone = prompt("Provide customer's phone number");
+      }
+    }
     if (reason) {
       this.products = [];
       this.customerInfoForm.reset();
       this.databaseService
-        .deleteBill(this.currentBill.id, reason)
+        .deleteBill(this.currentBill.id, reason, phone.toString())
         .then((data) => {
           this.alertify.presentToast('Bill cancelled.');
         })
@@ -751,8 +819,19 @@ export class BillComponent implements OnInit, OnChanges {
     });
   }
 
-  finalizeBill() {
-    this.printBill();
+  async finalizeBill() {
+    if (this.products.length > 0) {
+      if (
+        confirm(
+          'The products in current kot are no finalized should we finalize them?'
+        )
+      ) {
+        await this.finalizeKot();
+      } else {
+        this.products = [];
+      }
+    }
+    await this.printBill();
     this.databaseService
       .finalizeBill(this.currentBill.id, this.table)
       .then((data) => {

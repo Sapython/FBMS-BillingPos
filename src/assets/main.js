@@ -1,25 +1,25 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, shell, dialog, webContents } = require("electron");
-const { autoUpdater } = require('electron-updater')
+const { app, BrowserWindow, ipcMain, shell, dialog } = require("electron");
+// const { autoUpdater } = require('electron-updater')
 // let remote = require("@electron/remote/main");
 const path = require("path");
-const log = require('electron-log');
-log.transports.file.resolvePath = () => path.join(__dirname,'logs/main.log')
+// const log = require('electron-log');
+// log.transports.file.resolvePath = () => path.join(__dirname,'logs/main.log')
 // const updater = require('electron-simple-updater');
 // updater.init('https://raw.githubusercontent.com/megahertz/electron-simple-updater/master/example/updates.json');
 // updater.checkForUpdates()
 // remote.initialize();
-log.info('Application version'+ app.getVersion())
-let mainWindow;
-if (process.defaultApp) {
-  if (process.argv.length >= 2) {
-    app.setAsDefaultProtocolClient("virajpos", process.execPath, [
-      path.resolve(process.argv[1]),
-    ]);
-  }
-} else {
-  app.setAsDefaultProtocolClient("virajpos");
-}
+// log.info('Application version'+ app.getVersion())
+// let mainWindow;
+// if (process.defaultApp) {
+//   if (process.argv.length >= 2) {
+//     app.setAsDefaultProtocolClient("virajpos", process.execPath, [
+//       path.resolve(process.argv[1]),
+//     ]);
+//   }
+// } else {
+//   app.setAsDefaultProtocolClient("virajpos");
+// }
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -63,23 +63,6 @@ function createWindow() {
   mainWindow.loadFile("dist/fbms-billing-pos/index.html");
   // mainWindow.webContents = remote.getCurrentWebContents();
   console.log("BrowserWindow");
-  // console.log(webContents);
-  // webContents.getPrinters = function () {
-  //   if (features.isPrintingEnabled()) {
-  //     return this._getPrinters();
-  //   } else {
-  //     console.error("Error: Printing feature is disabled.");
-  //   }
-  // };
-  webContents.getAllWebContents().forEach((webContents) => {
-    console.log(webContents.getPrintersAsync().then((printers) => {
-      // console.log(printers);
-    }).catch((error) => {
-      console.error(error);
-    }).finally(() => {
-      console.log("Finally");
-    }));
-  })
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -96,34 +79,34 @@ ipcMain.on("shell:open", () => {
   shell.openExternal(pagePath);
 });
 
-const sendStatusToWindow = (text) => {
-  log.info(text);
-  if (mainWindow) {
-    mainWindow.webContents.send('message', text);
-  }
-};
+// const sendStatusToWindow = (text) => {
+//   log.info(text);
+//   if (mainWindow) {
+//     mainWindow.webContents.send('message', text);
+//   }
+// };
 
-autoUpdater.on('update-available',()=>{
-  log.info("update-available");
-})
+// autoUpdater.on('update-available',()=>{
+//   log.info("update-available");
+// })
 
-autoUpdater.on('before-quit-for-update',()=>{
-  log.info("before-quit-for-update");
-})
+// autoUpdater.on('before-quit-for-update',()=>{
+//   log.info("before-quit-for-update");
+// })
 
-autoUpdater.on('update-downloaded',()=>{
-  log.info("update-downloaded");
-})
+// autoUpdater.on('update-downloaded',()=>{
+//   log.info("update-downloaded");
+// })
 
-autoUpdater.on('update-not-available',()=>{
-  log.info("update-not-available");
-})
+// autoUpdater.on('update-not-available',()=>{
+//   log.info("update-not-available");
+// })
 
-autoUpdater.on('error',(err)=>{
-  log.info("error");
-  log.info(err);
-})
+// autoUpdater.on('error',(err)=>{
+//   log.info("error");
+//   log.info(err);
+// })
 
-autoUpdater.on('download-progress',(progress)=>{
-  log.info("Progress: ",progress)
-})
+// autoUpdater.on('download-progress',(progress)=>{
+//   log.info("Progress: ",progress)
+// })

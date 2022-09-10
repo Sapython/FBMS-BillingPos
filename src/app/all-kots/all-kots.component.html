@@ -5,6 +5,8 @@
         <tr>
             <th><h4>Product</h4></th>
             <th><h4>Quantity</h4></th>
+            <th><h4>Price</h4></th>
+            <th><h4>Total</h4></th>
         </tr>
         <ng-container *ngFor="let kot of kots">
             <tr>
@@ -22,6 +24,8 @@
             <tr *ngFor="let product of kot.kot.products">
                 <td>{{product.dishName}}</td>
                 <td>{{product.quantity}}</td>
+                <td> &#8377;{{product.shopPrice}}</td>
+                <td> &#8377;{{product.quantity * product.shopPrice}}</td>
             </tr>
         </ng-container>
     </table>

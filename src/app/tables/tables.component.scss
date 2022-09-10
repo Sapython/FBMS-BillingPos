@@ -42,6 +42,10 @@ main {
         padding: 05px;
         color:white;
         font-size: 15px;
+        cursor: pointer;
+      }
+      button{
+        cursor: pointer;
       }
     }
     .available{
@@ -67,6 +71,7 @@ main {
         padding: 05px;
         color:var(--primary);
         font-size: 15px;
+        cursor: pointer;
       }
     }
   }

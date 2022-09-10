@@ -9,6 +9,17 @@
                     <p *ngIf="savedMenu.date.table">Table No: {{savedMenu.date.table.tableNo}}</p>
                     <button color="primary">Complete</button>
                 </div>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
                 <h3 *ngIf="kots.length==0">No customers found</h3>
             </div>
         </mat-tab>
@@ -36,12 +47,12 @@
             <div class="customerContainer">
                 <div class="customer" *ngFor="let bill of customers">
                     <img src="assets/person.svg">
-                    <p>{{bill.customerInfoForm.fullName || 'N/P'}}</p>
-                    <p>{{bill.customerInfoForm.email || 'N/P'}}</p>
-                    <p>{{bill.customerInfoForm.phoneNumber || 'N/P'}}</p>
-                    <p>Products: {{bill.kots?.length}}</p>
-                    <p>Table: {{bill.table.name}}</p>
-                    <p>Date: {{bill.date.toDate() | date}}</p>
+                    <p>{{bill?.customerInfoForm?.fullName || 'N/P'}}</p>
+                    <p>{{bill?.customerInfoForm?.email || 'N/P'}}</p>
+                    <p>{{bill?.customerInfoForm?.phoneNumber || 'N/P'}}</p>
+                    <p>Total KOTs: {{bill?.kots?.length}}</p>
+                    <p>Table: {{bill?.table?.name}}</p>
+                    <p>Date: {{bill?.date?.toDate() | date}}</p>
                     <!-- <p>{{18/02/1996}}</p> -->
                     <!-- <p></p> -->
                 </div>
@@ -53,11 +64,12 @@
             <div class="savedOrdersContainer">
                 <ng-container *ngFor="let deletedMenu of cancelledBills">
                     <div class="savedOrder" *ngIf="deletedMenu.deleted">
-                        <p><b>Total Products:</b> {{deletedMenu.products.length}}</p>
-                        <p><b>User Id:</b> {{deletedMenu.user}}</p>
-                        <p><b>Reason:</b> {{deletedMenu.reason}}</p>
-                        <p><b>Date:</b> {{deletedMenu.date.toDate() | date}}</p>
-                        <p *ngIf="deletedMenu.date.table">Table No: {{deletedMenu.date.table.tableNo}}</p>
+                        <p><b>Total Kots:</b> {{deletedMenu?.kots.length}}</p>
+                        <p><b>User Id:</b> {{deletedMenu?.user}}</p>
+                        <p><b>Reason:</b> {{deletedMenu?.reason}}</p>
+                        <p><b>Phone:</b> {{deletedMenu?.reason}}</p>
+                        <p><b>Date:</b> {{deletedMenu?.date.toDate() | date}}</p>
+                        <p *ngIf="deletedMenu?.date.table">Table No: {{deletedMenu?.date.table.tableNo}}</p>
                         <button mat-flat-button color="primary" (click)="recover(deletedMenu)">Recover</button>
                     </div>
                 </ng-container>

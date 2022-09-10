@@ -5,7 +5,7 @@
             <img src="assets/viraj-logo.png" alt="">
         </div>
         <div class="buttons">
-            <button mat-stroked-button color="primary" *ngIf="selectedTable">Selected Table {{selectedTable.name}}</button>
+            <button class="tableNo" mat-stroked-button color="primary" *ngIf="selectedTable">Table No: {{selectedTable.tableNo}}</button>
             <button mat-stroked-button color="primary" class="higlighted" (click)="newOrder()">Select Table</button>
             <div (mouseenter)="extraSearchClass = 'active'" class="search + {{extraSearchClass}}">
                 <input (change)="extraSearchClass = 'active'" (input)="dataProvider.searchEvent.next(search.value)" #search [placeholder]="placeholder + '..'" type="search">

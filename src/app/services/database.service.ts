@@ -319,7 +319,7 @@ export class DatabaseService {
     );
   }
 
-  deleteBill(id: string, reason: string) {
+  deleteBill(id: string, reason: string,phone:string) {
     // /business/accounts//bills/bills/vuh0GUX9K609Gjr9szaP
     return updateDoc(
       doc(
@@ -332,6 +332,7 @@ export class DatabaseService {
       {
         deleted: true,
         reason: reason,
+        phone:phone
       }
     );
   }
