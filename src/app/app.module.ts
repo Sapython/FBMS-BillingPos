@@ -35,8 +35,11 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { TablesComponent } from './tables/tables.component';
 import { MatButtonModule } from '@angular/material/button';
 import { AllKotsComponent } from './all-kots/all-kots.component';
+import { CancelModalComponent } from './cancel-modal/cancel-modal.component';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 @NgModule({
-  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent],
+  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -55,7 +58,10 @@ import { AllKotsComponent } from './all-kots/all-kots.component';
     MatDialogModule,
     MatProgressSpinnerModule,
     MatTabsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    
   ],
   providers: [
     ScreenTrackingService,

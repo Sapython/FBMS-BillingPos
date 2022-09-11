@@ -1,5 +1,6 @@
 from asyncio import constants
 import os
+from turtle import onclick
 import firebase_admin
 from firebase_admin import firestore, credentials, storage
 from PyInquirer import prompt, print_json
@@ -170,10 +171,25 @@ allDocs = doc_ref.stream()
 #     fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes').add(dish)
 
 for doc in allDocs:
-    fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes/'+doc.id).update({
-            "images": ['https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food(1).png?alt=media&token=558c361b-00a5-4a1b-b9ae-07ddaf7151ff']
-    })
-    print(doc.id)
+    print("Dish Name ",doc.to_dict()['dishName'], doc.to_dict()['onlinePrice'])
+    price = input("New Price => ")
+    try:
+        int(price)
+        if( int(price)> 0 ):
+            fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes/'+doc.id).update({
+            "onlinePrice": price,
+            'thirdPartyPrice': price,
+            "shopPrice": price, 
+            })
+            print("Updated")
+            # break
+    except:
+        print("Skipped")
+        # break
+    # fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes/'+doc.id).update({
+    #         "images": ['https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food(1).png?alt=media&token=558c361b-00a5-4a1b-b9ae-07ddaf7151ff']
+    # })
+    # print(doc.id)
     # try:
     #     cat = doc.to_dict()['category']['name']
     #     # if doc.to_dict()['categories'] == 'Salad /Papad':

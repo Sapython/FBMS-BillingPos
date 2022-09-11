@@ -1,32 +1,31 @@
 <main>
     <h2>All KOTs</h2>
     <hr>
-    <table>
-        <tr>
-            <th><h4>Product</h4></th>
-            <th><h4>Quantity</h4></th>
-            <th><h4>Price</h4></th>
-            <th><h4>Total</h4></th>
-        </tr>
-        <ng-container *ngFor="let kot of kots">
-            <tr>
-                <td><hr></td>
-                <td><hr></td>
-            </tr>
-            <tr *ngIf="kot.kot.products.length > 0">
-                <td><b>KOT Id:</b></td>
-                <td><b>{{kot.kotId}}</b></td>
-            </tr>
-            <tr *ngIf="kot.kot.products.length > 0">
-                <td><hr></td>
-                <td><hr></td>
-            </tr>
-            <tr *ngFor="let product of kot.kot.products">
-                <td>{{product.dishName}}</td>
-                <td>{{product.quantity}}</td>
-                <td> &#8377;{{product.shopPrice}}</td>
-                <td> &#8377;{{product.quantity * product.shopPrice}}</td>
-            </tr>
-        </ng-container>
-    </table>
+    <ng-container *ngFor="let kot of kots">
+        <div *ngIf="kot.kot.products.length > 0">
+            <p>KOT Id: {{kot.kotId}}</p>
+            <table [cellSpacing]="0">
+                <tr>
+                    <th>
+                        <h4>Product</h4>
+                    </th>
+                    <th>
+                        <h4>Quantity</h4>
+                    </th>
+                    <th>
+                        <h4>Price</h4>
+                    </th>
+                    <th>
+                        <h4>Total</h4>
+                    </th>
+                </tr>
+                <tr *ngFor="let product of kot.kot.products">
+                    <td>{{product.dishName}}</td>
+                    <td>{{product.quantity}}</td>
+                    <td> &#8377;{{product.shopPrice}}</td>
+                    <td> &#8377;{{product.quantity * product.shopPrice}}</td>
+                </tr>
+            </table>
+        </div>
+    </ng-container>
 </main>

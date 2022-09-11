@@ -1,0 +1,26 @@
+<section>
+    <form *ngIf="step==1">
+        <h1>Cancel</h1>
+        <p>Are you sure you want to cancel?</p>
+        <button mat-stroked-button color="primary" (click)="step=2" type="submit">Yes</button>
+        <button mat-stroked-button color="primary" (click)="close()">No</button>
+    </form>
+    <form *ngIf="step==2">
+        <h1>Cancel</h1>
+        <p>Please fill below info to cancel the order.</p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Reason</mat-label>
+                <textarea type="text" [ngModelOptions]="{standalone: true}" matInput [(ngModel)]="reason" placeholder="Reason"></textarea>
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Phone Number</mat-label>
+                <input type="text" [ngModelOptions]="{standalone: true}" matInput [(ngModel)]="phoneNumber" placeholder="Phone Number">
+            </mat-form-field>
+        </p>
+        <button mat-stroked-button color="primary" (click)="submitReason()">Submit</button>
+    </form>
+
+</section>
