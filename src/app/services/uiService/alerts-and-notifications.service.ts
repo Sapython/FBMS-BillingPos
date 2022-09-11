@@ -28,11 +28,11 @@ export class AlertsAndNotificationsService {
   }
   
   constructor(private snackbar: MatSnackBar,public dialog: MatDialog) {
-    this.toastAudio.src = '/assets/audio/tones/toast.mp3';
-    this.toastAudio.volume = 0.4;
+    this.toastAudio.src = '/assets/audio/toast.wav';
+    this.toastAudio.volume = 1;
     this.toastAudio.load();
-    this.toastErrorAudio.src = '/assets/audio/tones/error.mp3';
-    this.toastErrorAudio.volume = 0.4;
+    this.toastErrorAudio.src = '/assets/audio/error.mp3';
+    this.toastErrorAudio.volume = 1;
     this.toastErrorAudio.load();
   }
 }

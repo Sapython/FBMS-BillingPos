@@ -171,7 +171,7 @@ allDocs = doc_ref.stream()
 #     fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes').add(dish)
 
 for doc in allDocs:
-    print("Dish Name ",doc.to_dict()['dishName'], doc.to_dict()['onlinePrice'])
+    print("Dish Name ",doc.to_dict()['dishName'], doc.to_dict()['onlinePrice'], doc.id)
     price = input("New Price => ")
     try:
         int(price)

@@ -540,7 +540,7 @@ export class BillComponent implements OnInit, OnChanges {
         this.alertify.presentToast('No bill found');
         return;
       } else if (data != undefined) {
-        alert('Total kots: ' + data['kots'].length);
+        // alert('Total kots: ' + data['kots'].length);
         console.log('---------');
         for (const kotId of data['kots']) {
           // console.log('kotId', kotId);
@@ -559,7 +559,7 @@ export class BillComponent implements OnInit, OnChanges {
       this.ekdumConfirmProducts = JSON.parse(
         JSON.stringify(this.allBillProducts)
       );
-      alert('Calc Products: ' + this.ekdumConfirmProducts.length);
+      // alert('Calc Products: ' + this.ekdumConfirmProducts.length);
       this.dataProvider.pageSetting.blur = false;
     }
     console.log('lelelo', this.ekdumConfirmProducts, this.products);

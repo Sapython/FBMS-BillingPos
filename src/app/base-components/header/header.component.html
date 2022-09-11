@@ -8,10 +8,10 @@
             <button class="tableNo" mat-stroked-button color="primary" *ngIf="selectedTable">Table No: {{selectedTable.tableNo}}</button>
             <button mat-stroked-button color="primary" class="higlighted" (click)="newOrder()">Select Table</button>
             <div (mouseenter)="extraSearchClass = 'active'" class="search + {{extraSearchClass}}">
-                <input (change)="extraSearchClass = 'active'" (input)="dataProvider.searchEvent.next(search.value)" #search [placeholder]="placeholder + '..'" type="search">
+                <input (change)="extraSearchClass = 'active'" (input)="selectedTable ? dataProvider.searchEvent.next(search.value) : noTablesAlert()" #search [placeholder]="placeholder + '..'" type="search">
                 <div *ngIf="extraSearchClass">
                     <i (click)="extraSearchClass = ''" class="ri-arrow-right-fill"></i>
-                    <i (click)="extraSearchClass = ''" class="ri-close-fill"></i>
+                    <i (click)="extraSearchClass = ''" class="ri-close-fill" (click)="search.value = ''"></i>
                 </div>
             </div>
         </div>

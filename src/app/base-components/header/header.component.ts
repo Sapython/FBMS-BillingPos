@@ -1,7 +1,8 @@
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { DataProviderService } from 'src/app/services/data-provider.service';
+import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts-and-notifications.service';
 import { TablesComponent } from 'src/app/tables/tables.component';
 
 @Component({
@@ -21,6 +22,7 @@ import { TablesComponent } from 'src/app/tables/tables.component';
   ]
 })
 export class HeaderComponent implements OnInit {
+  @ViewChild('search') searchInput!: ElementRef;
   openMenu:boolean = false;
   extraSearchClass:string = '';
   placeholders:string[] = [
@@ -35,7 +37,7 @@ export class HeaderComponent implements OnInit {
   ]
   selectedTable:any;
   placeholder:string = this.placeholders[0];
-  constructor(public dataProvider:DataProviderService,private dialog:Dialog) { }
+  constructor(public dataProvider:DataProviderService,private dialog:Dialog,private alertify:AlertsAndNotificationsService) { }
   syncing:boolean = false;
   ngOnInit(): void {
     this.dataProvider.openTable.subscribe((data)=>{
@@ -73,4 +75,22 @@ export class HeaderComponent implements OnInit {
       inst.close()
     })
   }
+
+  noTablesAlert(){
+    this.alertify.presentToast("No tables found. Please select a table to search.","error")
+  }
+  // ctrl + s
+  @HostListener('document:keydown.control.s', ['$event'])
+  save(event: KeyboardEvent) {
+    event.preventDefault()
+    this.searchInput.nativeElement.focus();
+  }
+
+  @HostListener('document:keydown.control.t', ['$event'])
+  showTable(event: KeyboardEvent) {
+    event.preventDefault()
+    this.newOrder()
+  }
+
+  
 }

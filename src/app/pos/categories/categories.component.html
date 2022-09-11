@@ -5,7 +5,7 @@
     </div>
     <hr>
     <li *ngFor="let category of searchedProducts.length > 0 ? searchedProducts : categories" [ngClass]="{'active':currentSelectedCategory == category}" (click)="dataProvider.selectedCategory.next(category); currentSelectedCategory = category">
-        <p>{{category.name | titlecase}}</p>
+        <p>{{category?.name | titlecase}}</p>
         <i class="ri-arrow-right-s-line"></i>
     </li>
     <li></li>
