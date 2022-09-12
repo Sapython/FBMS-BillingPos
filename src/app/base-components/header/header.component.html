@@ -10,8 +10,10 @@
             <div (mouseenter)="extraSearchClass = 'active'" class="search + {{extraSearchClass}}">
                 <input (change)="extraSearchClass = 'active'" (input)="selectedTable ? dataProvider.searchEvent.next(search.value) : noTablesAlert()" #search [placeholder]="placeholder + '..'" type="search">
                 <div *ngIf="extraSearchClass">
-                    <i (click)="extraSearchClass = ''" class="ri-arrow-right-fill"></i>
-                    <i (click)="extraSearchClass = ''" class="ri-close-fill" (click)="search.value = ''"></i>
+                    <!-- <i (click)="extraSearchClass = ''" class="ri-arrow-right-fill"></i> -->
+                    <!-- <button mat-icon-button><mat-icon></mat-icon></button> -->
+                    <button (click)="search.value = ''" mat-icon-button color="primary"><mat-icon>close</mat-icon></button>
+                    <!-- <i (click)="extraSearchClass = ''" class="ri-close-fill" (click)="search.value = ''"></i> -->
                 </div>
             </div>
         </div>

@@ -9,9 +9,9 @@ async function build() {
       exe: "Viraj-Billing Pos.exe",
       version:'1.0.0',
     });
-    console.log("It worked!");
+    // console.log("It worked!");
   } catch (e) {
-    console.log(`No dice: ${e.message}`);
+    // console.log(`No dice: ${e.message}`);
   }
 }
 

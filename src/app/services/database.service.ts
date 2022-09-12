@@ -39,12 +39,12 @@ export class DatabaseService {
   }
 
   getRecipes() {
-    console.log(
-      'Recipes path',
-      'business/accounts/' +
-        this.dataProvider.currentProject?.projectId +
-        '/recipes/recipes'
-    );
+    // console.log(
+    //   'Recipes path',
+    //   'business/accounts/' +
+    //     this.dataProvider.currentProject?.projectId +
+    //     '/recipes/recipes'
+    // );
     return getDocs(
       collection(
         this.fs,
@@ -90,7 +90,7 @@ export class DatabaseService {
       ...position,
       ...deviceData,
     };
-    console.log('POS', data);
+    // console.log('POS', data);
     const res = await addDoc(collection(this.fs, 'devices'), data);
     if (this.dataProvider.projects.length > 0) {
       const newProjects = this.dataProvider.projects.map((p) => {
@@ -103,7 +103,7 @@ export class DatabaseService {
         return p;
       });
     }
-    // console.log('newProjects',newProjects,this.dataProvider.projects)
+    // // console.log('newProjects',newProjects,this.dataProvider.projects)
     // alert(JSON.stringify(newProjects))
     // localStorage.setItem('device',JSON.stringify({
     //   deviceId:res.id,
@@ -406,9 +406,9 @@ export class DatabaseService {
   }
 
   getKot(kotId:string,billId:string){
-    console.log('business/accounts/' +
-    this.dataProvider.currentProject?.projectId +
-    '/bills/bills/'+billId+'/kots/'+kotId)
+    // console.log('business/accounts/' +
+    // this.dataProvider.currentProject?.projectId +
+    // '/bills/bills/'+billId+'/kots/'+kotId)
     return getDoc(
       doc(
         this.fs,

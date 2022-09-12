@@ -15,7 +15,7 @@ export class ProjectSelectorComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.dataProvider.projects.length == 0){
-      console.log('no projects');
+      // console.log('no projects');
       this.router.navigate(['../setup']);
     }
     // this.dialog.open(ProjectSelectorComponent)

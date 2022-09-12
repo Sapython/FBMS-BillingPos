@@ -63,9 +63,9 @@ export class HeaderComponent implements OnInit {
 
   fireEvent(){
     const event = new CustomEvent('app-notify',{detail:{message:'Hello World'}});
-    console.log(event);
+    // console.log(event);
     document.dispatchEvent(event);
-    console.log("Dispatched event")
+    // console.log("Dispatched event")
   }
 
 

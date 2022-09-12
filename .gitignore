@@ -1,6 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 /src/images
 /VirajBillingPos-win32-x64
+/VirajBillingPos-win32-ia32
 # Compiled output
 /dist
 /tmp

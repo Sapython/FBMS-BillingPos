@@ -6,4 +6,16 @@ section{
     mat-form-field{
         width: 100%;
     }
+    textarea,input{
+        width: 70%;
+        font-size: 16px;
+        border: 2px solid var(--primary);
+        padding:7px;
+        border-radius:7px;
+        background: rgb(250,250,250);
+        &:focus{
+            outline: none;
+            border: 2px solid var(--primary);
+        }
+    }
 }

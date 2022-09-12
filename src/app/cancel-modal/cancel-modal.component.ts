@@ -16,6 +16,22 @@ export class CancelModalComponent implements OnInit {
   close(){
     this.completed.emit(false);
   }
+  sendOtp(){
+    // generate otp
+    fetch("https://ssspay-proxy-server-76zqkqboia-em.a.run.app/messaging/sendSingleSMS",{
+      method:'post',
+      mode:'cors',
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body:JSON.stringify({
+        phoneNo:'9517457296',
+        message:'Test',
+        priority:'dnd'
+      })
+    })
+  }
   submitReason(){
     this.completed.emit({
       reason:this.reason,

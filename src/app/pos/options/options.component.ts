@@ -101,7 +101,7 @@ export class OptionsComponent implements OnInit {
     this.databaseService.getCustomers().subscribe((docs)=>{
       this.customers = []
       docs.forEach((doc:any)=>{
-        console.log("savedBills",doc.data())
+        // console.log("savedBills",doc.data())
         this.customers.push({...doc.data(),id:doc.id})
       })
     })

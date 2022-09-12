@@ -7,7 +7,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 })
 export class AlertsAndNotificationsService {
   testFunction(){
-    console.log("testFunction");
+    // console.log("testFunction");
   }
   toastAudio = new Audio()
   toastErrorAudio = new Audio()

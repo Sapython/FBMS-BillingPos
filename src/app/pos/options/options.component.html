@@ -63,7 +63,7 @@
         <mat-tab label="Cancelled Orders">
             <div class="savedOrdersContainer">
                 <ng-container *ngFor="let deletedMenu of cancelledBills">
-                    <div class="savedOrder" *ngIf="deletedMenu.deleted">
+                    <div class="savedOrder cancelled" *ngIf="deletedMenu.deleted">
                         <p><b>Total Kots:</b> {{deletedMenu?.kots.length}}</p>
                         <p><b>User Id:</b> {{deletedMenu?.user}}</p>
                         <p><b>Reason:</b> {{deletedMenu?.reason}}</p>
@@ -74,6 +74,16 @@
                     </div>
                 </ng-container>
                 <h3 *ngIf="cancelledBills.length==0">No customers found</h3>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
+                <p></p>
             </div>
         </mat-tab>
     </mat-tab-group>

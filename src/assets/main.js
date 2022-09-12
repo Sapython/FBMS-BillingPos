@@ -41,7 +41,7 @@ if (!gotTheLock) {
   });
 
   app.on("open-url", (event, url) => {
-    console.log(url);
+    // console.log(url);
     dialog.showErrorBox("Welcome Back", `You arrived from: ${url}`);
   });
 }
@@ -62,7 +62,7 @@ function createWindow() {
 
   mainWindow.loadFile("dist/fbms-billing-pos/index.html");
   // mainWindow.webContents = remote.getCurrentWebContents();
-  console.log("BrowserWindow");
+  // console.log("BrowserWindow");
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common

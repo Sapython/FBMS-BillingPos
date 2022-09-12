@@ -17,7 +17,7 @@ export class TablesComponent implements OnInit {
   close: EventEmitter<any> = new EventEmitter<any>();
   ngOnInit(): void {
 
-    console.log('shivam', this.dataProvider.tables);
+    // console.log('shivam', this.dataProvider.tables);
   }
 
   selectRoom(table: any) {

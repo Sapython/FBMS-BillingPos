@@ -70,13 +70,13 @@ export class AuthenticationService {
       );
       this.authorized = value;
       let data = await this.getProjects();
-      // console.log('projects all', refinedData);
+      // // console.log('projects all', refinedData);
       if (data) {
         let refinedData = data.data();
         if (refinedData){
           if (refinedData['projects'] && refinedData['projects'].length > 0) {
             const projects = refinedData['projects'].filter((element: any) => {
-              console.log(element);
+              // console.log(element);
               return element.mails.includes(value.user.email);
             });
             if (projects.length > 0) {
@@ -97,11 +97,11 @@ export class AuthenticationService {
       } else {
         this.warnAndLogout()
       }
-      console.log('User signed in', value);
+      // console.log('User signed in', value);
       this.alertify.presentToast('User signed in');
       return true;
     } catch (error) {
-      console.log('Error signing in', error);
+      // console.log('Error signing in', error);
       this.alertify.presentToast('Error signing in. ' + error, 'error');
       return false;
     }
@@ -120,7 +120,7 @@ export class AuthenticationService {
     signInWithRedirect(this.auth, new GoogleAuthProvider()).then(
       (value: UserCredential) => {
         this.authorized = value;
-        console.log('User signed in', value);
+        // console.log('User signed in', value);
       }
     );
   }
@@ -134,10 +134,10 @@ export class AuthenticationService {
   }
 
   private setDataObserver(user: Observable<User | null>) {
-    // console.log('Starting data observer')
+    // // console.log('Starting data observer')
     let projectSubscription: Subscription = Subscription.EMPTY;
     if (user) {
-      console.log('Setting data observer');
+      // console.log('Setting data observer');
       user.subscribe((u) => {
         if (u) {
           this.dataProvider.loggedIn = true;
@@ -154,7 +154,7 @@ export class AuthenticationService {
               projectSubscription.unsubscribe();
               projectSubscription = docData(doc(this.firestore, 'business/accounts')).subscribe(async (projectsData)=>{
                 this.dataProvider.userChanged.next(data);
-                console.log('accounts', projectsData)
+                // console.log('accounts', projectsData)
                 const projectData = projectsData
                 if(projectData){
                   const projects = projectData['projects'].filter((project:any)=>project.mails.includes(u.email))
@@ -174,7 +174,7 @@ export class AuthenticationService {
                         this.dataProvider.userChanged.next(true);
                         var finalLocalDeviceData:any = {}
                       }
-                      console.log('local device data', localDeviceData,finalLocalDeviceData,projects)
+                      // console.log('local device data', localDeviceData,finalLocalDeviceData,projects)
                       if (finalLocalDeviceData['deviceId'] != null) {
                         const devicesProjects = projects.filter((project:any)=>{
                           return project.devices && project.devices.includes(finalLocalDeviceData.deviceId)
@@ -198,7 +198,7 @@ export class AuthenticationService {
                               ...finalLocalDeviceData.users || []
                             ]
                           }
-                          console.log('users', projects)                 
+                          // console.log('users', projects)                 
                           let deviceData:Device = {
                             deviceId:id,
                             registrationDate:new Date(),
@@ -206,7 +206,7 @@ export class AuthenticationService {
                             projectId:projects[0].projectId,
                             projectName:projects[0].projectName
                           }
-                          console.log('device data', deviceData)
+                          // console.log('device data', deviceData)
                           await addDoc(collection(this.firestore,'business/devices/'+id),deviceData)
                           await updateDoc(doc(this.firestore,'business/accounts/'),{
                             projects:projects.map((project:any)=>{
@@ -223,7 +223,7 @@ export class AuthenticationService {
                               }
                             })
                           })
-                          console.log('device data', deviceData)
+                          // console.log('device data', deviceData)
                           localStorage.setItem('deviceData', JSON.stringify(deviceData))
                         }
                       } else {
@@ -248,10 +248,10 @@ export class AuthenticationService {
                       status:'noProjects'
                     };  
                     this.dataProvider.userChanged.next(true);
-                    console.log('no projects found for this user',this.dataProvider.loginEvent)
+                    // console.log('no projects found for this user',this.dataProvider.loginEvent)
                   }
                 } else {
-                  console.log('no projects found')
+                  // console.log('no projects found')
                   this.dataProvider.loginEvent={
                     loggedIn:true,
                     status:'noProjects'
@@ -262,7 +262,7 @@ export class AuthenticationService {
             }
           );
         } else {
-          console.log('loggedOut')
+          // console.log('loggedOut')
           this.dataProvider.loginEvent={
             loggedIn: false,
             status:'loggedOut'
@@ -271,13 +271,13 @@ export class AuthenticationService {
         }
       });
     } else {
-      // console.log('loggedOut 1')
+      // // console.log('loggedOut 1')
       this.dataProvider.loginEvent={
         loggedIn: false,
         status:'loggedOut'
       };
       this.dataProvider.userChanged.next(true);
-      console.log('No user');
+      // console.log('No user');
       if (this.userServerSubscription != undefined) {
         this.userServerSubscription.unsubscribe();
       }

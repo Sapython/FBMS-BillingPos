@@ -13,7 +13,7 @@ main {
   padding: 15px;
   padding-bottom: 50px;
   overflow-y: scroll;
-  height: 270px;
+  height: 250px;
   .savedOrder {
     overflow-y: auto;
     font-family: var(--primary-font);
@@ -90,4 +90,7 @@ main {
         font-size: 12px;
         
     }
+}
+.cancelled{
+  height: 300px;
 }

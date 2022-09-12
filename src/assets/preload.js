@@ -1,6 +1,6 @@
 const { BrowserWindow } = require('electron')
-const {PosPrinter} = require('electron').remote.require("electron-pos-printer");console.log("Remote:",remote)
-console.log(PosPrinter)
+const {PosPrinter} = require('electron').remote.require("electron-pos-printer");// console.log("Remote:",remote)
+// console.log(PosPrinter)
 const options = {
   preview: true, // Preview in window or print
   width: "170px", //  width of content body
@@ -21,12 +21,12 @@ const data = [
 
 window.addEventListener("DOMContentLoaded", () => {
   // document.getElementById('1234').style.background = 'red';
-  console.log("Loaded preload.js");
+  // console.log("Loaded preload.js");
   document.addEventListener("app-notify", (event) => {
     new Notification(event.detail.title, {
       body: event.detail.message,
     }).onclick = () => {
-      console.log("Notification clicked");
+      // console.log("Notification clicked");
     };
     PosPrinter.print(data, options)
       .then(() => {})

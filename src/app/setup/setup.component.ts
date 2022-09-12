@@ -48,10 +48,10 @@ export class SetupComponent implements OnInit, OnDestroy {
     private alertify: AlertsAndNotificationsService,
     private router: Router
   ) {
-    console.log(this.dataProvider.loginEvent)
+    // console.log(this.dataProvider.loginEvent)
     this.loginStatus = this.dataProvider.loginEvent;
     this.dataProvider.userChanged.subscribe((data) => {
-      console.log(this.dataProvider.loginEvent)
+      // console.log(this.dataProvider.loginEvent)
       this.loginStatus = this.dataProvider.loginEvent;
     })
   }
@@ -84,7 +84,7 @@ export class SetupComponent implements OnInit, OnDestroy {
       this.dataProvider.pageSetting.blur = true;
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
-          console.log('position', position);
+          // console.log('position', position);
           this.databaseService
             .continueDeviceSetup(position, this.secondStepForm.value)
             .then((data) => {

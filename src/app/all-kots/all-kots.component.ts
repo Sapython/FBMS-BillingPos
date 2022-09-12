@@ -21,7 +21,7 @@ export class AllKotsComponent implements OnInit {
     // this.bill.kots.forEach((element:any) => {
 
     // });
-    console.log('Saptam', this.bill.kots);
+    // console.log('Saptam', this.bill.kots);
     this.dataProvider.pageSetting.blur = true;
     const bill: DocumentSnapshot<DocumentData> = await this.databaseService.getBill(this.bill.id);
     const data = bill.data();
@@ -30,19 +30,19 @@ export class AllKotsComponent implements OnInit {
       return;
     } else if (data!=undefined) {
       for (const kotId of data['kots']) {
-        console.log('kotId', kotId);
-        console.log('bill', this.bill);
+        // console.log('kotId', kotId);
+        // console.log('bill', this.bill);
         const data: any = await this.databaseService.getKot(
           kotId.id,
           this.bill.id
         );
-        console.log('KOT: ', data.data(), data);
+        // console.log('KOT: ', data.data(), data);
         this.kots.push({
           kotId: kotId.id,
           kot: data.data(),
         });
       }
-      console.log('kots shivams', this.kots);
+      // console.log('kots shivams', this.kots);
       this.dataProvider.pageSetting.blur = false;
     }
   }

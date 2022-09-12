@@ -1,15 +1,29 @@
-<ul>
+<ol>
     <div style="position: sticky;">
         <mat-icon aria-hidden>dashboard </mat-icon>
         Categories
     </div>
     <hr>
-    <li *ngFor="let category of searchedProducts.length > 0 ? searchedProducts : categories" [ngClass]="{'active':currentSelectedCategory == category}" (click)="dataProvider.selectedCategory.next(category); currentSelectedCategory = category">
-        <p>{{category?.name | titlecase}}</p>
-        <i class="ri-arrow-right-s-line"></i>
+    <li *ngFor="let category of searchedProducts.length > 0 ? searchedProducts : categories" class="mainCategory">
+        <span class="category"  (click)="openSwitcher(category)">
+            <p>{{category?.name | titlecase}}</p>
+            <button mat-icon-button>
+                <i *ngIf="category.visible" class="ri-arrow-up-s-fill"></i>
+                <i *ngIf="!category.visible" class="ri-arrow-down-s-fill"></i>
+            </button>
+        </span>
+        <ul class="subcategory" *ngIf="category.visible">
+            <li *ngFor="let subcategory of category.subcategories"
+                [ngClass]="{'active':currentSelectedCategory == subcategory}" (click)="dataProvider.selectedCategory.next(subcategory); currentSelectedCategory = subcategory">
+                <span class="category">
+                    <p>{{subcategory?.name | titlecase}}</p>
+                    <i class="ri-arrow-right-s-line"></i>
+                </span>
+            </li>
+        </ul>
     </li>
     <li></li>
     <li></li>
     <li></li>
     <mat-spinner *ngIf="categories.length == 0"></mat-spinner>
-</ul>
+</ol>

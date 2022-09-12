@@ -16,7 +16,8 @@
     "test": "ng test",
     "builder": "electron-builder -p always",
     "keygen": "cli.js create-self-signed-cert",
-    "package": "ng build --configuration production && npx electron-packager . VirajBillingPos --overwrite --asar"
+    "package": "ng build --configuration production && npx electron-packager . VirajBillingPos --overwrite --asar",
+    "package32":"ng build --configuration production && npx electron-packager . VirajBillingPos --platform=win32 --arch=ia32 --overwrite --asar"
   },
   "build": {
     "publish": [

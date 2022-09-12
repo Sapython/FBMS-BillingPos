@@ -20,7 +20,7 @@ form {
     box-shadow: inset 5px 5px 20px rgba(0, 0, 0, 0.101);
     overflow-y: auto;
   }
-  #bill{
+  #bill,#billKot{
     display: flex;
     flex-direction: column;
     table{ 
@@ -29,8 +29,15 @@ form {
           border-bottom: 1px solid rgb(82, 82, 82);
         }
       }
-      td{
-        font-size: 20px;
+      td,th{
+        font-size: 19px !important;
+      }
+      th{
+        padding:0px;
+        
+      }
+      th:nth-child(1){
+        text-align: start;
       }
     }
     .topFields{

@@ -39,14 +39,14 @@ export class ProductsComponent implements OnInit {
       this.filterProducts(data.name);
     });
     this.dataProvider.searchEvent.subscribe((data: string) => {
-      console.log('searchEvent', data);
+      // console.log('searchEvent', data);
       const options = {
         keys: ['dishName', 'sellingPrice', 'onlinePrice'],
       };
       const fuse = new Fuse(this.dataProvider.products, options); // "list" is the item array
       const result = fuse.search(data);
       this.searchedProducts = [];
-      console.log('result', result);
+      // console.log('result', result);
       result.forEach((product: any) => {
         this.searchedProducts.push(product.item);
       });
@@ -59,7 +59,7 @@ export class ProductsComponent implements OnInit {
   }
 
   addToBill(product: any) {
-    // console.log(product);
+    // // console.log(product);
     if (!product.quantity) {
       product.quantity = 1;
     }

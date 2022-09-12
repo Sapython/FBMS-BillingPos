@@ -19,14 +19,14 @@ export class PosComponent implements OnInit {
       data.forEach((doc: any) => {
         this.allTables.push({ id: doc.id, ...doc.data() });
       });
-      console.log("tables",this.dataProvider.tables,this.allTables);
+      // console.log("tables",this.dataProvider.tables,this.allTables);
       this.billStreamSubscription.unsubscribe()
       this.billStreamSubscription = this.databaseService.getBillsStream().subscribe((bills: any) => {
         this.dataProvider.tables = [];
         bills = Array.from(bills);
         this.allTables.forEach((table: any) => {
           const bill: any = bills.filter((bill: any) => bill.table.id == table.id);
-          // console.log("bill",bill);
+          // // console.log("bill",bill);
           if (bill.length > 0) {
             if (bill.completed == false) {
               this.dataProvider.tables.push({...table,booked:false});
@@ -37,7 +37,7 @@ export class PosComponent implements OnInit {
             this.dataProvider.tables.push(table);
           }
         });
-        console.log("new tables",this.dataProvider.tables);
+        // console.log("new tables",this.dataProvider.tables);
         // sort all tables on the basis of tableNo
         this.dataProvider.tables.sort((a: any, b: any) => {
           return a.tableNo - b.tableNo;
