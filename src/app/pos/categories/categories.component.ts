@@ -20,106 +20,116 @@ export class CategoriesComponent implements OnInit {
   products: any[] = [];
   currentSelectedCategory: any = null;
   newCategories: any[] = [];
-  options: any[] = [
-    {
-      name: 'Indian',
-      subcategories: [
-        'Roti',
-        'Rice Basmati',
-        'Main Course/curries',
-        'Jain special',
-        'Starters',
-        'Salad/papad',
-        'Rice',
-        'Salad/papad',
-      ],
-    },
-    {
-      name: 'South Indian',
-      subcategories: [
-        'Snacks',
-        'Sada Plaza',
-        'Traditional Masala Plaza',
-        'Combination Masala Plaza',
-        'Healthy Uttappa',
-        'special Uttappa',
-        "Thin & Crispy Dosa's",
-        "Chinese Fusion Dosa's",
-        'Chopsuey Plaza',
-        'Spicy Plaza',
-        "Russian Salad Dosa's",
-        'Mexican Style Dosa',
-        '4ft Dosa',
-        '',
-      ],
-    },
-    {
-      name: 'Mumbai Chaat',
-      subcategories: ['Mumbai Pav Bhaji'],
-    },
-    {
-      name: 'Chinese Veg.',
-      subcategories: [
-        'Starters',
-        'Soup',
-        'Main Course',
-        'Rice',
-        'Noodles',
-        'Sizzlers',
-      ],
-    },
-    {
-      name: 'Combos',
-      subcategories: ['Punjabi Combo', 'Chinese Combo'],
-    },
-    {
-      name: 'Italian',
-      subcategories: ['Italian'],
-    },
-  ];
+  options: any[] = []
+  // [
+  //   {
+  //     name: 'Indian',
+  //     subcategories: [
+  //       'Roti',
+  //       'Rice Basmati',
+  //       'Main Course/curries',
+  //       'Jain special',
+  //       'Starters',
+  //       'Salad/papad',
+  //       'Rice',
+  //       'Salad/papad',
+  //     ],
+  //   },
+  //   {
+  //     name: 'South Indian',
+  //     subcategories: [
+  //       'Snacks',
+  //       'Sada Plaza',
+  //       'Traditional Masala Plaza',
+  //       'Combination Masala Plaza',
+  //       'Healthy Uttappa',
+  //       'special Uttappa',
+  //       "Thin & Crispy Dosa's",
+  //       "Chinese Fusion Dosa's",
+  //       'Chopsuey Plaza',
+  //       'Spicy Plaza',
+  //       "Russian Salad Dosa's",
+  //       'Mexican Style Dosa',
+  //       '4ft Dosa',
+  //       '',
+  //     ],
+  //   },
+  //   {
+  //     name: 'Mumbai Chaat',
+  //     subcategories: ['Mumbai Pav Bhaji'],
+  //   },
+  //   {
+  //     name: 'Chinese Veg.',
+  //     subcategories: [
+  //       'Starters',
+  //       'Soup',
+  //       'Main Course',
+  //       'Rice',
+  //       'Noodles',
+  //       'Sizzlers',
+  //     ],
+  //   },
+  //   {
+  //     name: 'Combos',
+  //     subcategories: ['Punjabi Combo', 'Chinese Combo'],
+  //   },
+  //   {
+  //     name: 'Italian',
+  //     subcategories: ['Italian'],
+  //   },
+  // ];
   ngOnInit(): void {
+    this.databaseService.getMainCategories().then((data: any) => {
+      // console.log("Main Categoris",data.data().categories)
+      // this.options = data.data().categories;
+      this.options = [];
+      data.forEach((element: any) => {
+        this.options.push({ ...element.data(), id: element.id });
+      });
+      this.databaseService.getRecipes().then((docs) => {
+        docs.forEach((doc: any) => {
+          // // console.log("recipes",doc.data())
+          this.products.push({ ...doc.data(), id: doc.id });
+          this.categories.push(doc.data().categories);
+        });
+        let filteredCat: any[] = [];
+        this.categories.forEach((item, index) => {
+          let found = false;
+          // // console.log(item)
+          filteredCat.forEach((item2) => {
+            if (item2.name == item.name) {
+              found = true;
+            }
+          });
+          if (!found) {
+            filteredCat.push(item);
+          }
+        });
+        // console.log("categories",filteredCat)
+        this.categories = filteredCat;
+        // // console.log("products",this.products)
+        this.dataProvider.categories = this.categories;
+        this.dataProvider.products = this.products;
+        const refinedCats: any[] = [];
+        this.options.forEach((mainCategory) => {
+          refinedCats.push({
+            name: mainCategory.name,
+            subcategories: this.categories.filter((item) => {
+              return mainCategory.subCategories.includes(item.name);
+            }),
+            visible: false,
+          });
+        });
+        this.categories = refinedCats;
+      });
+    });
     // this.databaseService.getCategories().then((docs)=>{
     //   docs.forEach((doc:any)=>{
     //     this.categories.push(doc.data())
     //   })
     //   // console.log(this.categories)
     // })
-    this.databaseService.getRecipes().then((docs) => {
-      docs.forEach((doc: any) => {
-        // // console.log("recipes",doc.data())
-        this.products.push({ ...doc.data(), id: doc.id });
-        this.categories.push(doc.data().categories);
-      });
-      let filteredCat: any[] = [];
-      this.categories = this.categories.filter((item, index) => {
-        let found = false;
-        // // console.log(item)
-        filteredCat.forEach((item2) => {
-          if (item2.name == item.name) {
-            found = true;
-          }
-        });
-        if (!found) {
-          filteredCat.push(item);
-        }
-      });
-      // // console.log("categories",filteredCat)
-      this.categories = filteredCat;
-      // // console.log("products",this.products)
-      this.dataProvider.categories = this.categories;
-      this.dataProvider.products = this.products;
-      const madarChod: any[] = [];
-      this.options.forEach((mainCategory) => {
-        madarChod.push({
-          name: mainCategory.name,
-          subcategories: this.categories.filter((item) => {
-            return mainCategory.subcategories.includes(item.name);
-          }),
-          visible: false,
-        });
-      });
-      this.categories = madarChod;
-    });
+   
     this.dataProvider.searchEvent.subscribe((data: string) => {
       // // console.log("searchEvent",data)
       const options = {

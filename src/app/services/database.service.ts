@@ -452,4 +452,8 @@ export class DatabaseService {
     );
   }
 
+  getMainCategories(){
+    return getDocs(collection(this.fs,'business/accounts/'+ this.dataProvider.currentProject?.projectId +'/recipes/categoryGroups'));
+  }
+
 }
