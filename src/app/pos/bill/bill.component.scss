@@ -40,6 +40,7 @@ form {
         text-align: start;
       }
     }
+    
     .topFields{
       font-size: 25px;
       display: flex;
@@ -58,6 +59,16 @@ form {
   padding:20px;
   animation: slideUp .3s ease-in;
   // min-height: 300px;
+  .specialInstruction{
+    padding: 10px;
+    border-radius: 4px;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+    background: transparent;
+    max-height: 25px;
+    margin:20px 5px;
+  }
   .mainBillContainer {
     overflow-y: auto;
     display: flex;

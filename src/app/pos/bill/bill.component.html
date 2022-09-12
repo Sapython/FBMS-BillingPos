@@ -10,7 +10,7 @@
         <div id="bill">
             <h3 style="text-align: center;font-style:bold;">{{dataProvider.currentProject?.projectName}}</h3>
             <h4 style="text-align: center" *ngIf="dataProvider.currentProject?.address">{{dataProvider.currentProject?.address}}</h4>
-            <h4 style="text-align: center" *ngIf="dataProvider.currentProject?.phoneNumber"><mat-icon>call</mat-icon> {{dataProvider.currentProject?.phoneNumber}}</h4>
+            <h4 style="text-align: center" *ngIf="dataProvider.currentProject?.phoneNumber">Phone: {{dataProvider.currentProject?.phoneNumber}}</h4>
             <hr>
             <div class="topFields" *ngIf="dataProvider.currentProject?.gstNo">GST No. {{dataProvider.currentProject?.gstNo}}</div>
             <div class="topFields" *ngIf="dataProvider.currentProject?.fssaiNo">FSSAI No. {{dataProvider.currentProject?.fssaiNo}}</div>
@@ -22,6 +22,7 @@
             <h4 style="text-align: start" *ngIf="customerInfoForm.value.fullName">Name: {{customerInfoForm.value.fullName}}</h4>
             <h4 style="text-align: start" *ngIf="customerInfoForm.value.phoneNumber">Phone: {{customerInfoForm.value.phoneNumber}}</h4>
             <h4><b>Token No.:</b> {{tokenNo}}</h4>
+            <h4><b>Table No.:</b> {{table?.tableNo}}</h4>
             <!-- <hr> -->
             <!-- <p>{{ekdumConfirmProducts.length}}</p> -->
             <table>
@@ -38,6 +39,8 @@
                     <td>&#8377;{{toFixedValue(product.shopPrice * product.quantity)}}</td>
                 </tr>
             </table>
+            <hr>
+            <p class="info">Special Instructions: {{specialInstructions}}</p>
             <hr>
             <div class="info">
                 <p>Total Qty: <b>{{totalQuantity}}</b></p>
@@ -77,7 +80,9 @@
             <h3 style="text-align: center">{{dataProvider.currentProject.projectName}}</h3>
             <h4 style="text-align: center">{{today | date:'long'}}</h4>
             <h4 style="text-align: center">Bill Id: {{currentBill?.id}}</h4>
-            <h3>HOTEL KOT</h3>
+            <h3 *ngIf="deskKot">Desk KOT</h3>
+            <h3 *ngIf="!deskKot">Kitchen KOT</h3>
+            <h4><b>Table No.:</b> {{table?.tableNo}}</h4>
             <table>
                 <tr>
                     <th>Product</th>
@@ -88,6 +93,8 @@
                     <td>{{product.quantity}}</td>
                 </tr>
             </table>
+            <hr>
+            <p class="info" *ngIf="specialInstructions">Special Instructions: {{specialInstructions}}</p>
         </div>
     </form>
     <div class="billActions" *ngIf="currentBill">
@@ -120,6 +127,7 @@
                 <span class="total">
                     <p>Total</p> <b>&#x20B9;{{taxableValue}}</b>
                 </span>
+                <input type="text" class="specialInstruction" [(ngModel)]="specialInstructions" placeholder="Special Instruction">
                 <ul uk-accordion>
                     <li>
                         <a class="uk-accordion-title" href="#"><h4>Customer Info</h4></a>

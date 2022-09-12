@@ -393,7 +393,10 @@ export class DatabaseService {
     );
   }
 
-  createKot(kotData: any,billId:any) {
+  async createKot(kotData: any,billId:any) {
+    // await setDoc(doc(this.fs,'business/accounts/'+this.dataProvider.currentProject?.projectId +'/bills'),{
+    //   dailyCounter:increment(1),
+    // },{merge:true});
     return addDoc(
       collection(
         this.fs,

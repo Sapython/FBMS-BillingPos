@@ -157,7 +157,9 @@ export class BillComponent implements OnInit, OnChanges {
   searchedProducts: any[] = [];
   today: Date = new Date();
   taxes: any[] = [];
+  deskKot:boolean = false;
   kotVisible: boolean = false;
+  specialInstructions: string = '';
   table: any;
   tokenNo: number = 0;
   billSaved: boolean = false;
@@ -700,7 +702,11 @@ export class BillComponent implements OnInit, OnChanges {
           // console.log('kots shivams', this.allBillProducts);
           document.getElementById('bill')!.style.display = 'none';
           document.getElementById('billKot')!.style.display = 'block';
-
+          this.deskKot = false
+          this.changeDetection.detectChanges();
+          window.print();
+          this.deskKot = true
+          this.changeDetection.detectChanges();
           window.print();
           document.getElementById('billKot')!.style.display = 'none';
           document.getElementById('bill')!.style.display = 'none';
