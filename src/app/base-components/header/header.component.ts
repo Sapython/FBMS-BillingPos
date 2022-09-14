@@ -4,6 +4,7 @@ import { Component, OnInit, HostListener, ElementRef, ViewChild } from '@angular
 import { DataProviderService } from 'src/app/services/data-provider.service';
 import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts-and-notifications.service';
 import { TablesComponent } from 'src/app/tables/tables.component';
+import { OptionsComponent } from '../options/options.component';
 
 @Component({
   selector: 'app-header',
@@ -39,12 +40,13 @@ export class HeaderComponent implements OnInit {
   placeholder:string = this.placeholders[0];
   constructor(public dataProvider:DataProviderService,private dialog:Dialog,private alertify:AlertsAndNotificationsService) { }
   syncing:boolean = false;
+  tableInst:any;
+  allInst:any[] = [];
   ngOnInit(): void {
+    this.dataProvider.openTableFunction = this.newOrder.bind(this);
     this.dataProvider.openTable.subscribe((data)=>{
-      const inst = this.dialog.open(TablesComponent)
-      inst.componentInstance?.close.subscribe(()=>{
-        inst.close()
-      })
+      this.newOrder()
+      console.log("Open Table",data)
     })
     this.dataProvider.syncer.subscribe((data)=>{
       this.syncing = data;
@@ -70,8 +72,24 @@ export class HeaderComponent implements OnInit {
 
 
   newOrder(){
+    this.closeTableModal()
     const inst = this.dialog.open(TablesComponent)
+    this.allInst.push(inst);
     inst.componentInstance?.close.subscribe(()=>{
+      // inst.close()
+      this.closeTableModal()
+    })
+    inst.backdropClick.subscribe(()=>{
+      this.closeTableModal()
+    })
+  }
+
+  openOptions(){
+    this.dialog.open(OptionsComponent)
+  }
+
+  closeTableModal(){
+    this.allInst.forEach((inst)=>{
       inst.close()
     })
   }

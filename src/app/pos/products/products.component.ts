@@ -34,7 +34,7 @@ export class ProductsComponent implements OnInit {
     this.dataProvider.selectedCategory.subscribe((data: any) => {
       if (!this.table) {
         this.alertify.presentToast('Please select a table first', 'error');
-        this.dataProvider.openTable.next(true)
+        this.dataProvider.openTableFunction()
       }
       this.filterProducts(data.name);
     });
@@ -54,7 +54,7 @@ export class ProductsComponent implements OnInit {
   }
   filterProducts(mainCategory: string) {
     this.filteredProducts = this.dataProvider.products.filter((item) => {
-      return item.categories.name == mainCategory;
+      return item && item.categories && item.categories.name == mainCategory;
     });
   }
 

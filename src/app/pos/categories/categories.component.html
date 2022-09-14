@@ -5,15 +5,15 @@
     </div>
     <hr>
     <li *ngFor="let category of searchedProducts.length > 0 ? searchedProducts : categories" class="mainCategory">
-        <span class="category"  (click)="openSwitcher(category)">
+        <span class="category" (click)="openSwitcher(category)">
             <p>{{category?.name | titlecase}}</p>
             <button mat-icon-button>
-                <i *ngIf="category.visible" class="ri-arrow-up-s-fill"></i>
-                <i *ngIf="!category.visible" class="ri-arrow-down-s-fill"></i>
+                <i *ngIf="category?.visible" class="ri-arrow-up-s-fill"></i>
+                <i *ngIf="!category?.visible" class="ri-arrow-down-s-fill"></i>
             </button>
         </span>
-        <ul class="subcategory" *ngIf="category.visible">
-            <li *ngFor="let subcategory of category.subcategories"
+        <ul class="subcategory" *ngIf="category?.visible">
+            <li *ngFor="let subcategory of category?.subcategories"
                 [ngClass]="{'active':currentSelectedCategory == subcategory}" (click)="dataProvider.selectedCategory.next(subcategory); currentSelectedCategory = subcategory">
                 <span class="category">
                     <p>{{subcategory?.name | titlecase}}</p>

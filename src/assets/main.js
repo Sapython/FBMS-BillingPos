@@ -1,28 +1,6 @@
-// Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain, shell, dialog } = require("electron");
-// const { autoUpdater } = require('electron-updater')
-// let remote = require("@electron/remote/main");
 const path = require("path");
-// const log = require('electron-log');
-// log.transports.file.resolvePath = () => path.join(__dirname,'logs/main.log')
-// const updater = require('electron-simple-updater');
-// updater.init('https://raw.githubusercontent.com/megahertz/electron-simple-updater/master/example/updates.json');
-// updater.checkForUpdates()
-// remote.initialize();
-// log.info('Application version'+ app.getVersion())
-// let mainWindow;
-// if (process.defaultApp) {
-//   if (process.argv.length >= 2) {
-//     app.setAsDefaultProtocolClient("virajpos", process.execPath, [
-//       path.resolve(process.argv[1]),
-//     ]);
-//   }
-// } else {
-//   app.setAsDefaultProtocolClient("virajpos");
-// }
-
 const gotTheLock = app.requestSingleInstanceLock();
-
 if (!gotTheLock) {
   app.quit();
 } else {

@@ -1,6 +1,6 @@
 <div class="product">
     <div uk-spinner *ngIf="!loaded"></div>
-    <img [src]="product.images[0]" [ngStyle]="{'display':loaded ? 'block' : 'none'}" (load)="loaded=true" >
+    <img src="assets/food.png" [ngStyle]="{'display':loaded ? 'block' : 'none'}" (load)="loaded=true" >
     <div class="detail">
         <p>{{product.dishName}}</p>
         <p class="price">&#8377;&nbsp;{{product.shopPrice}}</p>

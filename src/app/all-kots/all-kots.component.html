@@ -3,7 +3,11 @@
     <hr>
     <ng-container *ngFor="let kot of kots">
         <div *ngIf="kot.kot.products.length > 0">
-            <p>KOT Id: {{kot.kotId}}</p>
+            <p>KOT Id: {{kot.kotId}}
+                <button mat-icon-button>
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </p>
             <table [cellSpacing]="0">
                 <tr>
                     <th>
@@ -18,12 +22,20 @@
                     <th>
                         <h4>Total</h4>
                     </th>
+                    <th>
+                        <h4>Actions</h4>
+                    </th>
                 </tr>
-                <tr *ngFor="let product of kot.kot.products">
+                <tr *ngFor="let product of kot.kot.products; let i = index">
                     <td>{{product.dishName}}</td>
                     <td>{{product.quantity}}</td>
                     <td> &#8377;{{product.shopPrice}}</td>
                     <td> &#8377;{{product.quantity * product.shopPrice}}</td>
+                    <td>
+                        <button mat-icon-button (click)="deleteItemKot(kot,i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
                 </tr>
             </table>
         </div>

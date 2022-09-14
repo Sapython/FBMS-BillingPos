@@ -1,10 +1,58 @@
 from asyncio import constants
+import json
 import os
 from turtle import onclick
+from unicodedata import category
 import firebase_admin
 from firebase_admin import firestore, credentials, storage
-from PyInquirer import prompt, print_json
+# from PyInquirer import prompt, print_json
 from urllib import request, parse
+# import openpyxl
+# dataframe = openpyxl.load_workbook("3.xlsx")
+# # print(dataframe)
+# # print(dataframe.sheetnames)
+# finalData = []
+# for i in range(len(dataframe.worksheets)):
+#     # print(dataframe.worksheets[i])
+#     sheet = dataframe.worksheets[i]
+#     for column in sheet.rows:
+#         # print(column)
+#         counter = 1
+#         cellValues = []
+#         for cell in column:
+#             cellValues.append(cell.value)
+#             if (cell.value!=None and counter==4):
+#                 # print(cellValues)
+#                 finalData.append(cellValues)
+#             counter+=1
+#             if (counter>4):
+#                 break
+
+# # print(finalData)
+# mappedIngredients = []
+# ingredients = []
+# currentDish = ''
+# for data in finalData:
+#     if (data[2]=='INGRIDIENT'):
+#         continue
+#     # print(data[0],data[1],data[2],data[3])
+#     if (data[1]!=None and data[2]!=None and data[3]!=None):
+#         # print('Recipe',ingredients)
+#         mappedIngredients.append({"name":currentDish,"ingredients":ingredients}) 
+#         ingredients = []
+#         currentDish = data[1]
+#     ingredients.append({"name":data[2],"quantity":data[3]})
+
+# print(mappedIngredients)
+
+# # dump to json
+# with open('mappedIngredients.json', 'w') as outfile:
+#     json.dump({"ingr":mappedIngredients}, outfile)
+
+# load from json
+with open('mappedIngredients.json') as json_file:
+    data = json.load(json_file)
+    mappedIngredients = data['ingr']
 
 # Application Default credentials are automatically created.
 dosaCred = credentials.Certificate('dosaplaza-cv.json')
@@ -17,8 +65,28 @@ fbmsDb = firestore.client(app=fbmsApp)
 dosaBucket = storage.bucket(app=dosaApp,name='dosaplaza-cv.appspot.com')
 fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 
+# newIngredientsRef = fbmsDb.collection('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients')
+# allIngredients = []
+# for ingredient in newIngredientsRef.stream():
+#     allIngredients.append(ingredient.to_dict())
 
-
+# notfounds = {}
+# for data in mappedIngredients:
+#     for recipeIngredient in data['ingredients']:
+#         found = False
+#         for ingredient in allIngredients:
+#             if (recipeIngredient['name'] and ingredient['name'].strip().lower()==recipeIngredient['name'].strip().lower()):
+#                 # print('Found ',ingredient['name'])
+#                 found = True
+#                 break
+#         if(not found):
+#             notfounds[recipeIngredient['name']] = recipeIngredient['name']
+#             # print('Not found',recipeIngredient['name'])
+# print(notfounds.keys())
+# newIngredientsRef.add({
+#     "name":ingredient,
+#     "ingredients":mappedIngredients[ingredient]
+# })
 # ingredient_ref = dosaDb.collection(u'stock')
 # ingredients = []
 # fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/counters').update({
@@ -72,20 +140,29 @@ fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 #     oldIngredients[oldIngredient.id] = (oldIngredient.to_dict())
 
 
-# oldCategory_ref = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categories')
-# oldCategories = {}
-# categoryNames = []
-# for oldCategory in oldCategory_ref.stream():
-#     # print(oldCategory.to_dict())
-#     oldCategories[oldCategory.to_dict()['name']] = (oldCategory.to_dict())
-#     categoryNames.append(oldCategory.to_dict()['name'])
+oldCategory_ref = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categories')
+oldCategories = {}
+categoryNames = []
+for oldCategory in oldCategory_ref.stream():
+    # print(oldCategory.to_dict())
+    oldCategories[oldCategory.to_dict()['name']] = (oldCategory.to_dict())
+    categoryNames.append(oldCategory.to_dict()['name'])
 
 # print(categoryNames)
 doc_ref = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes')
 allDocs = doc_ref.stream()
-# docs = []
-# for doc in allDocs:
-#     # print(doc.to_dict(),doc.id)
+
+# print(oldCategories)
+docs = []
+cat = oldCategories['Indian Starters']
+print(cat)
+for doc in allDocs:
+    if (doc.to_dict()['categories']['name']=='Starters'):
+        # print("categories",oldCategories['Indian Starters'])
+        fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes/'+doc.id).update({
+            "categories":cat
+        })
+    # print(doc.to_dict(),doc.id)
 #     if (doc.to_dict()['onlinePrice']==0):
 #         print("Name: "+doc.to_dict()['dishName']+" & Catgeory: "+doc.to_dict()['categories']['name'])
 #         price = int(input('Price =>'))
@@ -170,21 +247,24 @@ allDocs = doc_ref.stream()
 #     print('------')
 #     fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes').add(dish)
 
-for doc in allDocs:
-    print("Dish Name ",doc.to_dict()['dishName'], doc.to_dict()['onlinePrice'], doc.id)
-    price = input("New Price => ")
-    try:
-        int(price)
-        if( int(price)> 0 ):
-            fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes/'+doc.id).update({
-            "onlinePrice": price,
-            'thirdPartyPrice': price,
-            "shopPrice": price, 
-            })
-            print("Updated")
-            # break
-    except:
-        print("Skipped")
+# ingredientsRef = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/ingredients')
+
+# for doc in allDocs:
+#     print("Dish Name ",doc.to_dict()['dishName'], doc.to_dict()['onlinePrice'], doc.id)
+#     price = input("New Price => ")
+
+    # try:
+    #     int(price)
+    #     if( int(price)> 0 ):
+    #         fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes/'+doc.id).update({
+    #         "onlinePrice": price,
+    #         'thirdPartyPrice': price,
+    #         "shopPrice": price, 
+    #         })
+    #         print("Updated")
+    #         # break
+    # except:
+    #     print("Skipped")
         # break
     # fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes/'+doc.id).update({
     #         "images": ['https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food(1).png?alt=media&token=558c361b-00a5-4a1b-b9ae-07ddaf7151ff']

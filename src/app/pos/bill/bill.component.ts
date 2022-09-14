@@ -178,7 +178,14 @@ export class BillComponent implements OnInit, OnChanges {
   allBillProducts: any[] = [];
   ekdumConfirmProducts: any[] = [];
   finalKotItems: any[] = [];
+  discounts: any[] = [];
+  selectDiscounts: any[] = [];
+  discountValues: any[] = [];
+  isNonChargeable: boolean = false;
   ngOnInit(): void {
+    this.databaseService.getDiscounts().subscribe((discounts) => {
+      this.discounts = discounts;
+    })
     this.dataProvider.menuSelected.subscribe((table) => {
       // console.log('found table 1');
       if (table) {
@@ -564,6 +571,7 @@ export class BillComponent implements OnInit, OnChanges {
       // alert('Calc Products: ' + this.ekdumConfirmProducts.length);
       this.dataProvider.pageSetting.blur = false;
     }
+    console.log('final products', this.ekdumConfirmProducts);
     // console.log('lelelo', this.ekdumConfirmProducts, this.products);
     if (this.ekdumConfirmProducts.length > 0) {
       this.ekdumConfirmProducts.forEach((product) => {
@@ -596,6 +604,17 @@ export class BillComponent implements OnInit, OnChanges {
     //   this.totalTaxAmount += (this.taxableValue / 100) * tax.amount;
     // });
 
+    this.selectDiscounts.forEach((discount) => {
+      if (discount.discountType == 'flat') {
+        const val = discount.discountValue
+        this.discountValues.push(val);
+        this.taxableValue -= val;
+      } else if (discount.discountType == 'percentage') {
+        const val = (this.taxableValue / 100) * discount.discountValue;
+        this.discountValues.push(val);
+        this.taxableValue -= val;
+      }
+    })
     this.sgst = ((this.taxableValue / 100) * 2.5).toFixed(2);
     this.cgst = ((this.taxableValue / 100) * 2.5).toFixed(2);
     this.totalTaxAmount =
@@ -603,7 +622,14 @@ export class BillComponent implements OnInit, OnChanges {
     // this.filteredCharges.forEach((charge) => {
     //   this.totalTaxAmount += charge.amount;
     // });
-    this.grandTotal = this.taxableValue + this.totalTaxAmount;
+    this.taxableValue = Math.ceil(this.taxableValue);
+    this.grandTotal = Math.ceil(this.taxableValue + this.totalTaxAmount);
+    if (this.isNonChargeable){
+      this.grandTotal = 0;
+      this.taxableValue = 0;
+      this.changeDetection.detectChanges();
+      // alert('Non Chargeable '+this.grandTotal);
+    }
   }
 
   print() {

@@ -46,4 +46,11 @@ export class AllKotsComponent implements OnInit {
       this.dataProvider.pageSetting.blur = false;
     }
   }
+
+  deleteItemKot(kot:any,index:number){
+    console.log(kot)
+    kot.kot.products.splice(index,1);
+    console.log(kot)
+    this.databaseService.updateKot(kot.kotId,this.bill.id,kot.kot.products);
+  }
 }

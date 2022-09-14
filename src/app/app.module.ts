@@ -38,6 +38,7 @@ import { AllKotsComponent } from './all-kots/all-kots.component';
 import { CancelModalComponent } from './cancel-modal/cancel-modal.component';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 @NgModule({
   declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent],
   imports: [
@@ -61,7 +62,7 @@ import { MatInputModule } from '@angular/material/input';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    
+    MatIconModule
   ],
   providers: [
     ScreenTrackingService,

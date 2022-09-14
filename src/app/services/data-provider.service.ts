@@ -36,6 +36,7 @@ export class DataProviderService {
   public syncer:Subject<boolean> = new Subject();
   public openTable:Subject<boolean> = new Subject();
   public menuSelected:Subject<any> = new Subject();
+  public openTableFunction :any;
   constructor(){
     setInterval(()=>{
       this.deviceData = JSON.parse(localStorage.getItem('deviceData') || '{}');

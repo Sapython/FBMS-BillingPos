@@ -459,4 +459,29 @@ export class DatabaseService {
     return getDocs(collection(this.fs,'business/accounts/'+ this.dataProvider.currentProject?.projectId +'/recipes/categoryGroups'));
   }
 
+  updateKot(kotId:string,billId:string,data:any){
+    return updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/bills/bills/'+billId+'/kots/'+kotId
+      ),
+      {products:data}
+    );
+  }
+
+
+  getDiscounts(){
+    return collectionData(
+      collection(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/discounts/discounts'
+      ),
+      {idField:'id'}
+    );
+  }
+
 }

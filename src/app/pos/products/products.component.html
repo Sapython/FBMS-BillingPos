@@ -1,9 +1,12 @@
-<main >
+<main>
     <ng-container *ngIf="table">
-        <button class="uk-animation-fast productCard" *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : filteredProducts"  (click)="addToBill(product)">
+        <button class="uk-animation-fast productCard"
+            *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : filteredProducts"
+            (click)="addToBill(product)">
             <div class="info">
                 <p class="name">{{product.dishName | titlecase}}</p>
                 <div class="priceBar">
+                    <!-- <p>&#8377;{{product.id}}</p> -->
                     <div class="price">
                         <p>&#8377;{{product.shopPrice}}</p>
                     </div>

@@ -21,63 +21,6 @@ export class CategoriesComponent implements OnInit {
   currentSelectedCategory: any = null;
   newCategories: any[] = [];
   options: any[] = []
-  // [
-  //   {
-  //     name: 'Indian',
-  //     subcategories: [
-  //       'Roti',
-  //       'Rice Basmati',
-  //       'Main Course/curries',
-  //       'Jain special',
-  //       'Starters',
-  //       'Salad/papad',
-  //       'Rice',
-  //       'Salad/papad',
-  //     ],
-  //   },
-  //   {
-  //     name: 'South Indian',
-  //     subcategories: [
-  //       'Snacks',
-  //       'Sada Plaza',
-  //       'Traditional Masala Plaza',
-  //       'Combination Masala Plaza',
-  //       'Healthy Uttappa',
-  //       'special Uttappa',
-  //       "Thin & Crispy Dosa's",
-  //       "Chinese Fusion Dosa's",
-  //       'Chopsuey Plaza',
-  //       'Spicy Plaza',
-  //       "Russian Salad Dosa's",
-  //       'Mexican Style Dosa',
-  //       '4ft Dosa',
-  //       '',
-  //     ],
-  //   },
-  //   {
-  //     name: 'Mumbai Chaat',
-  //     subcategories: ['Mumbai Pav Bhaji'],
-  //   },
-  //   {
-  //     name: 'Chinese Veg.',
-  //     subcategories: [
-  //       'Starters',
-  //       'Soup',
-  //       'Main Course',
-  //       'Rice',
-  //       'Noodles',
-  //       'Sizzlers',
-  //     ],
-  //   },
-  //   {
-  //     name: 'Combos',
-  //     subcategories: ['Punjabi Combo', 'Chinese Combo'],
-  //   },
-  //   {
-  //     name: 'Italian',
-  //     subcategories: ['Italian'],
-  //   },
-  // ];
   ngOnInit(): void {
     this.databaseService.getMainCategories().then((data: any) => {
       // console.log("Main Categoris",data.data().categories)
@@ -86,23 +29,29 @@ export class CategoriesComponent implements OnInit {
       data.forEach((element: any) => {
         this.options.push({ ...element.data(), id: element.id });
       });
+      console.log(this.options);
       this.databaseService.getRecipes().then((docs) => {
         docs.forEach((doc: any) => {
           // // console.log("recipes",doc.data())
           this.products.push({ ...doc.data(), id: doc.id });
           this.categories.push(doc.data().categories);
         });
+
         let filteredCat: any[] = [];
         this.categories.forEach((item, index) => {
           let found = false;
-          // // console.log(item)
-          filteredCat.forEach((item2) => {
-            if (item2.name == item.name) {
-              found = true;
+          // console.log(item)
+          if (item){
+            filteredCat.forEach((item2) => {
+              if (item2.name == item.name) {
+                found = true;
+              }
+            });
+            if (!found) {
+              filteredCat.push(item);
             }
-          });
-          if (!found) {
-            filteredCat.push(item);
+          } else {
+            console.log("No Category",index, this.products[index].id)
           }
         });
         // console.log("categories",filteredCat)
@@ -120,16 +69,10 @@ export class CategoriesComponent implements OnInit {
             visible: false,
           });
         });
+        console.log(refinedCats);
         this.categories = refinedCats;
       });
     });
-    // this.databaseService.getCategories().then((docs)=>{
-    //   docs.forEach((doc:any)=>{
-    //     this.categories.push(doc.data())
-    //   })
-    //   // console.log(this.categories)
-    // })
-   
     this.dataProvider.searchEvent.subscribe((data: string) => {
       // // console.log("searchEvent",data)
       const options = {
@@ -146,10 +89,11 @@ export class CategoriesComponent implements OnInit {
   }
   openSwitcher(data:any){
     console.log(this.categories)
+    const dataCopy = JSON.parse(JSON.stringify(data))
     this.categories.forEach((cat:any)=>{
       cat.visible = false;
     })
-    data.visible=true
+    data.visible=!dataCopy.visible
   }
 }
 type Category = {

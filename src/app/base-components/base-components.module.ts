@@ -7,20 +7,24 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { OptionsComponent } from './options/options.component';
+import { MatTabsModule } from '@angular/material/tabs';
 const comps = [HeaderComponent,
   FooterComponent]
 
 @NgModule({
   declarations: [
     comps,
-    SidebarComponent
+    SidebarComponent,
+    OptionsComponent
   ],
   imports: [
     BrowserAnimationsModule,
     CommonModule,
     DialogModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatTabsModule
   ],
   exports:comps
 })

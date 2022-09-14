@@ -14,12 +14,13 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
 import {MatIconModule} from '@angular/material/icon';
 import { BillProductCardComponent } from './bill/bill-product-card/bill-product-card.component';
-import { OptionsComponent } from './options/options.component'; 
+import { OptionsComponent } from '../base-components/options/options.component'; 
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { RoomsComponent } from './rooms/rooms.component'; 
 import { TablesComponent } from '../tables/tables.component';
-
+import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
+import {MatSelectModule} from '@angular/material/select'; 
 @NgModule({
   declarations: [
     PosComponent,
@@ -27,7 +28,6 @@ import { TablesComponent } from '../tables/tables.component';
     ProductsComponent,
     BillComponent,
     BillProductCardComponent,
-    OptionsComponent,
     RoomsComponent,
   ],
   imports: [
@@ -41,7 +41,9 @@ import { TablesComponent } from '../tables/tables.component';
     MatButtonToggleModule,
     MatIconModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSlideToggleModule,
+    MatSelectModule
   ]
 })
 export class PosModule { }
