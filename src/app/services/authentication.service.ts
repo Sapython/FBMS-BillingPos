@@ -39,15 +39,15 @@ export class AuthenticationService {
     private dataProvider: DataProviderService,
     private firestore: Firestore,
     private alertify: AlertsAndNotificationsService,
-    private router:Router,
+    private router: Router
   ) {
     if (auth) {
       this.user = authState(this.auth);
-      this.user.subscribe((u:User | null) => {
-        if(u){
+      this.user.subscribe((u: User | null) => {
+        if (u) {
           this.dataProvider.userID = u.uid;
         }
-      })
+      });
       this.setDataObserver(this.user);
       this.userDisposable = authState(this.auth)
         .pipe(map((u) => !!u))
@@ -73,7 +73,7 @@ export class AuthenticationService {
       // // console.log('projects all', refinedData);
       if (data) {
         let refinedData = data.data();
-        if (refinedData){
+        if (refinedData) {
           if (refinedData['projects'] && refinedData['projects'].length > 0) {
             const projects = refinedData['projects'].filter((element: any) => {
               // console.log(element);
@@ -85,17 +85,17 @@ export class AuthenticationService {
                 this.router.navigate(['/projectSelector']);
               } else {
                 this.dataProvider.currentProject = projects[0];
-                return true
+                return true;
               }
             } else {
-              this.warnAndLogout()
+              this.warnAndLogout();
             }
           } else {
-            this.warnAndLogout()
+            this.warnAndLogout();
           }
         }
       } else {
-        this.warnAndLogout()
+        this.warnAndLogout();
       }
       // console.log('User signed in', value);
       this.alertify.presentToast('User signed in');
@@ -106,12 +106,12 @@ export class AuthenticationService {
       return false;
     }
   }
-  warnAndLogout(){
+  warnAndLogout() {
     // alert('Because of no associated projects found for this email you will be logged out.')
     // this.logout(true);
   }
-  logout(noConfirm:boolean = false) {
-    if(noConfirm || confirm('Are you sure you want to log out?')){
+  logout(noConfirm: boolean = false) {
+    if (noConfirm || confirm('Are you sure you want to log out?')) {
       this.auth.signOut();
       this.router.navigate(['/']);
     }
@@ -129,8 +129,11 @@ export class AuthenticationService {
     return getDoc(doc(this.firestore, 'business/accounts'));
   }
 
-  generateRandomId(){
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  generateRandomId() {
+    return (
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15)
+    );
   }
 
   private setDataObserver(user: Observable<User | null>) {
@@ -152,129 +155,178 @@ export class AuthenticationService {
               this.dataProvider.userData = data;
               this.dataProvider.gettingUserData = false;
               projectSubscription.unsubscribe();
-              projectSubscription = docData(doc(this.firestore, 'business/accounts')).subscribe(async (projectsData)=>{
+              projectSubscription = docData(
+                doc(this.firestore, 'business/accounts')
+              ).subscribe(async (projectsData: any) => {
                 this.dataProvider.userChanged.next(data);
-                // console.log('accounts', projectsData)
-                const projectData = projectsData
-                if(projectData){
-                  const projects = projectData['projects'].filter((project:any)=>project.mails.includes(u.email))
+                if (projectsData) {
+                  const projects = projectsData['projects'].filter(
+                    (project: any) =>
+                      project &&
+                      project.mails &&
+                      project.mails.includes(u.email)
+                  );
                   this.dataProvider.projects = projects;
                   this.dataProvider.currentProject = projects[0];
-                  if(projects.length > 0){
+                  docData(
+                    doc(
+                      this.firestore,
+                      'business/accounts/' +
+                        this.dataProvider.currentProject?.projectId +
+                        '/counters'
+                    ),
+                    { idField: 'id' }
+                  ).subscribe((data: any) => {
+                    console.log(
+                      'Counters',
+                      data,
+                      this.dataProvider.currentProject
+                    );
+                    // this.dataProvider.currentTokenNo = data[0].bills;
+                  });
+                  if (projects.length > 0) {
                     this.dataProvider.projects = projects;
-                    var localDeviceData = localStorage.getItem('deviceData')
-                    if(localDeviceData){
+                    var localDeviceData = localStorage.getItem('deviceData');
+                    if (localDeviceData) {
                       try {
-                        var finalLocalDeviceData:any = JSON.parse(localDeviceData)
+                        var finalLocalDeviceData: any =
+                          JSON.parse(localDeviceData);
                       } catch (error) {
                         this.dataProvider.loginEvent = {
                           loggedIn: true,
                           status: 'deviceNotRegistered',
                         };
                         this.dataProvider.userChanged.next(true);
-                        var finalLocalDeviceData:any = {}
+                        var finalLocalDeviceData: any = {};
                       }
                       // console.log('local device data', localDeviceData,finalLocalDeviceData,projects)
                       if (finalLocalDeviceData['deviceId'] != null) {
-                        const devicesProjects = projects.filter((project:any)=>{
-                          return project.devices && project.devices.includes(finalLocalDeviceData.deviceId)
-                        })
-                        if(devicesProjects.length > 0){
-                          this.dataProvider.loginEvent = {
-                            loggedIn:true,
-                            status:'withProject',
+                        const devicesProjects = projects.filter(
+                          (project: any) => {
+                            return (
+                              project.devices &&
+                              project.devices.includes(
+                                finalLocalDeviceData.deviceId
+                              )
+                            );
                           }
+                        );
+                        if (devicesProjects.length > 0) {
+                          this.dataProvider.loginEvent = {
+                            loggedIn: true,
+                            status: 'withProject',
+                          };
                           this.dataProvider.userChanged.next(true);
                         } else {
                           let id = this.generateRandomId();
                           let users = finalLocalDeviceData.users || [];
-                          const duplicates = users.find((element:any) => element.email == u.email && element.uid == u.uid);
+                          const duplicates = users.find(
+                            (element: any) =>
+                              element.email == u.email && element.uid == u.uid
+                          );
                           if (!duplicates) {
                             users = [
                               {
-                                email:u.email || '',
-                                uid:u.uid || '',
+                                email: u.email || '',
+                                uid: u.uid || '',
                               },
-                              ...finalLocalDeviceData.users || []
-                            ]
+                              ...(finalLocalDeviceData.users || []),
+                            ];
                           }
-                          // console.log('users', projects)                 
-                          let deviceData:Device = {
-                            deviceId:id,
-                            registrationDate:new Date(),
-                            users:users,
-                            projectId:projects[0].projectId,
-                            projectName:projects[0].projectName
-                          }
+                          // console.log('users', projects)
+                          let deviceData: Device = {
+                            deviceId: id,
+                            registrationDate: new Date(),
+                            users: users,
+                            projectId: projects[0].projectId,
+                            projectName: projects[0].projectName,
+                          };
                           // console.log('device data', deviceData)
-                          await addDoc(collection(this.firestore,'business/devices/'+id),deviceData)
-                          await updateDoc(doc(this.firestore,'business/accounts/'),{
-                            projects:projects.map((project:any)=>{
-                              if(project.projectId == projects[0].projectId){
-                                return {
-                                  ...project,
-                                  devices:[
-                                    ...project.devices || [],
-                                    id
-                                  ]
+                          await addDoc(
+                            collection(
+                              this.firestore,
+                              'business/devices/' + id
+                            ),
+                            deviceData
+                          );
+                          await updateDoc(
+                            doc(this.firestore, 'business/accounts/'),
+                            {
+                              projects: projects.map((project: any) => {
+                                if (
+                                  project.projectId == projects[0].projectId
+                                ) {
+                                  return {
+                                    ...project,
+                                    devices: [...(project.devices || []), id],
+                                  };
+                                } else {
+                                  return project;
                                 }
-                              } else {
-                                return project
-                              }
-                            })
-                          })
+                              }),
+                            }
+                          );
                           // console.log('device data', deviceData)
-                          localStorage.setItem('deviceData', JSON.stringify(deviceData))
+                          localStorage.setItem(
+                            'deviceData',
+                            JSON.stringify(deviceData)
+                          );
                         }
                       } else {
                         this.dataProvider.loginEvent = {
                           loggedIn: true,
-                          status:'deviceNotRegistered'
-                        }
+                          status: 'deviceNotRegistered',
+                        };
                         this.dataProvider.userChanged.next(true);
-                        localStorage.setItem('deviceData', JSON.stringify({deviceId:'test'}))
+                        localStorage.setItem(
+                          'deviceData',
+                          JSON.stringify({ deviceId: 'test' })
+                        );
                       }
                     } else {
                       this.dataProvider.loginEvent = {
                         loggedIn: true,
-                        status:'deviceNotRegistered'
-                      }
+                        status: 'deviceNotRegistered',
+                      };
                       this.dataProvider.userChanged.next(true);
-                      localStorage.setItem('deviceData', JSON.stringify({deviceId:'test'}))
+                      localStorage.setItem(
+                        'deviceData',
+                        JSON.stringify({ deviceId: 'test' })
+                      );
                     }
                   } else {
-                    this.dataProvider.loginEvent={
-                      loggedIn:true,
-                      status:'noProjects'
-                    };  
+                    this.dataProvider.loginEvent = {
+                      loggedIn: true,
+                      status: 'noProjects',
+                    };
                     this.dataProvider.userChanged.next(true);
                     // console.log('no projects found for this user',this.dataProvider.loginEvent)
                   }
                 } else {
                   // console.log('no projects found')
-                  this.dataProvider.loginEvent={
-                    loggedIn:true,
-                    status:'noProjects'
+                  this.dataProvider.loginEvent = {
+                    loggedIn: true,
+                    status: 'noProjects',
                   };
                   this.dataProvider.userChanged.next(true);
                 }
-              })
+              });
             }
           );
         } else {
           // console.log('loggedOut')
-          this.dataProvider.loginEvent={
+          this.dataProvider.loginEvent = {
             loggedIn: false,
-            status:'loggedOut'
+            status: 'loggedOut',
           };
           this.dataProvider.userChanged.next(true);
         }
       });
     } else {
       // // console.log('loggedOut 1')
-      this.dataProvider.loginEvent={
+      this.dataProvider.loginEvent = {
         loggedIn: false,
-        status:'loggedOut'
+        status: 'loggedOut',
       };
       this.dataProvider.userChanged.next(true);
       // console.log('No user');

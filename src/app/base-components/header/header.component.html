@@ -5,10 +5,10 @@
             <img src="assets/viraj-logo.png" alt="">
         </div>
         <div class="buttons">
-            <button class="tableNo" mat-stroked-button color="primary" *ngIf="selectedTable">Table No: {{selectedTable.tableNo}}</button>
+            <button class="tableNo" mat-stroked-button color="primary" *ngIf="dataProvider.selectedTable">Table No: {{dataProvider.selectedTable.tableNo}}</button>
             <button mat-stroked-button color="primary" class="higlighted" (click)="newOrder()">Select Table</button>
             <div (mouseenter)="extraSearchClass = 'active'" class="search + {{extraSearchClass}}">
-                <input (change)="extraSearchClass = 'active'" (input)="selectedTable ? dataProvider.searchEvent.next(search.value) : noTablesAlert()" #search [placeholder]="placeholder + '..'" type="search">
+                <input (change)="extraSearchClass = 'active'" (input)="selectedTable ? dataProvider.searchEvent.next(search.value) : noTablesAlert()" #search [placeholder]="placeholder + '..'" type="text">
                 <div *ngIf="extraSearchClass">
                     <!-- <i (click)="extraSearchClass = ''" class="ri-arrow-right-fill"></i> -->
                     <!-- <button mat-icon-button><mat-icon></mat-icon></button> -->

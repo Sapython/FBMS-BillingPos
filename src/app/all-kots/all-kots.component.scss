@@ -1,10 +1,9 @@
 main{
     background: white;
-    padding: 30px;
+    padding: 10px;
     border-radius: 15px;
     box-shadow: 0 0 10px 0 rgba(0,0,0,0.2);
     height:70vh;
-    overflow-y: auto;
     td:nth-child(1){
         text-align: start;
     }
@@ -13,8 +12,12 @@ main{
     }
     display: flex;
     flex-direction: column;
-    gap:20px;
-    div{
+    // gap:20px;
+    .scrollable{
+        overflow-y: auto;
+        height: 70vh;
+    }
+    div.container{
         padding:10px;
         display: flex;
         border-radius: 10px;
@@ -31,5 +34,10 @@ main{
         th,td{
             padding:7px;
         }
+    }
+    .actions{
+        display: flex;
+        justify-content: flex-end;
+        column-gap: 20px;
     }
 }

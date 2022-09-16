@@ -59,11 +59,16 @@ $my-theme: mat.define-light-theme((
 // that you are using.
 @include mat.all-component-themes($my-theme);
 
+@font-face {
+  font-family: 'Bill';
+  src: url('assets/fonts/regular.ttf') format('truetype');
+}
+
 /* You can add global styles to this file, and also import other style files */
 :root{
     --primary:#ea7c69;
     --secondary:#FF8A00;
-    --success:#00C853;
+    --success:#86d188;
     --danger:#ff5151;
     --contrast:rgb(24, 27, 31);
     --primary-contrast: #FFFFFF;
@@ -84,6 +89,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
 }
 #bill,#billKot{
   visibility: hidden;
+  font-family: 'Bill' !important;
 }
 @page { 
   size: auto;

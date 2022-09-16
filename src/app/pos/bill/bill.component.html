@@ -1,13 +1,7 @@
-<main>
-    <img src="assets/notFound.svg" class="nothing" *ngIf="!currentBill && !products.length">
+<!-- <main>
+    
     <form>
-        <div class="products" [@dishCardStagger]="products.length">
-            <app-bill-product-card [@dishCardState]="card.deleting ? 'deleted' : 'default'" #card
-                *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : products"
-                (deleted)="delete(product.id,card)" (quantityChanged)="calculateTaxAndPrices(); addToKot()"
-                [product]="product">
-            </app-bill-product-card>
-        </div>
+        
         <div id="bill">
             <h3 style="text-align: center;font-style:bold;">{{dataProvider.currentProject?.projectName}}</h3>
             <h4 style="text-align: center" *ngIf="dataProvider.currentProject?.address">
@@ -34,8 +28,6 @@
             <h4><b>Token No.:</b> {{tokenNo}}</h4>
             <h4><b>Table No.:</b> {{table?.tableNo}}</h4>
             <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
-            <!-- <hr> -->
-            <!-- <p>{{ekdumConfirmProducts.length}}</p> -->
             <table>
                 <tr>
                     <th>Product</th>
@@ -94,7 +86,6 @@
                 <p>Total Tax</p>
                 <p>&#8377;{{toFixedValue(totalTaxAmount)}}</p>
             </div>
-            <!-- <hr> -->
             <div class="total">
                 <p>Grand Total</p>
                 <p>&#8377;{{toFixedValue(grandTotal)}}</p>
@@ -128,7 +119,7 @@
     </form>
     <div class="billActions">
         <div class="mainBillContainer">
-            <!-- <div class="actions">
+            <div class="actions">
                 <button mat-stroked-button>Cash</button>
                 <button mat-stroked-button>Card</button>
                 <button mat-stroked-button>Dine In</button>
@@ -158,7 +149,7 @@
                     [(ngModel)]="isNonChargeable" color="primary">Non Chargeable</mat-slide-toggle>
             </p>
             <input type="text" class="specialInstruction" [(ngModel)]="specialInstructions"
-                placeholder="Special Instruction"> -->
+                placeholder="Special Instruction">
             <div class="topBill">
                 <mat-button-toggle-group name="paymentType" (valueChange)="updatePaymentType()"
                     [(ngModel)]="paymentType">
@@ -224,4 +215,189 @@
             </div>
         </div>
     </div>
+</main> -->
+
+<main>
+    <img src="assets/notFound.svg" class="nothing" *ngIf="(!currentKot || currentKot.products.length == 0)">
+    <div class="products" *ngIf="currentKot && currentKot.products.length"
+        [@dishCardStagger]=" currentKot && currentKot.products.length">
+        <app-bill-product-card [@dishCardState]="card.deleting ? 'deleted' : 'default'" #card
+            *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : currentKot!.products"
+            (deleted)="delete(product.id,card)" (quantityChanged)="updateQuantity(card)" [product]="product">
+        </app-bill-product-card>
+    </div>
+    <div class="billActions" *ngIf="currentBill">
+        <div class="actions">
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'cash'"
+                (click)="paymentMethod = 'cash'">Cash</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'cash'">Cash</button>
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'card'"
+                (click)="paymentMethod = 'card'">Card</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'card'">Card</button>
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'dineIn'"
+                (click)="paymentMethod = 'dineIn'">Dine In</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'dineIn'">Dine In</button>
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'pickUp'"
+                (click)="paymentMethod = 'pickUp'">Pick Up</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'pickUp'">Pick Up</button>
+            <button mat-raised-button color="primary" (click)="seeAllKots()">Manage KOTs</button>
+        </div>
+        <div class="money">
+            <span class="total">
+                <p>Bill No</p> <b>{{currentBill.tokenNo}}</b>
+            </span>
+            <span class="total">
+                <p>Bill Id</p> <b>{{currentBill.id}}</b>
+            </span>
+            <span class="total">
+                <p>Total</p> <b>&#x20B9;{{grandTotal}}</b>
+            </span>
+            <!-- <button mat-stroked-button color="primary" (click)="openDiscountsPanel()">
+                Discounts
+            </button> -->
+            <mat-form-field appearance="outline">
+                <mat-label>Discounts</mat-label>
+                <mat-select [(ngModel)]="selectDiscounts" (selectionChange)="calculateTaxAndPrices()" multiple>
+                    <mat-option *ngFor="let discount of discounts" [value]="discount">{{discount.title}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <span>
+                <mat-slide-toggle (change)="calculateTaxAndPrices()" class="example-margin"
+                    [(ngModel)]="isNonChargeable" color="primary"></mat-slide-toggle>
+                <p>Non Chargeable</p>
+            </span>
+
+            <input type="text" class="specialInstruction" [(ngModel)]="specialInstructions"
+                placeholder="Special Instruction">
+            <mat-form-field appearance="outline">
+                <mat-label>Table</mat-label>
+                <mat-select (selectionChange)="changeTable($event)">
+                    <ng-container *ngFor="let table of dataProvider.tables" >
+                        <mat-option *ngIf="table.status=='available'" [value]="table">Table: {{table.tableNo}}</mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="finalButtons">
+            <button mat-flat-button color="primary" (click)="openUserInfoModal()">Add Customer Info</button>
+            <button mat-flat-button color="primary" (click)="finalizeKot()">Finalize Kot</button>
+            <button mat-flat-button color="primary" (click)="finalizeBill()">Finalize Bill</button>
+            <button mat-flat-button color="primary" (click)="cancel()">Cancel</button>
+        </div>
+    </div>
 </main>
+
+<div id="bill">
+    <h3 style="text-align: center;font-style:bold;">{{dataProvider.currentProject?.projectName}}</h3>
+    <h4 style="text-align: center" *ngIf="dataProvider.currentProject?.address">
+        {{dataProvider.currentProject?.address}}</h4>
+    <h4 style="text-align: center" *ngIf="dataProvider.currentProject?.phoneNumber">Phone:
+        {{dataProvider.currentProject?.phoneNumber}}</h4>
+    <hr>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.gstNo">GST No.
+        {{dataProvider.currentProject?.gstNo}}</div>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.fssaiNo">FSSAI No.
+        {{dataProvider.currentProject?.fssaiNo}}</div>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.counterNo">Counter No.
+        {{dataProvider.currentProject?.counterNo}}</div>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.cashierName">Cashier.
+        {{dataProvider.currentProject?.cashierName}}</div>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.deviceName">Device Name.
+        {{dataProvider.currentProject?.deviceName}}</div>
+    <div class="topFields" *ngIf="today">{{today | date:'medium'}}</div>
+    <div class="topFields" *ngIf="currentBill?.id">Bill Id: {{currentBill?.id}}</div>
+    <h4 style="text-align: start" *ngIf="customerInfoForm.value.fullName">Name:
+        {{customerInfoForm.value.fullName}}</h4>
+    <h4 style="text-align: start" *ngIf="customerInfoForm.value.phoneNumber">Phone:
+        {{customerInfoForm.value.phoneNumber}}</h4>
+    <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
+    <h4><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+    <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>Amt</th>
+        </tr>
+        <tr *ngFor="let product of allKotProducts">
+            <td>{{product.dishName}}</td>
+            <td>{{product.quantity}}</td>
+            <td>&#8377;{{product.shopPrice}}</td>
+            <td>&#8377;{{toFixedValue(product.shopPrice * product.quantity)}}</td>
+        </tr>
+    </table>
+    <hr *ngIf="selectDiscounts.length > 0">
+    <table *ngIf="selectDiscounts.length > 0">
+        <h3>Discounts</h3>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Final</th>
+        </tr>
+        <tr *ngFor="let item of selectDiscounts;let i = index;">
+            <td>{{item.title}}</td>
+            <td>{{item.discountValue}}</td>
+            <td>{{item.discountType}}</td>
+            <td>{{discountValues[i]}}</td>
+        </tr>
+    </table>
+    <hr>
+    <p class="info">Special Instructions: {{specialInstructions}}</p>
+    <hr>
+    <div class="info">
+        <p>Total Qty: {{totalQuantity}}</p>
+        <p>Sub Total: &#8377;{{toFixedValue(taxableValue)}}</p>
+    </div>
+    <p class="detail">*Net Total Inclusive of GST</p>
+    <hr>
+    <div class="tax">
+        <p>CGST</p>
+        <p>%2.5</p>
+        <p>&#8377;{{toFixedValue(cgst)}}</p>
+    </div>
+    <div class="tax">
+        <p>SGST</p>
+        <p>%2.5</p>
+        <p>&#8377;{{toFixedValue(sgst)}}</p>
+    </div>
+    <hr>
+    <div class="total">
+        <p>Taxable Amount</p>
+        <p>&#8377;{{toFixedValue(taxableValue)}}</p>
+    </div>
+    <div class="total">
+        <p>Total Tax</p>
+        <p>&#8377;{{toFixedValue(totalTaxAmount)}}</p>
+    </div>
+    <div class="total">
+        <p>Grand Total</p>
+        <p>&#8377;{{toFixedValue(grandTotal)}}</p>
+    </div>
+    <hr>
+    <p class="thanking">Thanks for visiting {{dataProvider.currentProject.projectName || 'us !!'}}</p>
+    <p class="thanking">www.dosaplaza.com</p>
+</div>
+<div id="billKot">
+    <h3 style="text-align: center">{{dataProvider.currentProject.projectName}}</h3>
+    <h4 style="text-align: center">{{today | date:'long'}}</h4>
+    <h4 style="text-align: center">Bill Id: {{currentBill?.id}}</h4>
+    <h3 *ngIf="deskKot">Order</h3>
+    <h3 *ngIf="!deskKot">KOT</h3>
+    <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
+    <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
+    <h4><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+        </tr>
+        <tr *ngFor="let product of currentKot?.products || []">
+            <td>{{product.dishName}}</td>
+            <td>{{product.quantity}}</td>
+        </tr>
+    </table>
+    <hr>
+    <p class="info" *ngIf="specialInstructions">Special Instructions: {{specialInstructions}}</p>
+</div>

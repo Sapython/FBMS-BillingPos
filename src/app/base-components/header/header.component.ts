@@ -53,6 +53,7 @@ export class HeaderComponent implements OnInit {
     })
     this.dataProvider.tableChanged.subscribe((table:string)=>{
       this.selectedTable = table;
+      this.dataProvider.selectedTable = table;
       // alert(table)
     })
     this.dataProvider.menuSelected.subscribe((data) => {

@@ -11,7 +11,9 @@ import { DatabaseService } from '../services/database.service';
 export class PosComponent implements OnInit {
   selectedCategory:string = '';
   allTables:any[] = []
-  constructor(private databaseService:DatabaseService,private dataProvider:DataProviderService) { }
+  constructor(private databaseService:DatabaseService,private dataProvider:DataProviderService) {
+    localStorage.setItem('tables',JSON.stringify(this.allTables))
+  }
   billStreamSubscription:Subscription = Subscription.EMPTY;
   ngOnInit(): void {
     this.databaseService.getTables().subscribe((data:any) => {
@@ -19,6 +21,7 @@ export class PosComponent implements OnInit {
       data.forEach((doc: any) => {
         this.allTables.push({ id: doc.id, ...doc.data() });
       });
+      localStorage.setItem('tables',JSON.stringify(this.allTables))
       // console.log("tables",this.dataProvider.tables,this.allTables);
       this.billStreamSubscription.unsubscribe()
       this.billStreamSubscription = this.databaseService.getBillsStream().subscribe((bills: any) => {

@@ -17,7 +17,7 @@
     "builder": "electron-builder -p always",
     "keygen": "cli.js create-self-signed-cert",
     "package": "ng build --configuration production && npx electron-packager . VirajBillingPos --overwrite --asar",
-    "package32":"ng build --configuration production && npx electron-packager . VirajBillingPos --platform=win32 --arch=ia32 --overwrite --asar"
+    "package32": "ng build --configuration production && npx electron-packager . VirajBillingPos --platform=win32 --arch=ia32 --overwrite --asar"
   },
   "build": {
     "publish": [
@@ -40,6 +40,7 @@
     "@angular/platform-browser": "^14.0.0",
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
+    "dexie": "^3.2.2",
     "fuse.js": "^6.6.2",
     "num-words": "^1.2.2",
     "rxjs": "~7.5.0",

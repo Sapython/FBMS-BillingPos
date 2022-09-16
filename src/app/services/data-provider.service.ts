@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ReplaySubject, Subject } from 'rxjs';
 import { PageSetting } from '../structures/method.structure';
 import { UserData } from '../structures/user.structure';
+import { DatabaseService } from './database.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class DataProviderService {
     spinner: false,
     messageType: 'Error',
   };
+  public selectedTable:any;
   public products:any[] = []
   public categories:any[] = []
   public currentProject:any = {}
@@ -33,14 +35,13 @@ export class DataProviderService {
   public currentPage:string = '';
   public setupComplete:boolean = false;
   public tables:any[] = []
+  public allBills:any[] = [];
+  public currentTokenNo:number = 0;
   public syncer:Subject<boolean> = new Subject();
   public openTable:Subject<boolean> = new Subject();
   public menuSelected:Subject<any> = new Subject();
   public openTableFunction :any;
   constructor(){
-    setInterval(()=>{
-      this.deviceData = JSON.parse(localStorage.getItem('deviceData') || '{}');
-    },3000)
     setInterval(()=>{
       this.deviceData = JSON.parse(localStorage.getItem('deviceData') || '{}');
     },3000)

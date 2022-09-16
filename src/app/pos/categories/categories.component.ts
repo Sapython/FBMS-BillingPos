@@ -15,13 +15,17 @@ export class CategoriesComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
     public dataProvider: DataProviderService
-  ) {}
+  ) {
+    this.products = JSON.parse(localStorage.getItem('products') || '[]')
+    this.categories = JSON.parse(localStorage.getItem('categories') || '[]')
+  }
   categories: any[] = [];
   products: any[] = [];
   currentSelectedCategory: any = null;
   newCategories: any[] = [];
   options: any[] = []
   ngOnInit(): void {
+    this.categories = JSON.parse(localStorage.getItem('categories') || '[]')
     this.databaseService.getMainCategories().then((data: any) => {
       // console.log("Main Categoris",data.data().categories)
       // this.options = data.data().categories;
@@ -59,6 +63,7 @@ export class CategoriesComponent implements OnInit {
         // // console.log("products",this.products)
         this.dataProvider.categories = this.categories;
         this.dataProvider.products = this.products;
+        localStorage.setItem('products', JSON.stringify(this.products))
         const refinedCats: any[] = [];
         this.options.forEach((mainCategory) => {
           refinedCats.push({
@@ -71,6 +76,7 @@ export class CategoriesComponent implements OnInit {
         });
         console.log(refinedCats);
         this.categories = refinedCats;
+        localStorage.setItem("categories",JSON.stringify(this.categories))
       });
     });
     this.dataProvider.searchEvent.subscribe((data: string) => {

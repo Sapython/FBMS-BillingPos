@@ -28,7 +28,8 @@ export class DatabaseService {
   constructor(
     private fs: Firestore,
     private dataProvider: DataProviderService
-  ) {}
+  ) {
+  }
   deviceName: string = '';
   getCategories() {
     return getDocs(collection(this.fs, 'categories'));
@@ -176,6 +177,33 @@ export class DatabaseService {
           this.dataProvider.currentProject?.projectId +
           '/counters'
       ),{idField:'id'}
+    );
+  }
+
+  async useTable(table:any,billId:string){
+    await updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/bills/bills/'+billId
+      ),{
+        tableId:table.id,
+        table:table,
+      }
+    );
+    await updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/tables/tables/' +
+          table.id
+      ),
+      {
+        status: 'occupied',
+        bill: billId,
+      }
     );
   }
 

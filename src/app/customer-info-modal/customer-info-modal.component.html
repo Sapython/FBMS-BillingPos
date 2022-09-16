@@ -1,0 +1,10 @@
+<section>
+    <form [formGroup]="customerInfoForm" (ngSubmit)="submit()">
+        <h1>User Data</h1>
+        <input type="text" formControlName="name">
+        <input type="email" formControlName="email">
+        <input type="number" formControlName="phone">
+        <button mat-stroked-button color="primary" type="submit">Yes.</button>
+        <button mat-stroked-button color="primary" (click)="cancel()">No</button>
+    </form>
+</section>

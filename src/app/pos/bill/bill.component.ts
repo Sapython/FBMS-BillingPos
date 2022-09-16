@@ -8,7 +8,13 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { DataProviderService } from 'src/app/services/data-provider.service';
 import { Dialog } from '@angular/cdk/dialog';
 import Fuse from 'fuse.js';
@@ -18,6 +24,8 @@ import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts
 import { AllKotsComponent } from 'src/app/all-kots/all-kots.component';
 import { DocumentData, DocumentSnapshot } from '@angular/fire/firestore';
 import { CancelModalComponent } from 'src/app/cancel-modal/cancel-modal.component';
+import { Subject, Subscription } from 'rxjs';
+import { CustomerInfoModalComponent } from 'src/app/customer-info-modal/customer-info-modal.component';
 
 const numWords = require('num-words');
 
@@ -126,487 +134,190 @@ const numWords = require('num-words');
     ]),
   ],
 })
-export class BillComponent implements OnInit, OnChanges {
-  expandedBillView: 'closed' | 'open' = 'closed';
-  productsViewHeight: number = 0;
-  billCreated: boolean = false;
+export class BillComponent implements OnInit {
+  currentBill: Bill | undefined;
+  currentKot: Kot | undefined;
+  discounts: any[] = [];
+  offlineKot: any[] = [];
+  offlineKotSubject: Subject<any> = new Subject();
+  offlineBillSubject: Subject<any> = new Subject();
+  searchedProducts: any[] = [];
+  allKotProducts: any[] = [];
+  specialInstructions: string = '';
+  isNonChargeable: boolean = false;
+  selectDiscounts: any[] = [];
+  discountValues: any[] = [];
+  taxableValue: number = 0;
+  cgst: number = 0;
+  sgst: number = 0;
+  totalTaxAmount: number = 0;
+  deskKot: boolean = false;
+  customerInfoForm:FormGroup = new FormGroup({
+    name: new FormControl(''),
+    email: new FormControl('',[Validators.email]),
+    phone: new FormControl('',[Validators.pattern('[0-9]{10}')]),
+  })
+  today: Date = new Date();
+  currentTable: Table | undefined;
+  totalQuantity: number = 0;
+  grandTotal = 0;
+  paymentMethod: string = 'cash';
+
   constructor(
     public dataProvider: DataProviderService,
     private databaseService: DatabaseService,
     private alertify: AlertsAndNotificationsService,
     private dialog: Dialog,
     private changeDetection: ChangeDetectorRef
-  ) {}
-  products: any[] = [];
-  totalAmount: number = 0.0;
-  discountType: 'percentage' | 'flat' = 'percentage';
-  discount: number = 0.0;
-  taxableValue: number = 0.0;
-  totalTaxAmount: number = 0.0;
-  totalQuantity: number = 0.0;
-  total: number = 0.0;
-  additionalCharges: number = 0.0;
-  tip: number = 0.0;
-  grandTotal: number = 0.0;
-  sgst: string = '0';
-  cgst: string = '0';
-  filteredTaxes: any[] = [];
-  filteredCharges: any[] = [];
-  grandTotalWithTaxes: number = 0.0;
-  finalAmountInWords: string = '';
-  searchedProducts: any[] = [];
-  today: Date = new Date();
-  taxes: any[] = [];
-  deskKot:boolean = false;
-  kotVisible: boolean = false;
-  specialInstructions: string = '';
-  table: any;
-  tokenNo: number = 0;
-  billSaved: boolean = false;
-  dineMethod: 'dineIn' | 'delivery' | 'pickUp' = 'dineIn';
-  paymentType: 'cash' | 'card' | 'wallet' | 'due' | 'other' | 'part' = 'cash';
-  currentKot: any = {};
-  customerInfoForm: FormGroup = new FormGroup({
-    fullName: new FormControl(''),
-    phoneNumber: new FormControl('', [Validators.pattern('^[0-9]*$')]),
-    email: new FormControl('', [Validators.email]),
-    age: new FormControl(''),
-    gender: new FormControl(''),
-  });
-  currentBill: any = false;
-  allKots: any[] = [];
-  allBillProducts: any[] = [];
-  ekdumConfirmProducts: any[] = [];
-  finalKotItems: any[] = [];
-  discounts: any[] = [];
-  selectDiscounts: any[] = [];
-  discountValues: any[] = [];
-  isNonChargeable: boolean = false;
-  ngOnInit(): void {
+  ) {
     this.databaseService.getDiscounts().subscribe((discounts) => {
       this.discounts = discounts;
     })
-    this.dataProvider.menuSelected.subscribe((table) => {
-      // console.log('found table 1');
-      if (table) {
-        // console.log('found table 2');
-        if (this.currentBill && this.products.length > 0) {
-          if (
-            confirm('Bill already exists. Should we save it and continue ?')
-          ) {
-            this.finalizeKot();
-            this.updateBill();
-            this.dataProvider.pageSetting.blur = true;
-            this.databaseService.getBill(table.bill).then((bill: any) => {
-              this.currentBill = { ...bill.data(), id: bill.id };
-              this.table = table;
-              this.currentKot = bill.data().kots[bill.data().kots.length - 1];
-              // console.log(
-              //   'KOT verificaiton',
-              //   this.currentKot.id,
-              //   this.currentBill.id
-              // );
-              this.databaseService
-                .getKot(this.currentKot.id, this.currentBill.id)
-                .then((kot: any) => {
-                  // console.log('kot.data().products', kot.data().products);
-                  this.products = kot.data().products;
-                  this.calculateTaxAndPrices();
-                })
-                .finally(() => {
-                  // console.log('Mil gaya');
-                });
-              this.dataProvider.pageSetting.blur = false;
-            });
-          }
-        } else {
-          // alert(table.bill);
-          this.dataProvider.pageSetting.blur = true;
-          // console.log('Table Bill', table.bill);
-          if (table.bill) {
-            this.databaseService.getBill(table.bill).then((bill: any) => {
-              // console.log('Yeraha bill', bill, bill.data());
-              this.currentBill = { ...bill.data(), id: bill.id };
-              this.table = table;
-              this.allKots = bill.data().kots;
-              this.currentKot = bill.data().kots[bill.data().kots.length - 1];
-              // console.log(
-              //   'KOT verificaiton',
-              //   this.currentKot.id,
-              //   this.currentBill.id
-              // );
-              this.databaseService
-                .getKot(this.currentKot.id, this.currentBill.id)
-                .then((kot: any) => {
-                  // console.log('products', kot.data().products);
-                  this.products = kot.data().products;
-                  this.calculateTaxAndPrices();
-                })
-                .catch((error: any) => {
-                  // console.log(error);
-                })
-                .finally(() => {
-                  // console.log('Mil gaya');
-                });
-              this.dataProvider.pageSetting.blur = false;
-            });
+  }
+
+  ngOnInit(): void {
+    this.dataProvider.tableChanged.subscribe(async (table) => {
+      this.currentTable = table;
+      this.resetValues();
+      if (this.currentTable && this.currentTable.bill) {
+        if (!this.currentBill) {
+          const bill = this.dataProvider.allBills.find(
+            (bill) => bill.id == this.currentTable!.bill
+          );
+          if (bill) {
+            this.currentBill = bill;
+            this.dataProvider.allBills.push(this.currentBill);
+            this.setupKot();
           } else {
-            this.dataProvider.pageSetting.blur = false;
+            // this.dataProvider.pageSetting.blur = true;
+            const bill = await this.databaseService.getBill(
+              this.currentTable!.bill
+            );
+            this.currentBill = bill.data() as Bill;
+            this.dataProvider.allBills.push(this.currentBill);
+            this.setupKot();
+            // this.dataProvider.pageSetting.blur = false;
           }
         }
-      }
-    });
-    this.databaseService.getCounters().subscribe((counters: any) => {
-      this.tokenNo = counters.bills + 1;
-    });
-    document.getElementById('billKot')!.style.display = 'none';
-    document.getElementById('bill')!.style.display = 'none';
-    this.dataProvider.tableChanged.subscribe((table) => {
-      this.table = table;
-      if (table) {
-        // console.log('found table 2');
-        if (this.currentBill && this.products.length > 0) {
-          if (
-            confirm('Bill already exists. Should we save it and continue ?')
-          ) {
-            this.finalizeKot();
-            this.updateBill();
-            this.dataProvider.pageSetting.blur = true;
-            // console.log('Table Bill', table.bill);
-            this.databaseService.getBill(table.bill).then((bill: any) => {
-              this.currentBill = { ...bill.data(), id: bill.id };
-              this.table = table;
-              this.currentKot = bill.data().kots[bill.data().kots.length - 1];
-              // console.log(
-              //   'KOT verificaiton',
-              //   this.currentKot.id,
-              //   this.currentBill.id
-              // );
-              this.databaseService
-                .getKot(this.currentKot.id, this.currentBill.id)
-                .then((kot: any) => {
-                  // console.log('kot.data().products', kot.data().products);
-                  this.products = kot.data().products;
-                  this.calculateTaxAndPrices();
-                })
-                .finally(() => {
-                  // console.log('Mil gaya');
-                });
-              this.dataProvider.pageSetting.blur = false;
-            });
-          }
-        } else {
-          // alert(table.bill);
-          this.dataProvider.pageSetting.blur = true;
-          // console.log('Table Bill', table.bill);
-          this.table = table;
-          this.products = [];
-          this.allKots = [];
-          if (table.bill) {
-            this.databaseService.getBill(table.bill).then((bill: any) => {
-              // console.log('Yeraha bill', bill, bill.data());
-              this.currentBill = { ...bill.data(), id: bill.id };
-              this.table = table;
-              this.allKots = bill.data().kots;
-              this.currentKot = bill.data().kots[bill.data().kots.length - 1];
-              // console.log(
-              //   'KOT verificaiton',
-              //   this.currentKot.id,
-              //   this.currentBill.id
-              // );
-              this.databaseService
-                .getKot(this.currentKot.id, this.currentBill.id)
-                .then((kot: any) => {
-                  // console.log('products', kot.data().products);
-                  this.products = kot.data().products;
-                  this.calculateTaxAndPrices();
-                })
-                .catch((error: any) => {
-                  // console.log(error);
-                })
-                .finally(() => {
-                  // console.log('Mil gaya');
-                });
-              this.dataProvider.pageSetting.blur = false;
-            });
-          } else {
-            this.currentBill = null;
-            this.dataProvider.pageSetting.blur = false;
-          }
-        }
-      }
-      // this.calculateTaxAndPrices();
-    });
-    this.dataProvider.selectedProduct.subscribe((data) => {
-      if (!this.currentBill) {
-        this.createBill();
+        this.updateBill();
       } else {
-        this.addToKot();
+        this.createBill();
       }
-      this.filterProducts(data);
-      this.calculateTaxAndPrices();
-      // console.log('products.length', this.products.length);
     });
-    this.dataProvider.searchEvent.subscribe((data: string) => {
-      // console.log('searchEvent', data);
-      const options = {
-        keys: ['name', 'bestSeasonFrom', 'bestSeasonTo', 'description'],
-      };
-      const fuse = new Fuse(this.products, options); // "list" is the item array
-      const result = fuse.search(data);
-      this.searchedProducts = [];
-      // console.log('result', result);
-      result.forEach((product: any) => {
-        this.searchedProducts.push(product.item);
-      });
-    });
-    this.databaseService.getTaxes().then((data: any) => {
-      data.forEach((element: any) => {
-        // console.log('tax element', element.data());
-        this.taxes.push(element.data());
-      });
+    this.dataProvider.selectedProduct.subscribe(async (product) => {
+      if (!this.currentTable) {
+        this.alertify.presentToast('Please select a table', 'error');
+        this.dataProvider.openTableFunction();
+        return;
+      }
+      // quantity handler
+      const onlineKot = this.currentBill!.kots.filter((kot) => !kot.finalized);
+      if (onlineKot && onlineKot.length > 0) {
+        this.currentKot = onlineKot[0];
+        let productIndex = this.currentKot!.products.findIndex(
+          (p) => p.id == product.id
+        );
+        if (productIndex != -1) {
+          this.currentKot!.products[productIndex].quantity += 1;
+        } else {
+          this.currentKot!.products.push({
+            ...product,
+            quantity: 1,
+          });
+        }
+      } else {
+        this.currentKot = {
+          id: this.generateRandomId(),
+          products: [product],
+          date: new Date(),
+          finalized: false,
+        };
+        this.currentBill!.kots.push(JSON.parse(JSON.stringify(this.currentKot)));
+        this.offlineKot.push(this.currentKot);
+      }
+      // // KOt checker
+
+      if (this.currentTable.bill) {
+        if (!this.currentBill) {
+          const bill = this.dataProvider.allBills.find(
+            (bill) => bill.id == this.currentTable!.bill
+          );
+          if (bill) {
+            this.currentBill = bill;
+            this.dataProvider.allBills.push(this.currentBill);
+            this.setupKot();
+          } else {
+            this.dataProvider.pageSetting.blur = true;
+            const bill = await this.databaseService.getBill(
+              this.currentTable!.bill
+            );
+            this.currentBill = bill.data() as Bill;
+            this.dataProvider.allBills.push(this.currentBill);
+            this.setupKot();
+            this.dataProvider.pageSetting.blur = false;
+          }
+        }
+        this.updateBill();
+      } else {
+        this.createBill();
+      }
     });
   }
-  toFixedValue(num: number) {
-    return parseFloat(num.toFixed(2));
+
+  setupKot() {
+    const onlineKot = this.currentBill!.kots.filter((kot) => !kot.finalized);
+    if (onlineKot && onlineKot.length > 0) {
+      this.currentKot = onlineKot[0];
+    } else {
+      this.currentKot = {
+        id: this.generateRandomId(),
+        products: [],
+        date: new Date(),
+        finalized: false,
+      };
+      this.currentBill!.kots.push(JSON.parse(JSON.stringify(this.currentKot)));
+      this.offlineKot.push(this.currentKot);
+    }
+    // this.offlineKot = this.currentBill!.kots;
+    if (this.currentBill && this.currentBill.kots.length > 0) {
+      this.currentBill.kots[this.currentBill.kots.length - 1].products.forEach(
+        (onlineProduct: any) => {
+          let counter = 0;
+          this.currentKot!.products.find((product) => {
+            if (product.id == onlineProduct.id) {
+              product.quantity += onlineProduct.quantity;
+            } else {
+              counter++;
+            }
+          });
+          if (counter == this.currentKot!.products.length) {
+            this.currentKot!.products.push(onlineProduct);
+          }
+        }
+      );
+      this.updateBill();
+    }
   }
 
   generateRandomId() {
-    return Math.floor(Math.random() * 100000000000000000);
+    return Math.floor(Math.random() * 100000000000000000).toString();
   }
 
-  async createBill() {
-    this.billCreated = true;
-    // alert('Creating new bill')
-    this.dataProvider.syncer.next(true);
-    this.dataProvider.pageSetting.blur = true;
-    const billId: string = this.generateRandomId().toString();
-    this.currentKot = await this.databaseService.createKot(
-      this.products,
-      billId
-    );
-    this.allKots.push(this.currentKot);
-    this.databaseService
-      .createBill(
-        {
-          table: this.table,
-          kots: this.allKots,
-          customerInfoForm: this.customerInfoForm.value,
-          completed: false,
-          date: new Date(),
-          user: this.dataProvider.userID,
-          project: this.dataProvider.currentProject,
-          deviceId: this.dataProvider.deviceData.deviceId,
-          dineMethod: this.dineMethod,
-          paymentType: this.paymentType,
-          tableId: this.table.id,
-        },
-        billId
-      )
-      .then((data: any) => {
-        // alert('Bill created '+data.id)
-        this.currentBill = { id: billId };
-        // console.log('currentBill', this.currentBill.id);
-        // this.calculateTaxAndPrices();
-      })
-      .catch((error) => {
-        console.error('error', error);
-      })
-      .finally(() => {
-        this.dataProvider.syncer.next(false);
-        this.dataProvider.pageSetting.blur = false;
-      });
-  }
-
-  async updateBill() {
-    this.dataProvider.syncer.next(true);
-    try {
-      const data: any = await this.databaseService.updateBill(
-        {
-          table: this.table,
-          kots: this.allKots,
-          customerInfoForm: this.customerInfoForm.value,
-        },
-        this.currentBill.id
-      );
-
-      this.alertify.presentToast('Bill updated');
-    } catch (error) {
-      // console.log('currentBill', this.currentKot.id);
-    } finally {
-      this.dataProvider.syncer.next(false);
-    }
-  }
-
-  addToKot() {
-    this.dataProvider.syncer.next(true);
-    this.databaseService
-      .addToKot(this.products, this.currentKot.id, this.currentBill.id)
-      .then((data: any) => {
-        this.alertify.presentToast('Kot updated');
-        // console.log('currentBill', this.currentKot.id);
-      })
-      .catch((error) => {
-        console.error('error', error);
-      })
-      .finally(() => {
-        this.dataProvider.syncer.next(false);
-      });
-  }
-
-  async finalizeKot() {
-    // console.log('finalizeKot', this.allKots);
-    this.dataProvider.pageSetting.blur = true;
-    this.dataProvider.syncer.next(true);
-    // alert('Table id ' + this.table.id);
-    try {
-      const data: any = await this.databaseService.finalizeKot(
-        this.products,
-        this.currentKot.id,
-        this.currentBill.id,
-        this.table.id
-      );
-      this.alertify.presentToast('kot created ' + data.id);
-      this.currentKot = data;
-      this.allKots.push(this.currentKot);
-      await this.updateBill();
-      // console.log('currentBill', this.currentKot.id);
-      await this.calculateTaxAndPrices();
-      await this.printKot();
-    } catch (error) {
-      console.error('error', error);
-    } finally {
-      this.products.forEach((product: any) => {
-        product.quantity = 1;
-      });
-      this.products = [];
-      this.dataProvider.pageSetting.blur = false;
-      this.dataProvider.syncer.next(false);
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // this.calculateTaxAndPrices();
-    if (this.expandedBillView == 'open') {
-      this.productsViewHeight = (window.innerHeight / 100) * 40 - 66;
-    } else {
-      this.productsViewHeight = (window.innerHeight / 100) * 60 - 66;
-    }
-  }
-
-  deductStockItems() {
-    // this.products.forEach((product)=>{
-    //   // this.databaseService.deductStockItem(product);
-    //   let deductibleItems = product.ingredients.map((ingredient:any)=>{
-    //     return this.databaseService.deductStockItem(ingredient.id,ingredient.amount * product.quantity);
-    //     // return ingredient.amount * product.quantity
-    //   })
-    //   this.dataProvider.syncer.next(true);
-    //   Promise.all(deductibleItems).then((data)=>{
-    //     this.alertify.presentToast('Bill finalized.');
-    //   }).catch((error)=>{
-    //     console.error('error', error);
-    //     this.alertify.presentToast('Error cannot finalize bill.','error');
-    //   }).finally(()=>{
-    //     this.dataProvider.syncer.next(false);
-    //   })
-    //   // console.log('deductibleItems',deductibleItems);
-    // });
-  }
-
-  filterProducts(product: any) {
-    let index = this.products.findIndex((item) => {
-      return item.id == product.id;
-    });
-
-    if (index == -1) {
-      // console.log('New Item');
-      this.products.push(product);
-    } else {
-      // console.log('Old Item');
-      if (this.products[index].quantity) {
-        this.products[index].quantity++;
-      } else {
-        this.products[index].quantity = 1;
-      }
-    }
-    // console.log('data', this.products);
-  }
-
-  async calculateTaxAndPrices() {
-    // alert('calculating');
-    this.totalAmount = 0;
+  calculateTaxAndPrices() {
     this.taxableValue = 0;
+    this.totalQuantity = 0;
     this.totalTaxAmount = 0;
-    if (this.products.length == 0) {
-      this.dataProvider.pageSetting.blur = true;
-      const bill: DocumentSnapshot<DocumentData> =
-        await this.databaseService.getBill(this.currentBill.id);
-      const data = bill.data();
-      // console.log('Bill document', data);
-      let products = [];
-      if (!data) {
-        this.alertify.presentToast('No bill found');
-        return;
-      } else if (data != undefined) {
-        // alert('Total kots: ' + data['kots'].length);
-        // console.log('---------');
-        for (const kotId of data['kots']) {
-          // // console.log('kotId', kotId);
-          // // console.log('bill', this.currentBill);
-          const data: any = await this.databaseService.getKot(
-            kotId.id,
-            this.currentBill.id
-          );
-          // console.log('KOT: ', data.data(), data);
-          products.push(...data.data().products);
-        }
-        // console.log('---------');
-        this.allBillProducts = products;
-        // console.log('kots shivams', this.allBillProducts);
-      }
-      this.ekdumConfirmProducts = JSON.parse(
-        JSON.stringify(this.allBillProducts)
-      );
-      // alert('Calc Products: ' + this.ekdumConfirmProducts.length);
-      this.dataProvider.pageSetting.blur = false;
-    }
-    console.log('final products', this.ekdumConfirmProducts);
-    // console.log('lelelo', this.ekdumConfirmProducts, this.products);
-    if (this.ekdumConfirmProducts.length > 0) {
-      this.ekdumConfirmProducts.forEach((product) => {
-        this.taxableValue +=
-          Number(product.shopPrice) * Number(product.quantity);
-        this.totalQuantity += Number(product.quantity);
-      });
-    } else if (this.products.length > 0) {
-      this.products.forEach((product) => {
-        this.taxableValue +=
-          Number(product.shopPrice) * Number(product.quantity);
-        this.totalQuantity += Number(product.quantity);
-      });
-    }
-    // alert(this.taxableValue)
-    this.filteredCharges = [];
-    this.filteredTaxes = [];
-    this.taxes.forEach((tax) => {
-      if (tax.priceType == 'flat') {
-        this.filteredCharges.push({
-          name: tax.name,
-          amount: Number(tax.amount),
+    this.currentBill?.kots.forEach((kot) => {
+      if (kot.finalized) {
+        kot.products.forEach((product: any) => {
+          this.taxableValue += product.shopPrice * product.quantity;
+          this.totalQuantity += product.quantity;
         });
-      } else if (tax.priceType == 'percentage') {
-        this.filteredTaxes.push({ name: tax.name, amount: Number(tax.amount) });
       }
     });
-
-    // this.filteredTaxes.forEach((tax) => {
-    //   this.totalTaxAmount += (this.taxableValue / 100) * tax.amount;
-    // });
-
     this.selectDiscounts.forEach((discount) => {
       if (discount.discountType == 'flat') {
-        const val = discount.discountValue
+        const val = discount.discountValue;
         this.discountValues.push(val);
         this.taxableValue -= val;
       } else if (discount.discountType == 'percentage') {
@@ -614,157 +325,149 @@ export class BillComponent implements OnInit, OnChanges {
         this.discountValues.push(val);
         this.taxableValue -= val;
       }
-    })
-    this.sgst = ((this.taxableValue / 100) * 2.5).toFixed(2);
-    this.cgst = ((this.taxableValue / 100) * 2.5).toFixed(2);
-    this.totalTaxAmount =
-      (this.taxableValue / 100) * 2.5 + (this.taxableValue / 100) * 2.5;
-    // this.filteredCharges.forEach((charge) => {
-    //   this.totalTaxAmount += charge.amount;
-    // });
+    });
+    this.sgst = (this.taxableValue / 100) * 2.5;
+    this.cgst = (this.taxableValue / 100) * 2.5;
+    this.totalTaxAmount = this.sgst + this.cgst
     this.taxableValue = Math.ceil(this.taxableValue);
+    console.log('taxable value', this.taxableValue);
+    console.log('total tax amount', this.totalTaxAmount);
+    console.log('total quantity', this.totalQuantity);
     this.grandTotal = Math.ceil(this.taxableValue + this.totalTaxAmount);
     if (this.isNonChargeable){
       this.grandTotal = 0;
       this.taxableValue = 0;
       this.changeDetection.detectChanges();
-      // alert('Non Chargeable '+this.grandTotal);
     }
   }
 
-  print() {
-    window.print();
+  toFixedValue(value: number) {
+    return value.toFixed(2);
   }
 
-  delete(id: string, event: any) {
-    // console.log((event.deleting = true));
-    setTimeout(() => {
-      this.products = this.products.filter((dish) => dish.id !== id);
-    }, 500);
-  }
-
-  convertToWords(amount: number) {
-    return numWords(amount);
-  }
-
-  async printKotAndBill() {
-    // console.log('All kots', this.allKots);
-    // console.log('Saptam', this.currentBill.kots);
-    this.dataProvider.pageSetting.blur = true;
-    const bill: DocumentSnapshot<DocumentData> =
-      await this.databaseService.getBill(this.currentBill.id);
-    const data = bill.data();
-    let kots = [];
-    let products = [];
-    if (!data) {
-      this.alertify.presentToast('No bill found');
-      return;
-    } else if (data != undefined) {
-      for (const kotId of data['kots']) {
-        // console.log('kotId', kotId);
-        // console.log('bill', this.currentBill);
-        const data: any = await this.databaseService.getKot(
-          kotId.id,
-          this.currentBill.id
-        );
-        // console.log('KOT: ', data.data(), data);
-        kots.push({
-          kotId: kotId.id,
-          kot: data.data(),
-        });
-        products.push(...data.data().products);
-      }
-      this.allBillProducts = products;
-      // console.log('kots shivams', this.allBillProducts);
+  delete(id: string, item: any) {
+    const index = this.currentKot!.products.findIndex((p) => p.id == id);
+    if (index != -1) {
+      this.currentKot!.products.splice(index, 1);
     }
-    this.ekdumConfirmProducts = JSON.parse(
-      JSON.stringify(this.allBillProducts)
-    );
-    // alert('Products: '+this.ekdumConfirmProducts.length)
-    this.dataProvider.pageSetting.blur = false;
-    this.calculateTaxAndPrices();
-    setTimeout(() => {
-      this.printBill(true);
-      this.printKot(true);
-    }, 500);
+    this.updateBill();
   }
 
-  async printKot(data: boolean = false) {
-    // console.log('ye lo', this.allKots, this.currentKot, this.allBillProducts);
-    if (!data) {
+  updateQuantity(ref: any) {}
+
+  updateBill(finalizedKot: boolean = false) {
+    if (finalizedKot) {
       this.dataProvider.pageSetting.blur = true;
-      try {
-        const bill: DocumentSnapshot<DocumentData> =
-          await this.databaseService.getKot(
-            this.allKots[this.allKots.length - 2].id,
-            this.currentBill.id
-          );
-        const data = bill.data();
-        // console.log('KOT DETAILS: ', data);
-        let kots = [];
-        let products = [];
-        if (!data) {
-          this.alertify.presentToast('No bill found');
-          return;
-        } else if (data != undefined) {
-          // console.log("data['kots']", data['kots']);
-          this.allBillProducts = data['products'];
-
-          // for (const kotId of data['kots']) {
-          //   // console.log('kotId', kotId);
-          //   // console.log('bill', this.currentBill);
-          //   const data: any = await this.databaseService.getKot(
-          //     kotId.id,
-          //     this.currentBill.id
-          //   );
-          //   // console.log('KOT: ', data.data(), data);
-          //   kots.push({
-          //     kotId: kotId.id,
-          //     kot: data.data(),
-          //   });
-          //   products.push(...data.data().products);
-          // }
-          // this.allBillProducts = products;
-          // console.log('kots shivams', this.allBillProducts);
-          document.getElementById('bill')!.style.display = 'none';
-          document.getElementById('billKot')!.style.display = 'block';
-          this.deskKot = false
-          this.changeDetection.detectChanges();
-          window.print();
-          this.deskKot = true
-          this.changeDetection.detectChanges();
-          window.print();
-          document.getElementById('billKot')!.style.display = 'none';
-          document.getElementById('bill')!.style.display = 'none';
+    }
+    // alert('Upadting')
+    if (this.currentBill) {
+      console.log('KOT PRODUCTS',this.currentKot!.products)
+      this.currentBill.kots[this.currentBill.kots.length - 1].products =
+        JSON.parse(JSON.stringify(this.currentKot!.products));
+      // alert('Updating bill');
+      this.updateBillData(this.currentBill, this.currentBill.id).finally(() => {
+        if (finalizedKot) {
+          this.dataProvider.pageSetting.blur = false;
+          this.currentKot!.products = [];
+          console.log('Damn', this.currentKot,this.currentBill);
         }
-        this.ekdumConfirmProducts = JSON.parse(
-          JSON.stringify(this.allBillProducts)
-        );
-        // alert('Products: '+this.ekdumConfirmProducts.length)
-        this.dataProvider.pageSetting.blur = false;
-        this.calculateTaxAndPrices();
-      } catch (error) {
-        // console.log(error);
-      }
+        this.calculateTaxAndPrices()
+      });
+    } else {
+      this.alertify.presentToast('No bill to update', 'error');
     }
   }
 
-  async printBill(data: boolean = false) {
-    if (!data) {
-      this.dataProvider.pageSetting.blur = true;
-      await this.calculateTaxAndPrices().then(() => {
-        alert('Final Products: ' + this.ekdumConfirmProducts.length);
-        
-        this.dataProvider.pageSetting.blur = false;
-        document.getElementById('bill')!.style.display = 'block';
-        document.getElementById('billKot')!.style.display = 'none';
-        this.changeDetection.detectChanges();
-        window.print();
-        document.getElementById('billKot')!.style.display = 'none';
-        document.getElementById('bill')!.style.display = 'none';
-      });
+  createBill() {
+    this.currentBill = {
+      date: new Date(),
+      customerInfo: this.customerInfoForm.value,
+      completed: false,
+      deviceId: this.dataProvider.deviceData.deviceId,
+      dineMethod: 'dineIn',
+      kots: this.offlineKot,
+      paymentType: 'cash',
+      project: this.dataProvider.currentProject,
+      table: this.currentTable!,
+      tableId: this.currentTable!.id,
+      user: this.dataProvider.userData?.userId || '',
+      grandTotal: this.grandTotal,
+      id: this.generateRandomId(),
+      isNonChargeable: false,
+      selectedDiscounts: this.discounts,
+      specialInstructions: '',
+      tokenNo: this.dataProvider.currentTokenNo + 1,
+    };
+    this.currentTable!.bill = this.currentBill.id;
+    console.log(this.currentBill);
+    // check in allBills if the bill doesn't exist add it
+    this.dataProvider.allBills.find((bill) => bill.id === this.currentBill!.id)
+      ? null
+      : this.dataProvider.allBills.push(this.currentBill);
+    this.databaseService.createBill(this.currentBill, this.currentBill.id);
+  }
+
+  async updateBillData(data: Bill, id: string) {
+    console.log('all bills', this.dataProvider.allBills);
+    console.log('current bill', data);
+    try {
+      const doc = await this.databaseService
+        .updateBill(data, id);
+      console.log('updated', doc);
+      this.alertify.presentToast('Bill updated', 'info');
+    } catch (err) {
+      console.log(err);
+      this.alertify.presentToast('Error updating bill', 'error');
     }
-    // // console.log('kots shivams',this.kots);
+  }
+
+  openDiscountsPanel() {}
+
+  finalizeKot() {
+    document.getElementById('bill')!.style.display = 'none';
+    document.getElementById('billKot')!.style.display = 'block';
+    this.deskKot = false;
+    this.changeDetection.detectChanges();
+    console.log('finalizing kot', this.currentKot!.products);
+    window.print();
+    this.deskKot = true;
+    this.changeDetection.detectChanges();
+    console.log('finalizing kot', this.currentKot!.products);
+    window.print();
+    document.getElementById('billKot')!.style.display = 'none';
+    document.getElementById('bill')!.style.display = 'none';
+    this.currentBill!.kots[this.currentBill!.kots.length - 1]['finalized'] =
+      true;
+    this.updateBill(true);
+    this.changeDetection.detectChanges();
+  }
+
+  finalizeBill() {
+    this.calculateTaxAndPrices()
+    console.log('CURRENT BILL BEFORE FINAL',this.currentBill)
+    this.allKotProducts = [];
+    this.currentBill?.kots.forEach((kot) => {
+      if(!kot.finalized){
+        if (confirm('Products in current kot are not finalized yet. Should we finalize them?')) {
+          this.finalizeKot();
+          kot.finalized = true;
+        } else {
+          return;
+        }
+      }
+      kot.products.forEach((product:any) => {
+        this.allKotProducts.push(product);
+      });
+    })
+    this.changeDetection.detectChanges();
+    document.getElementById('bill')!.style.display = 'block';
+    document.getElementById('billKot')!.style.display = 'none';
+    window.print();
+    document.getElementById('bill')!.style.display = 'none';
+    this.currentBill!.completed = true;
+    this.updateBill();
+    this.databaseService.emptyTable(this.currentTable!.id);
+    this.dataProvider.openTableFunction()
   }
 
   cancel() {
@@ -772,13 +475,12 @@ export class BillComponent implements OnInit, OnChanges {
       data: {},
     });
     inst.componentInstance?.completed.subscribe((data) => {
-      // console.log(data);
+      console.log(data);
       if (data && data.phone && data.reason) {
-        this.products = [];
+        this.resetValues()
         this.dataProvider.pageSetting.blur = true;
-        this.customerInfoForm.reset();
         this.databaseService
-          .deleteBill(this.currentBill.id, data.reason, data.phone.toString())
+          .deleteBill(this.currentBill!.id, data.reason, data.phone.toString())
           .then((data) => {
             this.alertify.presentToast('Bill cancelled.');
             inst.close();
@@ -787,87 +489,121 @@ export class BillComponent implements OnInit, OnChanges {
             console.error('error', error);
             this.alertify.presentToast('Error cannot cancel bill.', 'error');
           })
-          .finally(() => [(this.dataProvider.pageSetting.blur = false)]);
+          .finally(() => {(this.dataProvider.pageSetting.blur = false)});
       } else {
-        this.alertify.presentToast(
-          'Please give a reason to delete this bill',
-          'error'
-        );
+
+        inst.close();
       }
     });
-    // const reason = prompt('Give us a reason to continue to delete this bill');
-    // let phone = this.customerInfoForm.value.phoneNumber;
-    // if (!phone) {
-    //   phone = prompt("Provide customer's phone number");
-    //   while (!phone && !phone.test(/^[0-9]{10}$/)) {
-    //     phone = prompt("Provide customer's phone number");
-    //   }
-    // }
   }
 
-  updatePaymentType() {
-    this.dataProvider.syncer.next(true);
-    this.databaseService
-      .updatePaymentType(this.currentBill.id, this.paymentType)
-      .then((data) => {
-        this.alertify.presentToast('Payment type updated.');
-      })
-      .finally(() => {
-        this.dataProvider.syncer.next(false);
-      });
+  resetValues() {
+    this.currentBill = undefined;
+    this.currentKot = undefined;
+    this.searchedProducts = [];
+    this.allKotProducts = [];
+    this.specialInstructions = '';
+    this.isNonChargeable = false;
+    this.selectDiscounts = [];
+    this.discountValues = [];
+    this.taxableValue = 0;
+    this.cgst = 0;
+    this.sgst = 0;
+    this.totalTaxAmount = 0;
+    this.deskKot = false;
+    this.totalQuantity = 0;
+    this.grandTotal = 0;
+    this.paymentMethod = 'cash';
+    this.customerInfoForm.reset();
+    this.customerInfoForm.markAsUntouched();
+    this.customerInfoForm.markAsPristine();
+    this.changeDetection.detectChanges();
   }
 
-  updateDineMethod() {
-    this.dataProvider.syncer.next(true);
-    this.databaseService
-      .updateDineMethod(this.currentBill.id, this.dineMethod)
-      .then((data) => {
-        this.alertify.presentToast('Dine method updated.');
-      })
-      .finally(() => {
-        this.dataProvider.syncer.next(false);
-      });
-  }
-
-  seeAllKots() {
-    this.dialog.open(AllKotsComponent, {
-      data: { kots: this.allKots, ...this.currentBill },
-    });
-  }
-
-  async finalizeBill() {
-    if (this.products.length > 0) {
-      if (
-        confirm(
-          'The products in current kot are no finalized should we finalize them?'
-        )
-      ) {
-        await this.finalizeKot();
-      } else {
-        this.products = [];
+  openUserInfoModal(){
+    const inst = this.dialog.open(CustomerInfoModalComponent)
+    inst.componentInstance?.done.subscribe((data) => {
+      if (data){
+        this.customerInfoForm.patchValue(data)
       }
+    })
+  }
+
+  changeTable(event:any){
+    console.log(event)
+    if (event.value){
+      this.databaseService.emptyTable(this.currentTable!.id);
+      this.databaseService.useTable(event.value,this.currentBill!.id);
+      this.dataProvider.selectedTable = event.value;
     }
-    await this.printBill();
-    this.databaseService
-      .finalizeBill(this.currentBill.id, this.table)
-      .then((data) => {
-        this.alertify.presentToast('Bill finalized.');
-        this.products = [];
-        this.customerInfoForm.reset();
-        this.currentBill = null;
-        this.currentKot = null;
-        this.allKots = [];
-      })
-      .catch((error) => {
-        console.error('error', error);
-        this.alertify.presentToast('Error cannot finalize bill.', 'error');
-      });
+  }
+  seeAllKots(){
+    this.allKotProducts = [];
+    console.log("L",this.currentBill?.kots)
+    this.currentBill?.kots.forEach((kot) => {
+      console.log("M",kot)
+      if(kot.finalized){
+        kot.products.forEach((product:any) => {
+          this.allKotProducts.push(product);
+        });
+      }
+    })
+
+    const inst = this.dialog.open(AllKotsComponent, {
+      data: {
+        ...this.currentBill,
+        allKotsProducts: this.allKotProducts
+      }
+    })
+    inst.componentInstance?.done.subscribe((data) => {
+      if (data){
+        this.currentBill = data;
+        this.updateBill();
+      }
+      inst.close()
+    })
   }
 }
+
+type Bill = {
+  id: string;
+  completed: boolean;
+  customerInfo: any;
+  date: any;
+  tokenNo: number;
+  grandTotal: number;
+  selectedDiscounts: any[];
+  deviceId: string;
+  dineMethod: 'dineIn' | 'pickUp';
+  kots: any[];
+  paymentType: 'cash' | 'card';
+  project: any;
+  table: Table;
+  tableId: string;
+  user: string;
+  isNonChargeable: boolean;
+  specialInstructions: string;
+};
 
 type Tax = {
   value: number;
   type: 'percentage' | 'flat';
   name: string;
   id?: string;
+};
+
+type Kot = {
+  id: string;
+  date: any;
+  products: any[];
+  finalized: boolean;
+};
+
+type Table = {
+  id: string;
+  bill: string;
+  maxOccupancy: string;
+  name: string;
+  status: 'available' | 'occupied';
+  tableNo: string;
 };

@@ -39,8 +39,9 @@ import { CancelModalComponent } from './cancel-modal/cancel-modal.component';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { CustomerInfoModalComponent } from './customer-info-modal/customer-info-modal.component';
 @NgModule({
-  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent],
+  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent, CustomerInfoModalComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

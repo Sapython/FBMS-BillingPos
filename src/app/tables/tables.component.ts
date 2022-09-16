@@ -16,7 +16,7 @@ export class TablesComponent implements OnInit {
   }
   close: EventEmitter<any> = new EventEmitter<any>();
   ngOnInit(): void {
-
+    console.log('TABLEs',this.dataProvider.tables)
     // console.log('shivam', this.dataProvider.tables);
   }
 
@@ -29,7 +29,7 @@ export class TablesComponent implements OnInit {
     this.close.emit();
   }
   selectMenu(table:any){
-    this.dataProvider.menuSelected.next(table);
+    this.dataProvider.tableChanged.next(table);
     this.close.emit();
   }
 }

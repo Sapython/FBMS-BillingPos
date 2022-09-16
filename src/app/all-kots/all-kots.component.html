@@ -1,43 +1,48 @@
 <main>
     <h2>All KOTs</h2>
-    <hr>
-    <ng-container *ngFor="let kot of kots">
-        <div *ngIf="kot.kot.products.length > 0">
-            <p>KOT Id: {{kot.kotId}}
-                <button mat-icon-button>
-                    <mat-icon>edit</mat-icon>
-                </button>
-            </p>
-            <table [cellSpacing]="0">
-                <tr>
-                    <th>
-                        <h4>Product</h4>
-                    </th>
-                    <th>
-                        <h4>Quantity</h4>
-                    </th>
-                    <th>
-                        <h4>Price</h4>
-                    </th>
-                    <th>
-                        <h4>Total</h4>
-                    </th>
-                    <th>
-                        <h4>Actions</h4>
-                    </th>
-                </tr>
-                <tr *ngFor="let product of kot.kot.products; let i = index">
-                    <td>{{product.dishName}}</td>
-                    <td>{{product.quantity}}</td>
-                    <td> &#8377;{{product.shopPrice}}</td>
-                    <td> &#8377;{{product.quantity * product.shopPrice}}</td>
-                    <td>
-                        <button mat-icon-button (click)="deleteItemKot(kot,i)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </ng-container>
+    <div class="scrollable">
+        <ng-container *ngFor="let kot of bill.kots">
+            <div class="container" *ngIf="kot.products.length > 0">
+                <p>KOT Id: {{kot.id}}
+                    <!-- <button mat-icon-button>
+                        <mat-icon>edit</mat-icon>
+                    </button> -->
+                </p>
+                <table [cellSpacing]="0">
+                    <tr>
+                        <th>
+                            <h4>Product</h4>
+                        </th>
+                        <th>
+                            <h4>Quantity</h4>
+                        </th>
+                        <th>
+                            <h4>Price</h4>
+                        </th>
+                        <th>
+                            <h4>Total</h4>
+                        </th>
+                        <th>
+                            <h4>Actions</h4>
+                        </th>
+                    </tr>
+                    <tr *ngFor="let product of kot.products; let i = index">
+                        <td>{{product.dishName}}</td>
+                        <td>{{product.quantity}}</td>
+                        <td> &#8377;{{product.shopPrice}}</td>
+                        <td> &#8377;{{product.quantity * product.shopPrice}}</td>
+                        <td>
+                            <button mat-icon-button (click)="deleteItemKot(kot,i)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </ng-container>
+    </div>
+    <div class="actions">
+        <button color="primary" mat-stroked-button (click)="done.emit(null)">Cancel</button>
+        <button color="primary" mat-flat-button (click)="done.emit(bill)">Submit</button>
+    </div>
 </main>
