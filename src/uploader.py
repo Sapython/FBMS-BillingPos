@@ -50,9 +50,9 @@ from urllib import request, parse
 #     json.dump({"ingr":mappedIngredients}, outfile)
 
 # load from json
-with open('mappedIngredients.json') as json_file:
-    data = json.load(json_file)
-    mappedIngredients = data['ingr']
+# with open('mappedIngredients.json') as json_file:
+#     data = json.load(json_file)
+#     mappedIngredients = data['ingr']
 
 # Application Default credentials are automatically created.
 dosaCred = credentials.Certificate('dosaplaza-cv.json')
@@ -140,28 +140,28 @@ fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 #     oldIngredients[oldIngredient.id] = (oldIngredient.to_dict())
 
 
-oldCategory_ref = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categories')
-oldCategories = {}
-categoryNames = []
-for oldCategory in oldCategory_ref.stream():
-    # print(oldCategory.to_dict())
-    oldCategories[oldCategory.to_dict()['name']] = (oldCategory.to_dict())
-    categoryNames.append(oldCategory.to_dict()['name'])
+# oldCategory_ref = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categories')
+# oldCategories = {}
+# categoryNames = []
+# for oldCategory in oldCategory_ref.stream():
+#     # print(oldCategory.to_dict())
+#     oldCategories[oldCategory.to_dict()['name']] = (oldCategory.to_dict())
+#     categoryNames.append(oldCategory.to_dict()['name'])
 
-# print(categoryNames)
-doc_ref = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes')
-allDocs = doc_ref.stream()
+# # print(categoryNames)
+# doc_ref = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes')
+# allDocs = doc_ref.stream()
 
-# print(oldCategories)
-docs = []
-cat = oldCategories['Indian Starters']
-print(cat)
-for doc in allDocs:
-    if (doc.to_dict()['categories']['name']=='Starters'):
-        # print("categories",oldCategories['Indian Starters'])
-        fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes/'+doc.id).update({
-            "categories":cat
-        })
+# # print(oldCategories)
+# docs = []
+# cat = oldCategories['Indian Starters']
+# print(cat)
+# for doc in allDocs:
+#     if (doc.to_dict()['categories']['name']=='Starters'):
+#         # print("categories",oldCategories['Indian Starters'])
+#         fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes/'+doc.id).update({
+#             "categories":cat
+#         })
     # print(doc.to_dict(),doc.id)
 #     if (doc.to_dict()['onlinePrice']==0):
 #         print("Name: "+doc.to_dict()['dishName']+" & Catgeory: "+doc.to_dict()['categories']['name'])
@@ -247,7 +247,10 @@ for doc in allDocs:
 #     print('------')
 #     fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes').add(dish)
 
-# ingredientsRef = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/ingredients')
+ingredientsRef = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients')
+for ingredient in ingredientsRef.stream():
+    print(ingredient.to_dict(),ingredient.id)
+    fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients/'+ingredient.id).update({"quantity":0,"ratePerUnit":0,"openingBalance":0,"closingBalance":0})
 
 # for doc in allDocs:
 #     print("Dish Name ",doc.to_dict()['dishName'], doc.to_dict()['onlinePrice'], doc.id)

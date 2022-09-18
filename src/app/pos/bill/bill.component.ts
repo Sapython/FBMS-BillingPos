@@ -359,7 +359,7 @@ export class BillComponent implements OnInit {
     if (finalizedKot) {
       this.dataProvider.pageSetting.blur = true;
     }
-    // alert('Upadting')
+    // alert('Upadting
     if (this.currentBill) {
       console.log('KOT PRODUCTS',this.currentKot!.products)
       this.currentBill.kots[this.currentBill.kots.length - 1].products =
