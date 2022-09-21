@@ -65,5 +65,8 @@ export type RoomOrder = {
     roomType:string;
 }
 
-
+export type Device = {
+    currentProjectId:string;
+    index:'projectId';
+}
 

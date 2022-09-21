@@ -250,7 +250,7 @@ fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 ingredientsRef = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients')
 for ingredient in ingredientsRef.stream():
     print(ingredient.to_dict(),ingredient.id)
-    fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients/'+ingredient.id).update({"quantity":0,"ratePerUnit":0,"openingBalance":0,"closingBalance":0})
+    fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients/'+ingredient.id).update({"quantity":0,"ratePerUnit":0,"openingBalance":0,"closingBalance":0,"newRatePerUnit":0,"finalPrice":0})
 
 # for doc in allDocs:
 #     print("Dish Name ",doc.to_dict()['dishName'], doc.to_dict()['onlinePrice'], doc.id)
