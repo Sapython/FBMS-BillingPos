@@ -1,0 +1,512 @@
+Dal fry  Not Found
+MASALA COLD DRINK Not Found
+Water Not Found
+American corn paneer delight dosa  Not Found
+Mushroom tikka  Not Found
+Paneer Schezwan Noodles Not Found
+Hot Chilly Corn Not Found
+90 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BB99D250>
+Mushroom chopsuey dosa  Not Found
+Paneer Onion Uttappa  Not Found
+COOKIES CREAM Not Found
+Jain Veg Makhanwala Not Found
+Panner Tikka Sizzler Not Found
+VANILLA MILK SHAKE WITH ICE CREAM Not Found
+veg Malai kofta Not Found
+260 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBA650A0>
+CHOCOLATE MILK SHAKE WITH ICE CREAM Not Found
+Stir Fried Veg with Chinese Greens Not Found
+Paneer american chopsuey dosa Not Found
+TUTI FRUTI Not Found
+Special paneer spicy Uttappa  Not Found
+Panner Tikka Combo Not Found
+CHEF SPECIAL PASTANIA Not Found
+270 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBBCFD0>
+cold coffee with ice cream Not Found
+american paneer delight with cheese Not Found
+Paneer Schezwan Noodles Not Found
+10 ghee idli Not Found
+Triple Schezwan Fried Rice Not Found
+Paneer Schezwan dosa Not Found
+VANILLA Not Found
+Veg Hot & Sour Soup - Full Not Found
+Spl. Chinese Combo Not Found
+South mini meals combo  Not Found
+Prem Masala dosa  Not Found
+120 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBD6070>
+80 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBC6FD0>
+Jain Paneer kadai Not Found
+Dal wada Not Found
+120 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA7FA0>
+Shanghai Rice Not Found
+Harabhara sada dosa Not Found
+220 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBA650A0>
+Honey Chilly Potato Not Found
+20 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA7FA0>
+american delight with cheese Not Found
+veg Crispy Not Found
+Stewed Rice with Chinese Greens Not Found
+190 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BB99D250>
+Paneer special prem Uttappa  Not Found
+Harabhara Masala dosa  Not Found
+270 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BB99D040>
+Rajma Rice Not Found
+Mexi roll dosa  Not Found
+130 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+Aloo methi Not Found
+CONE ICE CREAM Not Found
+25 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBD6070>
+Veg Tomato Soup - Full Not Found
+Chole Bhatura Not Found
+Salad corn roast dosa  Not Found
+Tom-chi Uttappa  Not Found
+Chetinad biryani meals combo  Not Found
+Lachha Paratha Not Found
+Rawa masala  Not Found
+150 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBCFFD0>
+Rawa masala onion Not Found
+VANILLA Not Found
+Paneer Hot Garlic Gravy Not Found
+BUTTER SCOTCH Not Found
+45 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBD6070>
+PESTO GONOVESE Not Found
+SODA Not Found
+VANILLA MILK SHAKE WITH CHOCO CHIPS Not Found
+120 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBA650A0>
+Vada Pao Not Found
+170 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBC6FD0>
+Manchurian Fried Rice Not Found
+PENNE PUMMARALA(RED SAUCE Not Found
+paneer chinese delight dosa  Not Found
+210 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BB99D250>
+130 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+Chilly Garlic Noodles Not Found
+Veg Sweet Corn Soup - Full Not Found
+MINERAL 1 LT Not Found
+CHOCOLATE MILK SHAKE WITH CHOCO CHIPS Not Found
+100 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+Babycorn Mushroom Spinach (Non Spicy) Not Found
+Stewed Noodles with Chinese Greens Not Found
+170 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBD6070>
+COLD DRINK Not Found
+Mushroom Schezwan dosa Not Found
+300 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBCFFD0>
+Rawa onion sada Not Found
+Idli manchurian  Not Found
+Dal makhani  Not Found
+Garlic Paneer chilly dosa Not Found
+prem sada Not Found
+Mushroom Chilly Dry Not Found
+BLACK CURRENT Not Found
+CAN COLD DRINK Not Found
+270 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBA650A0>
+CHOCOLATE CHOCO Not Found
+WATER 1LT Not Found
+300 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBBCFD0>
+Sandwich Uttappam Not Found
+Veg Chilly Dry / Veg Manchurian Dry Not Found
+Lemon Coriander Soup - Full Not Found
+140 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+210 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBA650A0>
+Methi Kulcha Not Found
+Idli cheese manchurian  Not Found
+80 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBBCFD0>
+BUTTER SCOTCH MILK SHAKE Not Found
+Paneer Chilly Dry Not Found
+Mini Uttappa  Not Found
+Paneer Saagwala Not Found
+Mexican roast dosa  Not Found
+VANILLA CHOCCO Not Found
+Paneer Biryani Not Found
+Mini medu wada Not Found
+Veg Sweet Corn Soup - Half Not Found
+120 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBCFFD0>
+Harabhara kabab  Not Found
+LASSI SWEET Not Found
+Paneer Chilly Gravy Not Found
+Butter Pav Not Found
+100 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+CHOCOLATE ICE CREAM Not Found
+Veg Kholapuri Not Found
+Jain veg Kolhapuri Not Found
+Achari paneer tikka  Not Found
+200 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBD6070>
+HOT COFFEE Not Found
+Jain Paneer Tikka Masala Not Found
+100 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBC6FD0>
+STRAWBERRY MILK SHAKE Not Found
+Veg Tomato Soup - Half Not Found
+Chilly idli Not Found
+Masala salad roast dosa  Not Found
+Steamed Rice Not Found
+chinese delight dosa  Not Found
+Kids mini Snacks Combo Not Found
+Masala dosa  Not Found
+STRAWBERRY Not Found
+Lemon Coriander Soup - Half Not Found
+Idli Schezwan  Not Found
+100 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBBCFD0>
+Onion Uttappa  Not Found
+Jain Dal Makhani Not Found
+Mineral Water Not Found
+Green Salad Not Found
+Masala with paneer dosa Not Found
+Extra Bhatura/Pav Not Found
+Jain Mix Veg Not Found
+220 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+Spl. Tiranga Thali Not Found
+CHOCOLATE ICE CREAM Not Found
+KAJU KISMIS Not Found
+Red chilly dosa  Not Found
+Upma Not Found
+Veg Manchow Soup - Full Not Found
+150 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+HOT CHOCOLATE Not Found
+KESAR PISTA Not Found
+Onion tomato Uttappa  Not Found
+Plain Uttappa  Not Found
+Salad roast dosa  Not Found
+Paper roast dosa  Not Found
+Paneer kadai Not Found
+Mushroom Masala Not Found
+Jain paneer Mushroom Masala  Not Found
+Cream of Mushroom Pepper Soup - Full Not Found
+Paneer Hot Garlic Gravy Not Found
+Breakfast Combo Not Found
+Finger Chips Not Found
+200 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+Jain Paneer Makhanwala Not Found
+Capsicum Schezwan dosa Not Found
+MANGO Not Found
+Chennai idli  Not Found
+100 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBD6070>
+Chilly Garlic Potato Not Found
+Veg Raita Not Found
+160 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBC6FD0>
+Rasam wada Not Found
+Special spicy Uttappa  Not Found
+Paneer salad roast dosa  Not Found
+FRESH LIME SODA Not Found
+BLUE LAGOON Not Found
+Butter Roti Not Found
+American paneer delight dosa  Not Found
+Paneer Manchurian Gravy Not Found
+Chole Rice Not Found
+Pudy roast dosa Not Found
+35 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBD6070>
+Veg Hot & Sour Soup - Half Not Found
+Navaratna Masala dosa  Not Found
+PASTA ALLA ALFREDO Not Found
+LEMONI Not Found
+PINEAPPLE ICE CREAM Not Found
+280 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA7FA0>
+ROASTED ALMOND Not Found
+SUNDAY SPECIAL Not Found
+FRESH LIME WATER Not Found
+Veg Manchow Soup - Half Not Found
+American tomato delight dosa  Not Found
+Pongal Not Found
+Channa Masala Not Found
+Gobi-65 Not Found
+Paneer chilly dosa Not Found
+Salsa lite Not Found
+PINEAPPLE ICE CREAM Not Found
+MINT MOJITO Not Found
+VANILLA MILK SHAKE WITH ICE CREAM Not Found
+280 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA7FA0>
+Idli paneer manchurian  Not Found
+Veg Schezwan Fried Rice  Not Found
+Special prem Uttappa  Not Found
+Vef Fried Wontons (4pcs) Not Found
+BROWNIE SHAKE Not Found
+Aloo mutter  Not Found
+* sp prem paper roast dosa  Not Found
+Rocket Mysore dosa Not Found
+Veg Manchurian Gravy Not Found
+55 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+Veg kurma Not Found
+Onion Kulcha\Garlic Kulcha Not Found
+50 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BB99D250>
+Masala with onion dosa Not Found
+GREEN APPLE MAJITO Not Found
+Maharaja sada Dosa Not Found
+Tom-Chilly Noodles Not Found
+Mix veg  Not Found
+210 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBCFFD0>
+Paneer crispy dosa  Not Found
+30 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA7FA0>
+55 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBD6070>
+Jain Veg Kurma Not Found
+Spl mini idli Not Found
+Dhingri Mutter Not Found
+100 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBCFFD0>
+Veg Chinese Chopsuey Not Found
+jain Dal Fry Not Found
+Aloo gobhi  Not Found
+Mutter Methi Malai Not Found
+30 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+190 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBC6FD0>
+260 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBCFFD0>
+Cream of Mushroom Pepper Soup - Half Not Found
+160 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA7FA0>
+Rajma Masala Not Found
+Veg Chilly Combo Not Found
+Dahi wada Not Found
+50 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBC6FD0>
+100 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBCFFD0>
+Veg chilly Gravy Not Found
+Jain Veg Malai Kofta Not Found
+American delight dosa  Not Found
+270 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBBCFD0>
+Medu wada Not Found
+Puri kurma  Not Found
+BUTTER SCOTCH MILK SHAKE WITH ICE CREAM Not Found
+120 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BB99D250>
+Swadeshi Thali Not Found
+Thread Paneer Not Found
+Roti Not Found
+Paneer Chilly Combo Not Found
+Pudina paneer tikka  Not Found
+Salsa noodles dosa  Not Found
+Mysore Uttappa  Not Found
+VANILLA MILK SHAKE Not Found
+Paneer Spring roll dosa Not Found
+Dahi Not Found
+Punjabi Thali Not Found
+Paneer Pulao Not Found
+130 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBA1FD0>
+Paneer Kulcha Not Found
+STRAWBERRY MILK SHAKE Not Found
+220 <google.cloud.firestore_v1.document.DocumentReference object at 0x000002C6BBBCFFD0>
+ sapta@SapythonAmd    src   master ≡  +1 ~5                              pwsh   16.15.0  10:18:50 
+ ~  python uploader.py
+<openpyxl.workbook.workbook.Workbook object at 0x0000019C93B39E50>
+F:\AngularProjects\phaseTwo\FBMS-BillingPos\src\uploader.py:23: DeprecationWarning: Call to deprecated function get_sheet_by_name (Use wb[sheetname]).
+  sheet = dataframe.get_sheet_by_name('Sheet1')
+<Worksheet "Sheet1">
+STRAWBERRY MILK SHAKE WITH ICECREAM Not Found
+Dal fry  Not Found
+MASALA COLD DRINK Not Found
+Water Not Found
+American corn paneer delight dosa  Not Found
+Mushroom tikka  Not Found
+Paneer Schezwan Noodles Not Found
+Hot Chilly Corn Not Found
+Mushroom chopsuey dosa  Not Found
+Paneer Onion Uttappa  Not Found
+COOKIES CREAM Not Found
+Jain Veg Makhanwala Not Found
+Panner Tikka Sizzler Not Found
+VANILLA MILK SHAKE WITH ICE CREAM Not Found
+veg Malai kofta Not Found
+CHOCOLATE MILK SHAKE WITH ICE CREAM Not Found
+Stir Fried Veg with Chinese Greens Not Found
+Paneer american chopsuey dosa Not Found
+TUTI FRUTI Not Found
+Special paneer spicy Uttappa  Not Found
+Panner Tikka Combo Not Found
+CHEF SPECIAL PASTANIA Not Found
+cold coffee with ice cream Not Found
+american paneer delight with cheese Not Found
+Paneer Schezwan Noodles Not Found
+10 ghee idli Not Found
+Triple Schezwan Fried Rice Not Found
+Paneer Schezwan dosa Not Found
+VANILLA Not Found
+Veg Hot & Sour Soup - Full Not Found
+Spl. Chinese Combo Not Found
+South mini meals combo  Not Found
+Prem Masala dosa  Not Found
+Jain Paneer kadai Not Found
+Dal wada Not Found
+Shanghai Rice Not Found
+Harabhara sada dosa Not Found
+Honey Chilly Potato Not Found
+american delight with cheese Not Found
+veg Crispy Not Found
+Stewed Rice with Chinese Greens Not Found
+Paneer special prem Uttappa  Not Found
+Harabhara Masala dosa  Not Found
+Rajma Rice Not Found
+Mexi roll dosa  Not Found
+Aloo methi Not Found
+CONE ICE CREAM Not Found
+Veg Tomato Soup - Full Not Found
+Chole Bhatura Not Found
+Salad corn roast dosa  Not Found
+Tom-chi Uttappa  Not Found
+Chetinad biryani meals combo  Not Found
+Lachha Paratha Not Found
+Rawa masala  Not Found
+Rawa masala onion Not Found
+VANILLA Not Found
+Paneer Hot Garlic Gravy Not Found
+BUTTER SCOTCH Not Found
+PESTO GONOVESE Not Found
+SODA Not Found
+VANILLA MILK SHAKE WITH CHOCO CHIPS Not Found
+Vada Pao Not Found
+Manchurian Fried Rice Not Found
+PENNE PUMMARALA(RED SAUCE Not Found
+paneer chinese delight dosa  Not Found
+Chilly Garlic Noodles Not Found
+Veg Sweet Corn Soup - Full Not Found
+MINERAL 1 LT Not Found
+CHOCOLATE MILK SHAKE WITH CHOCO CHIPS Not Found
+Babycorn Mushroom Spinach (Non Spicy) Not Found
+Stewed Noodles with Chinese Greens Not Found
+COLD DRINK Not Found
+Mushroom Schezwan dosa Not Found
+Rawa onion sada Not Found
+Idli manchurian  Not Found
+Dal makhani  Not Found
+Garlic Paneer chilly dosa Not Found
+prem sada Not Found
+Mushroom Chilly Dry Not Found
+BLACK CURRENT Not Found
+CAN COLD DRINK Not Found
+CHOCOLATE CHOCO Not Found
+WATER 1LT Not Found
+Sandwich Uttappam Not Found
+Veg Chilly Dry / Veg Manchurian Dry Not Found
+Lemon Coriander Soup - Full Not Found
+Methi Kulcha Not Found
+Idli cheese manchurian  Not Found
+BUTTER SCOTCH MILK SHAKE Not Found
+Paneer Chilly Dry Not Found
+Mini Uttappa  Not Found
+Paneer Saagwala Not Found
+Mexican roast dosa  Not Found
+VANILLA CHOCCO Not Found
+Paneer Biryani Not Found
+Mini medu wada Not Found
+Veg Sweet Corn Soup - Half Not Found
+Harabhara kabab  Not Found
+LASSI SWEET Not Found
+Paneer Chilly Gravy Not Found
+Butter Pav Not Found
+CHOCOLATE ICE CREAM Not Found
+Veg Kholapuri Not Found
+Jain veg Kolhapuri Not Found
+Achari paneer tikka  Not Found
+HOT COFFEE Not Found
+Jain Paneer Tikka Masala Not Found
+STRAWBERRY MILK SHAKE Not Found
+Veg Tomato Soup - Half Not Found
+Chilly idli Not Found
+Masala salad roast dosa  Not Found
+Steamed Rice Not Found
+chinese delight dosa  Not Found
+Kids mini Snacks Combo Not Found
+Masala dosa  Not Found
+STRAWBERRY Not Found
+Lemon Coriander Soup - Half Not Found
+Idli Schezwan  Not Found
+Onion Uttappa  Not Found
+Jain Dal Makhani Not Found
+Mineral Water Not Found
+Green Salad Not Found
+Masala with paneer dosa Not Found
+Extra Bhatura/Pav Not Found
+Jain Mix Veg Not Found
+Spl. Tiranga Thali Not Found
+CHOCOLATE ICE CREAM Not Found
+KAJU KISMIS Not Found
+Red chilly dosa  Not Found
+Upma Not Found
+Veg Manchow Soup - Full Not Found
+HOT CHOCOLATE Not Found
+KESAR PISTA Not Found
+Onion tomato Uttappa  Not Found
+Plain Uttappa  Not Found
+Salad roast dosa  Not Found
+Paper roast dosa  Not Found
+Paneer kadai Not Found
+Mushroom Masala Not Found
+Jain paneer Mushroom Masala  Not Found
+Cream of Mushroom Pepper Soup - Full Not Found
+Paneer Hot Garlic Gravy Not Found
+Breakfast Combo Not Found
+Finger Chips Not Found
+Jain Paneer Makhanwala Not Found
+Capsicum Schezwan dosa Not Found
+MANGO Not Found
+Chennai idli  Not Found
+Chilly Garlic Potato Not Found
+Veg Raita Not Found
+Rasam wada Not Found
+Special spicy Uttappa  Not Found
+Paneer salad roast dosa  Not Found
+FRESH LIME SODA Not Found
+BLUE LAGOON Not Found
+Butter Roti Not Found
+American paneer delight dosa  Not Found
+Paneer Manchurian Gravy Not Found
+Chole Rice Not Found
+Pudy roast dosa Not Found
+Veg Hot & Sour Soup - Half Not Found
+Navaratna Masala dosa  Not Found
+PASTA ALLA ALFREDO Not Found
+LEMONI Not Found
+PINEAPPLE ICE CREAM Not Found
+ROASTED ALMOND Not Found
+SUNDAY SPECIAL Not Found
+FRESH LIME WATER Not Found
+Veg Manchow Soup - Half Not Found
+American tomato delight dosa  Not Found
+Pongal Not Found
+Channa Masala Not Found
+Gobi-65 Not Found
+Paneer chilly dosa Not Found
+Salsa lite Not Found
+PINEAPPLE ICE CREAM Not Found
+MINT MOJITO Not Found
+VANILLA MILK SHAKE WITH ICE CREAM Not Found
+Idli paneer manchurian  Not Found
+Veg Schezwan Fried Rice  Not Found
+Special prem Uttappa  Not Found
+Vef Fried Wontons (4pcs) Not Found
+BROWNIE SHAKE Not Found
+Aloo mutter  Not Found
+* sp prem paper roast dosa  Not Found
+Rocket Mysore dosa Not Found
+Veg Manchurian Gravy Not Found
+Veg kurma Not Found
+Onion Kulcha\Garlic Kulcha Not Found
+Masala with onion dosa Not Found
+GREEN APPLE MAJITO Not Found
+Maharaja sada Dosa Not Found
+Tom-Chilly Noodles Not Found
+Mix veg  Not Found
+Paneer crispy dosa  Not Found
+Jain Veg Kurma Not Found
+Spl mini idli Not Found
+Dhingri Mutter Not Found
+Veg Chinese Chopsuey Not Found
+jain Dal Fry Not Found
+Aloo gobhi  Not Found
+Mutter Methi Malai Not Found
+Cream of Mushroom Pepper Soup - Half Not Found
+Rajma Masala Not Found
+Veg Chilly Combo Not Found
+Dahi wada Not Found
+Veg chilly Gravy Not Found
+Jain Veg Malai Kofta Not Found
+American delight dosa  Not Found
+Medu wada Not Found
+Puri kurma  Not Found
+BUTTER SCOTCH MILK SHAKE WITH ICE CREAM Not Found
+Swadeshi Thali Not Found
+Thread Paneer Not Found
+Roti Not Found
+Paneer Chilly Combo Not Found
+Pudina paneer tikka  Not Found
+Salsa noodles dosa  Not Found
+Mysore Uttappa  Not Found
+VANILLA MILK SHAKE Not Found
+Paneer Spring roll dosa Not Found
+Dahi Not Found
+Punjabi Thali Not Found
+Paneer Pulao Not Found
+Paneer Kulcha Not Found
+STRAWBERRY MILK SHAKE Not Found

@@ -102,16 +102,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
     // display:none;
     margin: 0%;
     padding: 0%;
-  }
-  #bill,#billKot{
-    // display: block !important;
-    visibility: visible !important;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    box-shadow: none;
-    font-size: 10px;
+    #productsContainer{
+      .productCard{
+        visibility: hidden;
+        display: none;
+      }
+    }
     header{
       *{
         visibility: hidden;
@@ -122,6 +118,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
         display: none !important;
       }
     }
+  }
+  #bill,#billKot{
+    // display: block !important;
+    visibility: visible !important;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    box-shadow: none;
+    font-size: 10px;
     *{
       font-family: var(--primary-font) !important;
       margin:3px !important;

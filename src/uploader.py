@@ -7,21 +7,94 @@ import firebase_admin
 from firebase_admin import firestore, credentials, storage
 # from PyInquirer import prompt, print_json
 from urllib import request, parse
-# import openpyxl
-# dataframe = openpyxl.load_workbook("Book1.xlsx")
-# print(dataframe)
-# sheet = dataframe.get_sheet_by_name('Sheet1')
-# print(sheet)
-# data = []
-# for row in sheet.rows:
-#     # data[row[0].value] = row[1].value
-#     data.append(
-#         {
-#             "name": row[0].value,
-#             "quantity": row[1].value
-#         }
-#     )
+import openpyxl
+dosaCred = credentials.Certificate('dosaplaza-cv.json')
+fbmsCred = credentials.Certificate('fbms-shreeva.json')
+dosaApp = firebase_admin.initialize_app(credential=dosaCred, name='dosa')
+fbmsApp = firebase_admin.initialize_app(credential=fbmsCred, name='fbms')
+dosaDb = firestore.client(app=dosaApp)
+fbmsDb = firestore.client(app=fbmsApp)
+
+dosaBucket = storage.bucket(app=dosaApp,name='dosaplaza-cv.appspot.com')
+fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
+
+dataframe = openpyxl.load_workbook("triveni-snagam-price-list.xlsx")
+print(dataframe)
+sheet = dataframe.get_sheet_by_name('Sheet1')
+print(sheet)
+data = []
+for row in sheet.rows:
+    # data[row[0].value] = row[1].value
+    # print(row[0].value, row[1].value)
+    data.append(
+        {
+            "name": row[0].value,
+            "price": row[1].value
+        }
+    )
 # print(data)
+recipesRef = fbmsDb.collection('business/accounts/triveniSangam/recipes/recipes')
+recipes = []
+for recipe in recipesRef.stream():
+    recipes.append({**recipe.to_dict(),"ref":recipe.reference})
+# recipesRef = fbmsDb.collection('business/accounts/triveniSangam/recipes/recipes')
+# for recipe in recipesRef.stream():
+#     # print(recipe.to_dict())
+#     found = False
+#     for item in data:
+#         if item['name'].lower() == recipe.to_dict()['dishName'].lower():
+#             # print(item['price'],recipe.reference)
+#             found = True
+#             recipe.reference.update({
+#                 'thirdPartyPrice': item['price'],
+#                 'onlinePrice': item['price'],
+#                 'sellingPrice': item['price'],
+#                 'shopPrice': item['price'],
+#             })
+#             break
+#     if not found:
+#         print(recipe.to_dict()['dishName'],"Not Found")
+#     # break
+oldCategory_ref = fbmsDb.collection(u'business/accounts/triveniSangam/recipes/categories')
+oldCategories = {}
+categoryNames = []
+for oldCategory in oldCategory_ref.stream():
+    # print(oldCategory.to_dict())
+    oldCategories[oldCategory.to_dict()['name']] = (oldCategory.to_dict())
+    categoryNames.append(oldCategory.to_dict()['name'])
+
+for item in data:
+    found = False
+    for recipe in recipes:
+        if item['name'].lower() == recipe['dishName'].lower():
+            found = True
+    if not found:
+        dish = {
+            'platforms': [
+                {'value': 'web', 'checked': True, 'name': 'Web'}, 
+                {'value': 'mobile', 'checked': True, 'name': 'Mobile'}, 
+                {'value': 'desktop', 'checked': True, 'name': 'Desktop'}, 
+                {'value': 'other', 'checked': True, 'name': 'Other'}
+                ], 
+            'onlinePrice':item['price'], 
+            'tags': ['tagOne', 'tagTwo', 'tagThree'], 
+            'orderType': None, 
+            'dishName': item['name'], 
+            'categories': oldCategories['Indian Starters'],
+            'thirdPartyPrice': item['price'], 
+            'taxes': [], 
+            'availableOnQrMenu': True, 
+            'images': ['https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food(1).png?alt=media&token=558c361b-00a5-4a1b-b9ae-07ddaf7151ff'], 
+            'ingredients': [], 
+            'profitMargin': 1, 
+            'costPrice': 0, 
+            'sellingPrice':0, 
+            'shopPrice': item['price'], 
+            'additionalInstructions': None
+        }
+        ref = fbmsDb.collection('business/accounts/triveniSangam/recipes/recipes').add(dish)
+        print(dish,ref[1].id)
+        # break
 
 # finalData = []
 # for i in range(len(dataframe.worksheets)):
@@ -67,33 +140,25 @@ from urllib import request, parse
 #     mappedIngredients = data['ingr']
 
 # Application Default credentials are automatically created.
-dosaCred = credentials.Certificate('dosaplaza-cv.json')
-fbmsCred = credentials.Certificate('fbms-shreeva.json')
-dosaApp = firebase_admin.initialize_app(credential=dosaCred, name='dosa')
-fbmsApp = firebase_admin.initialize_app(credential=fbmsCred, name='fbms')
-dosaDb = firestore.client(app=dosaApp)
-fbmsDb = firestore.client(app=fbmsApp)
 
-dosaBucket = storage.bucket(app=dosaApp,name='dosaplaza-cv.appspot.com')
-fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 
-collections = [
-    'business/accounts/b8588uq3swtnwa1t83lla9/discounts/discounts',
-    'business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients',
-    'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categories',
-    'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categoryGroups',
-    'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes',
-    'business/accounts/b8588uq3swtnwa1t83lla9/tables/tables',
-    'business/accounts/b8588uq3swtnwa1t83lla9/taxes/taxes'
-]
-projectId= 'triveniSangam' 
-for collectionPath in collections:
-    for doc in  fbmsDb.collection(collectionPath).stream():
-        newCollectionPath = collectionPath.replace('b8588uq3swtnwa1t83lla9',projectId)
-        # add the doc to new location
-        print('Adding',doc.id,'to',newCollectionPath)
-        fbmsDb.collection(newCollectionPath).document(doc.id).set(doc.to_dict())
-        # break
+# collections = [
+#     'business/accounts/b8588uq3swtnwa1t83lla9/discounts/discounts',
+#     'business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients',
+#     'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categories',
+#     'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categoryGroups',
+#     'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes',
+#     'business/accounts/b8588uq3swtnwa1t83lla9/tables/tables',
+#     'business/accounts/b8588uq3swtnwa1t83lla9/taxes/taxes'
+# ]
+# projectId= 'triveniSangam' 
+# for collectionPath in collections:
+#     for doc in  fbmsDb.collection(collectionPath).stream():
+#         newCollectionPath = collectionPath.replace('b8588uq3swtnwa1t83lla9',projectId)
+#         # add the doc to new location
+#         print('Adding',doc.id,'to',newCollectionPath)
+#         fbmsDb.collection(newCollectionPath).document(doc.id).set(doc.to_dict())
+#         # break
 
 # ingredientBackup = [{
 #       "warningThreshold": 10,

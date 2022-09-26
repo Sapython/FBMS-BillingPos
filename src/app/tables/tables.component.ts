@@ -26,7 +26,6 @@ export class TablesComponent implements OnInit {
   }
   emptyTable(table:any){
     this.databaseService.emptyTable(table.id);
-    this.close.emit();
   }
   selectMenu(table:any){
     this.dataProvider.tableChanged.next(table);

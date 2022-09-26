@@ -152,11 +152,11 @@ export class BillComponent implements OnInit {
   sgst: number = 0;
   totalTaxAmount: number = 0;
   deskKot: boolean = false;
-  customerInfoForm:FormGroup = new FormGroup({
+  customerInfoForm: FormGroup = new FormGroup({
     name: new FormControl(''),
-    email: new FormControl('',[Validators.email]),
-    phone: new FormControl('',[Validators.pattern('[0-9]{10}')]),
-  })
+    email: new FormControl('', [Validators.email]),
+    phone: new FormControl('', [Validators.pattern('[0-9]{10}')]),
+  });
   today: Date = new Date();
   currentTable: Table | undefined;
   totalQuantity: number = 0;
@@ -172,20 +172,23 @@ export class BillComponent implements OnInit {
   ) {
     this.databaseService.getDiscounts().subscribe((discounts) => {
       this.discounts = discounts;
-    })
+    });
   }
 
   ngOnInit(): void {
     this.dataProvider.tableChanged.subscribe(async (table) => {
-      this.currentTable = table;
       this.resetValues();
+      this.currentTable = table;
       if (this.currentTable && this.currentTable.bill) {
+        // alert('Bill exists on current table');
         if (!this.currentBill) {
+          console.log(this.dataProvider.allBills);
           const bill = this.dataProvider.allBills.find(
             (bill) => bill.id == this.currentTable!.bill
           );
-          console.log("console.log",bill,this.dataProvider.allBills);
-          if (bill) {
+          console.log('console.log', bill, this.dataProvider.allBills);
+          if (bill && false) {
+            // alert('Offline Bill found');
             this.currentBill = bill;
             this.dataProvider.allBills.push(this.currentBill);
             this.setupKot();
@@ -194,14 +197,17 @@ export class BillComponent implements OnInit {
             const bill = await this.databaseService.getBill(
               this.currentTable!.bill
             );
+            // alert('Online Bill found');
             this.currentBill = bill.data() as Bill;
             this.dataProvider.allBills.push(this.currentBill);
             this.setupKot();
             // this.dataProvider.pageSetting.blur = false;
           }
         }
+        // alert('Updating bill');
         this.updateBill();
       } else {
+        // alert('No Bill exists on current table. Creating one');
         this.createBill();
       }
     });
@@ -213,6 +219,7 @@ export class BillComponent implements OnInit {
       }
       // quantity handler
       const onlineKot = this.currentBill!.kots.filter((kot) => !kot.finalized);
+      console.log('onlineKot', onlineKot);
       if (onlineKot && onlineKot.length > 0) {
         this.currentKot = onlineKot[0];
         let productIndex = this.currentKot!.products.findIndex(
@@ -226,6 +233,19 @@ export class BillComponent implements OnInit {
             quantity: 1,
           });
         }
+        // update in offline bill
+        // TODO: update in online bill
+        // this.dataProvider.allBills.forEach((bill) => {
+        //   if (bill.id == this.currentBill!.id) {
+        //     bill.kots.forEach((kot: any) => {
+        //       if (kot.id == this.currentKot!.id) {
+        //         if (kot.products[productIndex]) {
+        //         }
+        //       }
+        //     });
+        //   }
+        // });
+        this.updateBill();
       } else {
         this.currentKot = {
           id: this.generateRandomId(),
@@ -233,8 +253,10 @@ export class BillComponent implements OnInit {
           date: new Date(),
           finalized: false,
         };
-        this.currentBill!.kots.push(JSON.parse(JSON.stringify(this.currentKot)));
-        this.offlineKot.push(this.currentKot);
+        this.currentBill!.kots.push(
+          JSON.parse(JSON.stringify(this.currentKot))
+        );
+        // this.offlineKot.push(this.currentKot);
       }
       // // KOt checker
 
@@ -258,7 +280,7 @@ export class BillComponent implements OnInit {
             this.dataProvider.pageSetting.blur = false;
           }
         }
-        this.updateBill();
+        // this.updateBill();
       } else {
         this.createBill();
       }
@@ -277,7 +299,7 @@ export class BillComponent implements OnInit {
         finalized: false,
       };
       this.currentBill!.kots.push(JSON.parse(JSON.stringify(this.currentKot)));
-      this.offlineKot.push(this.currentKot);
+      // this.offlineKot.push(this.currentKot);
     }
     // this.offlineKot = this.currentBill!.kots;
     // if (this.currentBill && this.currentBill.kots.length > 0) {
@@ -329,13 +351,13 @@ export class BillComponent implements OnInit {
     });
     this.sgst = (this.taxableValue / 100) * 2.5;
     this.cgst = (this.taxableValue / 100) * 2.5;
-    this.totalTaxAmount = this.sgst + this.cgst
+    this.totalTaxAmount = this.sgst + this.cgst;
     this.taxableValue = Math.ceil(this.taxableValue);
-    console.log('taxable value', this.taxableValue);
-    console.log('total tax amount', this.totalTaxAmount);
-    console.log('total quantity', this.totalQuantity);
+    // console.log('taxable value', this.taxableValue);
+    // console.log('total tax amount', this.totalTaxAmount);
+    // console.log('total quantity', this.totalQuantity);
     this.grandTotal = Math.ceil(this.taxableValue + this.totalTaxAmount);
-    if (this.isNonChargeable){
+    if (this.isNonChargeable) {
       this.grandTotal = 0;
       this.taxableValue = 0;
       this.changeDetection.detectChanges();
@@ -355,8 +377,8 @@ export class BillComponent implements OnInit {
   }
 
   updateQuantity(ref: any) {
-    console.log(ref,this.currentKot)
-    this.calculateTaxAndPrices()
+    console.log(ref, this.currentKot);
+    this.calculateTaxAndPrices();
   }
 
   updateBill(finalizedKot: boolean = false) {
@@ -365,7 +387,7 @@ export class BillComponent implements OnInit {
     }
     // alert('Upadting
     if (this.currentBill) {
-      console.log('KOT PRODUCTS',this.currentKot!.products)
+      console.log('KOT PRODUCTS', this.currentKot!.products);
       this.currentBill.kots[this.currentBill.kots.length - 1].products =
         JSON.parse(JSON.stringify(this.currentKot!.products));
       // alert('Updating bill');
@@ -373,9 +395,9 @@ export class BillComponent implements OnInit {
         if (finalizedKot) {
           this.dataProvider.pageSetting.blur = false;
           this.currentKot!.products = [];
-          console.log('Damn', this.currentKot,this.currentBill);
+          console.log('Damn', this.currentKot, this.currentBill);
         }
-        this.calculateTaxAndPrices()
+        this.calculateTaxAndPrices();
       });
     } else {
       this.alertify.presentToast('No bill to update', 'error');
@@ -415,8 +437,7 @@ export class BillComponent implements OnInit {
     console.log('all bills', this.dataProvider.allBills);
     console.log('current bill', data);
     try {
-      const doc = await this.databaseService
-        .updateBill(data, id);
+      const doc = await this.databaseService.updateBill(data, id);
       console.log('updated', doc);
       this.alertify.presentToast('Bill updated', 'info');
     } catch (err) {
@@ -447,22 +468,26 @@ export class BillComponent implements OnInit {
   }
 
   finalizeBill() {
-    this.calculateTaxAndPrices()
-    console.log('CURRENT BILL BEFORE FINAL',this.currentBill)
+    this.calculateTaxAndPrices();
+    console.log('CURRENT BILL BEFORE FINAL', this.currentBill);
     this.allKotProducts = [];
     this.currentBill?.kots.forEach((kot) => {
-      if(!kot.finalized){
-        if (confirm('Products in current kot are not finalized yet. Should we finalize them?')) {
+      if (!kot.finalized && kot.products.length > 0) {
+        if (
+          confirm(
+            'Products in current kot are not finalized yet. Should we finalize them?'
+          )
+        ) {
           this.finalizeKot();
           kot.finalized = true;
         } else {
           return;
         }
       }
-      kot.products.forEach((product:any) => {
+      kot.products.forEach((product: any) => {
         this.allKotProducts.push(product);
       });
-    })
+    });
     this.changeDetection.detectChanges();
     document.getElementById('bill')!.style.display = 'block';
     document.getElementById('billKot')!.style.display = 'none';
@@ -471,7 +496,7 @@ export class BillComponent implements OnInit {
     this.currentBill!.completed = true;
     this.updateBill();
     this.databaseService.emptyTable(this.currentTable!.id);
-    this.dataProvider.openTableFunction()
+    this.dataProvider.openTableFunction();
   }
 
   cancel() {
@@ -481,7 +506,7 @@ export class BillComponent implements OnInit {
     inst.componentInstance?.completed.subscribe((data) => {
       console.log(data);
       if (data && data.phone && data.reason) {
-        this.resetValues()
+        this.resetValues();
         this.dataProvider.pageSetting.blur = true;
         this.databaseService
           .deleteBill(this.currentBill!.id, data.reason, data.phone.toString())
@@ -493,9 +518,10 @@ export class BillComponent implements OnInit {
             console.error('error', error);
             this.alertify.presentToast('Error cannot cancel bill.', 'error');
           })
-          .finally(() => {(this.dataProvider.pageSetting.blur = false)});
+          .finally(() => {
+            this.dataProvider.pageSetting.blur = false;
+          });
       } else {
-
         inst.close();
       }
     });
@@ -524,47 +550,52 @@ export class BillComponent implements OnInit {
     this.changeDetection.detectChanges();
   }
 
-  openUserInfoModal(){
-    const inst = this.dialog.open(CustomerInfoModalComponent)
+  openUserInfoModal() {
+    const inst = this.dialog.open(CustomerInfoModalComponent);
     inst.componentInstance?.done.subscribe((data) => {
-      if (data){
-        this.customerInfoForm.patchValue(data)
+      if (data) {
+        this.customerInfoForm.patchValue(data);
       }
-    })
+    });
   }
 
-  changeTable(event:any){
-    console.log(event)
-    if (event.value){
+  changeTable(event: any) {
+    console.log(event);
+    if (event.value) {
       this.databaseService.emptyTable(this.currentTable!.id);
-      this.databaseService.useTable(event.value,this.currentBill!.id);
+      this.databaseService.useTable(event.value, this.currentBill!.id);
       this.dataProvider.selectedTable = event.value;
     }
   }
-  seeAllKots(){
-    this.allKotProducts = [];
-    console.log("L",this.currentBill?.kots)
-    this.currentBill?.kots.forEach((kot) => {
-      console.log("M",kot)
-      if(kot.finalized){
-        kot.products.forEach((product:any) => {
-          this.allKotProducts.push(product);
-        });
-      }
-    })
-
-    const inst = this.dialog.open(AllKotsComponent, {
-      data: {
-        ...this.currentBill,
-        allKotsProducts: this.allKotProducts
-      }
-    })
-    inst.componentInstance?.done.subscribe((data) => {
-      if (data){
-        this.currentBill = data;
-        this.updateBill();
-      }
-      inst.close()
+  seeAllKots() {
+    // this.allKotProducts = [];
+    // console.log('L', this.currentBill?.kots);
+    // this.currentBill?.kots.forEach((kot) => {
+    //   console.log('M', kot);
+    //   if (kot.finalized) {
+    //     kot.products.forEach((product: any) => {
+    //       this.allKotProducts.push(product);
+    //     });
+    //   }
+    // });
+    this.dataProvider.pageSetting.blur = true;
+    this.databaseService.getBill(this.currentBill!.id).then((data) => {
+      console.log('NC', this.currentBill);
+      const inst = this.dialog.open(AllKotsComponent, {
+        data: data.data(),
+      });
+      inst.componentInstance?.done.subscribe((data) => {
+        if (data) {
+          this.currentBill = data;
+          this.updateBill();
+        }
+        inst.close();
+      });
+    }).finally(() => {
+      this.dataProvider.pageSetting.blur = false;
+    }).catch((error) => {
+      console.error('error', error);
+      this.alertify.presentToast('Error cannot fetch bill.', 'error');
     })
   }
 }
