@@ -99,18 +99,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
 @media print { 
   body{ 
     visibility: hidden;
+    // display:none;
     margin: 0%;
-    // margin-right: 10px;
     padding: 0%;
   }
   #bill,#billKot{
-    visibility: visible;
+    // display: block !important;
+    visibility: visible !important;
     position: absolute;
     top: 0px;
     left: 0px;
     width: 100%;
     box-shadow: none;
     font-size: 10px;
+    header{
+      *{
+        visibility: hidden;
+        display: none;
+      }
+      #searchBar{
+        visibility: hidden !important;
+        display: none !important;
+      }
+    }
     *{
       font-family: var(--primary-font) !important;
       margin:3px !important;

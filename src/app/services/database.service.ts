@@ -484,6 +484,7 @@ export class DatabaseService {
   }
 
   getMainCategories(){
+    console.log('business/accounts/'+ this.dataProvider.currentProject?.projectId +'/recipes/categoryGroups')
     return getDocs(collection(this.fs,'business/accounts/'+ this.dataProvider.currentProject?.projectId +'/recipes/categoryGroups'));
   }
 

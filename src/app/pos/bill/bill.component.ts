@@ -184,6 +184,7 @@ export class BillComponent implements OnInit {
           const bill = this.dataProvider.allBills.find(
             (bill) => bill.id == this.currentTable!.bill
           );
+          console.log("console.log",bill,this.dataProvider.allBills);
           if (bill) {
             this.currentBill = bill;
             this.dataProvider.allBills.push(this.currentBill);
@@ -279,24 +280,24 @@ export class BillComponent implements OnInit {
       this.offlineKot.push(this.currentKot);
     }
     // this.offlineKot = this.currentBill!.kots;
-    if (this.currentBill && this.currentBill.kots.length > 0) {
-      this.currentBill.kots[this.currentBill.kots.length - 1].products.forEach(
-        (onlineProduct: any) => {
-          let counter = 0;
-          this.currentKot!.products.find((product) => {
-            if (product.id == onlineProduct.id) {
-              product.quantity += onlineProduct.quantity;
-            } else {
-              counter++;
-            }
-          });
-          if (counter == this.currentKot!.products.length) {
-            this.currentKot!.products.push(onlineProduct);
-          }
-        }
-      );
-      this.updateBill();
-    }
+    // if (this.currentBill && this.currentBill.kots.length > 0) {
+    //   this.currentBill.kots[this.currentBill.kots.length - 1].products.forEach(
+    //     (onlineProduct: any) => {
+    //       let counter = 0;
+    //       this.currentKot!.products.find((product) => {
+    //         if (product.id == onlineProduct.id) {
+    //           product.quantity += onlineProduct.quantity;
+    //         } else {
+    //           counter++;
+    //         }
+    //       });
+    //       if (counter == this.currentKot!.products.length) {
+    //         this.currentKot!.products.push(onlineProduct);
+    //       }
+    //     }
+    //   );
+    //   this.updateBill();
+    // }
   }
 
   generateRandomId() {
@@ -353,7 +354,10 @@ export class BillComponent implements OnInit {
     this.updateBill();
   }
 
-  updateQuantity(ref: any) {}
+  updateQuantity(ref: any) {
+    console.log(ref,this.currentKot)
+    this.calculateTaxAndPrices()
+  }
 
   updateBill(finalizedKot: boolean = false) {
     if (finalizedKot) {

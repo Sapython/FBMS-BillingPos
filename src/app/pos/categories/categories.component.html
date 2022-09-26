@@ -4,7 +4,7 @@
         Categories
     </div>
     <hr>
-    <li *ngFor="let category of searchedProducts.length > 0 ? searchedProducts : categories" class="mainCategory">
+    <li *ngFor="let category of categories" class="mainCategory">
         <span class="category" (click)="openSwitcher(category)">
             <p>{{category?.name | titlecase}}</p>
             <button mat-icon-button>

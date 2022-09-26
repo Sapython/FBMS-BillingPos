@@ -7,7 +7,7 @@
         <div class="buttons">
             <button class="tableNo" mat-stroked-button color="primary" *ngIf="dataProvider.selectedTable">Table No: {{dataProvider.selectedTable.tableNo}}</button>
             <button mat-stroked-button color="primary" class="higlighted" (click)="newOrder()">Select Table</button>
-            <div (mouseenter)="extraSearchClass = 'active'" class="search + {{extraSearchClass}}">
+            <div (mouseenter)="extraSearchClass = 'active'" id="searchBar" class="search {{extraSearchClass}}">
                 <input (change)="extraSearchClass = 'active'" (input)="selectedTable ? dataProvider.searchEvent.next(search.value) : noTablesAlert()" #search [placeholder]="placeholder + '..'" type="text">
                 <div *ngIf="extraSearchClass">
                     <!-- <i (click)="extraSearchClass = ''" class="ri-arrow-right-fill"></i> -->
@@ -26,7 +26,7 @@
             </button>
         </div>
         <div class="actions">
-            <button mat-icon-button color="primary"><i class="ri-shield-user-fill" (click)="fireEvent()"></i></button>
+            <button mat-icon-button color="primary"><i class="ri-shield-user-fill" (click)="authService.logout()"></i></button>
             <button mat-icon-button color="primary" (click)="openOptions()"><i class="ri-stack-fill"></i></button>
             <button mat-icon-button color="primary" (click)="dataProvider.locked = true"><i class="ri-lock-fill"></i></button>
         </div>

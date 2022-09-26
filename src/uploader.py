@@ -8,9 +8,21 @@ from firebase_admin import firestore, credentials, storage
 # from PyInquirer import prompt, print_json
 from urllib import request, parse
 # import openpyxl
-# dataframe = openpyxl.load_workbook("3.xlsx")
-# # print(dataframe)
-# # print(dataframe.sheetnames)
+# dataframe = openpyxl.load_workbook("Book1.xlsx")
+# print(dataframe)
+# sheet = dataframe.get_sheet_by_name('Sheet1')
+# print(sheet)
+# data = []
+# for row in sheet.rows:
+#     # data[row[0].value] = row[1].value
+#     data.append(
+#         {
+#             "name": row[0].value,
+#             "quantity": row[1].value
+#         }
+#     )
+# print(data)
+
 # finalData = []
 # for i in range(len(dataframe.worksheets)):
 #     # print(dataframe.worksheets[i])
@@ -65,11 +77,175 @@ fbmsDb = firestore.client(app=fbmsApp)
 dosaBucket = storage.bucket(app=dosaApp,name='dosaplaza-cv.appspot.com')
 fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 
+collections = [
+    'business/accounts/b8588uq3swtnwa1t83lla9/discounts/discounts',
+    'business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients',
+    'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categories',
+    'business/accounts/b8588uq3swtnwa1t83lla9/recipes/categoryGroups',
+    'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes',
+    'business/accounts/b8588uq3swtnwa1t83lla9/tables/tables',
+    'business/accounts/b8588uq3swtnwa1t83lla9/taxes/taxes'
+]
+projectId= 'triveniSangam' 
+for collectionPath in collections:
+    for doc in  fbmsDb.collection(collectionPath).stream():
+        newCollectionPath = collectionPath.replace('b8588uq3swtnwa1t83lla9',projectId)
+        # add the doc to new location
+        print('Adding',doc.id,'to',newCollectionPath)
+        fbmsDb.collection(newCollectionPath).document(doc.id).set(doc.to_dict())
+        # break
+
+# ingredientBackup = [{
+#       "warningThreshold": 10,
+#       "ratePerUnit": 180,
+#       "finalPrice": 9.9,
+#       "touched": False,
+#       "openingBalance": -0.045000000000000005,
+#       "newQuantity": 0,
+#       "category": "Raw Material",
+#       "closingBalance": -0.045000000000000005,
+#       "images": [
+#         "https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food.png?alt=media&token=4eb3ffc3-895d-4192-b6c0-4b165c0ddcde"
+#       ],
+#       "issued": 0,
+#       "name": "White till",
+#       "id": "06aMsb0DMzBDJqeqlFml",
+#       "newRatePerUnit": 180,
+#       "errorThreshold": 5,
+#       "quantity": -0.045000000000000005,
+#       "used": 0,
+#       "unit": "kg"
+#     },
+#     {
+#       "errorThreshold": 5,
+#       "newRatePerUnit": 15,
+#       "warningThreshold": 10,
+#       "openingBalance": 33,
+#       "used": 0,
+#       "quantity": 33,
+#       "name": "Onion ",
+#       "newQuantity": 0,
+#       "id": "08X41aFuXVO3CGTw943B",
+#       "ratePerUnit": 15,
+#       "issued": 0,
+#       "closingBalance": 33,
+#       "unit": "kg",
+#       "touched": False,
+#       "category": "Raw Material",
+#       "images": [
+#         "https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food.png?alt=media&token=4eb3ffc3-895d-4192-b6c0-4b165c0ddcde"
+#       ],
+#       "finalPrice": 525
+#     },
+#     {
+#       "id": "12aJrDvEvxMrNC4ws93E",
+#       "name": "Sambhar masala",
+#       "images": [
+#         "https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food.png?alt=media&token=4eb3ffc3-895d-4192-b6c0-4b165c0ddcde"
+#       ],
+#       "quantity": 17.250000000000004,
+#       "touched": False,
+#       "used": 0,
+#       "closingBalance": 17.250000000000004,
+#       "ratePerUnit": 283,
+#       "errorThreshold": 5,
+#       "finalPrice": 5957.150000000001,
+#       "category": "Raw Material",
+#       "openingBalance": 17.250000000000004,
+#       "newQuantity": 0,
+#       "newRatePerUnit": 283,
+#       "warningThreshold": 10,
+#       "issued": 0,
+#       "unit": "kg"
+#     },
+#     {
+#       "warningThreshold": 10,
+#       "unit": "kg",
+#       "images": [
+#         "https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food.png?alt=media&token=4eb3ffc3-895d-4192-b6c0-4b165c0ddcde"
+#       ],
+#       "errorThreshold": 5,
+#       "ratePerUnit": 25,
+#       "newQuantity": 0,
+#       "issued": 0,
+#       "touched": False,
+#       "openingBalance": 24,
+#       "quantity": 24,
+#       "name": "Salt tata",
+#       "id": "1i8o3A9KWuuAWlBeAJyv",
+#       "category": "Raw Material",
+#       "finalPrice": 775,
+#       "newRatePerUnit": 25,
+#       "used": 0,
+#       "closingBalance": 24
+#     },
+#     {
+#       "images": [
+#         "https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food.png?alt=media&token=4eb3ffc3-895d-4192-b6c0-4b165c0ddcde"
+#       ],
+#       "id": "2CHouE0qA2oNE6wcXdL2",
+#       "warningThreshold": 10,
+#       "issued": 0,
+#       "ratePerUnit": 0,
+#       "unit": "kg",
+#       "errorThreshold": 5,
+#       "touched": False,
+#       "category": "Raw Material",
+#       "newRatePerUnit": 0,
+#       "finalPrice": 0,
+#       "quantity": 0,
+#       "openingBalance": 0,
+#       "newQuantity": 0,
+#       "closingBalance": 0,
+#       "name": "Cucumber ",
+#       "used": 0
+#     },
+#     {
+#       "newQuantity": 0,
+#       "quantity": 1.9,
+#       "newRatePerUnit": 60,
+#       "images": [
+#         "https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food.png?alt=media&token=4eb3ffc3-895d-4192-b6c0-4b165c0ddcde"
+#       ],
+#       "touched": False,
+#       "id": "2PwOTuoRAIGqaWTbbSfh",
+#       "errorThreshold": 5,
+#       "category": "Raw Material",
+#       "name": "Ginger ",
+#       "closingBalance": 1.9,
+#       "issued": 0,
+#       "unit": "kg",
+#       "ratePerUnit": 60,
+#       "warningThreshold": 10,
+#       "finalPrice": 150,
+#       "openingBalance": 1.9,
+#       "used": 0
+#     },]
+# for i in ingredientBackup:
+#     fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients/'+i['id']).update(i)
+
 # newIngredientsRef = fbmsDb.collection('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients')
 # allIngredients = []
 # for ingredient in newIngredientsRef.stream():
 #     allIngredients.append(ingredient.to_dict())
-
+# counter = 0
+# for ingredient in allIngredients:
+#     for bkp in data:
+#         if (ingredient['name'] and bkp['name']):
+#             if (ingredient['name'].strip().lower() == bkp['name'].strip().lower()):
+#                 print("FOund updating", ingredient['name'], bkp['name'])
+#             #     print({"quantity":bkp['quantity'],"openingBalance":bkp['quantity'],"closingBalance":bkp['quantity']})
+#             #     counter +=1 
+#             #     fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients/'+ingredient['id']).update({"quantity":bkp['quantity'],"openingBalance":bkp['quantity'],"closingBalance":bkp['quantity']})
+#             else:
+#                 print("Not Found")
+#                 counter +=1 
+#         else:
+#             counter +=1 
+#             print("Not found", ingredient['name'], bkp['name'])
+#             # name = input("New Name")
+#             # fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients/'+ingredient.id).update({"quantity":bkp['quantity'],"openingBalance":bkp['quantity'],"closingBalance":bkp['quantity']})
+# print(counter)
 # notfounds = {}
 # for data in mappedIngredients:
 #     for recipeIngredient in data['ingredients']:
@@ -123,9 +299,9 @@ fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 
 # ingredient_ref = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients')
 # ingredients = {}
-# # fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/counters').update({
-# #     "ingredients": len(ingredients)
-# # })
+# # # fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/counters').update({
+# # #     "ingredients": len(ingredients)
+# # # })
 # for ingredient in ingredient_ref.stream():
 #     # print(ingredient.to_dict())
 #     ingredients[ingredient.to_dict()['name']] = (ingredient.to_dict())
@@ -247,10 +423,10 @@ fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 #     print('------')
 #     fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/recipes/recipes').add(dish)
 
-ingredientsRef = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients')
-for ingredient in ingredientsRef.stream():
-    print(ingredient.to_dict(),ingredient.id)
-    fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients/'+ingredient.id).update({"quantity":0,"ratePerUnit":0,"openingBalance":0,"closingBalance":0,"newRatePerUnit":0,"finalPrice":0})
+# ingredientsRef = fbmsDb.collection(u'business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients')
+# for ingredient in ingredientsRef.stream():
+#     print(ingredient.to_dict(),ingredient.id)
+#     fbmsDb.document('business/accounts/b8588uq3swtnwa1t83lla9/ingredients/ingredients/'+ingredient.id).update({"quantity":0,"ratePerUnit":0,"openingBalance":0,"closingBalance":0,"newRatePerUnit":0,"finalPrice":0})
 
 # for doc in allDocs:
 #     print("Dish Name ",doc.to_dict()['dishName'], doc.to_dict()['onlinePrice'], doc.id)

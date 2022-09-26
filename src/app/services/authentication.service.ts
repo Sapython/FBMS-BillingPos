@@ -44,6 +44,7 @@ export class AuthenticationService {
     private router: Router,
     private indexedDB:IndexedDatabaseService
   ) {
+    this.dataProvider.currentProject = localStorage.getItem('currentProject') || undefined
     if (auth) {
       this.user = authState(this.auth);
       this.user.subscribe((u: User | null) => {
@@ -172,144 +173,145 @@ export class AuthenticationService {
                   );
                   this.dataProvider.projects = projects;
                   console.log("ALLPROJECTS", projects,projects[0].projectId);
+                  localStorage.setItem('currentProject', JSON.stringify(projects[0]));
                   // console.log("INDEX DB DATA",await this.indexedDB.deleteDeviceData());
                   // console.log("ADD DB DATA",await this.indexedDB.addDeviceData({index:'projectId',currentProjectId:projects[0].projectId}));
                   // console.log("INDEX DB DATA",await this.indexedDB.getDeviceData());
-                  // this.dataProvider.currentProject = projects[0];
-                  // docData(
-                  //   doc(
-                  //     this.firestore,
-                  //     'business/accounts/' +
-                  //       this.dataProvider.currentProject?.projectId +
-                  //       '/counters'
-                  //   ),
-                  //   { idField: 'id' }
-                  // ).subscribe((data: any) => {
-                  //   console.log(
-                  //     'Counters',
-                  //     data,
-                  //     this.dataProvider.currentProject
-                  //   );
-                  //   // this.dataProvider.currentTokenNo = data[0].bills;
-                  // });
-                  // if (projects.length > 0) {
-                  //   this.dataProvider.projects = projects;
-                  //   var localDeviceData = localStorage.getItem('deviceData');
-                  //   if (localDeviceData) {
-                  //     try {
-                  //       var finalLocalDeviceData: any =
-                  //         JSON.parse(localDeviceData);
-                  //     } catch (error) {
-                  //       this.dataProvider.loginEvent = {
-                  //         loggedIn: true,
-                  //         status: 'deviceNotRegistered',
-                  //       };
-                  //       this.dataProvider.userChanged.next(true);
-                  //       var finalLocalDeviceData: any = {};
-                  //     }
-                  //     // console.log('local device data', localDeviceData,finalLocalDeviceData,projects)
-                  //     if (finalLocalDeviceData['deviceId'] != null) {
-                  //       const devicesProjects = projects.filter(
-                  //         (project: any) => {
-                  //           return (
-                  //             project.devices &&
-                  //             project.devices.includes(
-                  //               finalLocalDeviceData.deviceId
-                  //             )
-                  //           );
-                  //         }
-                  //       );
-                  //       if (devicesProjects.length > 0) {
-                  //         this.dataProvider.loginEvent = {
-                  //           loggedIn: true,
-                  //           status: 'withProject',
-                  //         };
-                  //         this.dataProvider.userChanged.next(true);
-                  //       } else {
-                  //         let id = this.generateRandomId();
-                  //         let users = finalLocalDeviceData.users || [];
-                  //         const duplicates = users.find(
-                  //           (element: any) =>
-                  //             element.email == u.email && element.uid == u.uid
-                  //         );
-                  //         if (!duplicates) {
-                  //           users = [
-                  //             {
-                  //               email: u.email || '',
-                  //               uid: u.uid || '',
-                  //             },
-                  //             ...(finalLocalDeviceData.users || []),
-                  //           ];
-                  //         }
-                  //         // console.log('users', projects)
-                  //         let deviceData: Device = {
-                  //           deviceId: id,
-                  //           registrationDate: new Date(),
-                  //           users: users,
-                  //           projectId: projects[0].projectId,
-                  //           projectName: projects[0].projectName,
-                  //         };
-                  //         // console.log('device data', deviceData)
-                  //         await addDoc(
-                  //           collection(
-                  //             this.firestore,
-                  //             'business/devices/' + id
-                  //           ),
-                  //           deviceData
-                  //         );
-                  //         await updateDoc(
-                  //           doc(this.firestore, 'business/accounts/'),
-                  //           {
-                  //             projects: projects.map((project: any) => {
-                  //               if (
-                  //                 project.projectId == projects[0].projectId
-                  //               ) {
-                  //                 return {
-                  //                   ...project,
-                  //                   devices: [...(project.devices || []), id],
-                  //                 };
-                  //               } else {
-                  //                 return project;
-                  //               }
-                  //             }),
-                  //           }
-                  //         );
-                  //         // console.log('device data', deviceData)
-                  //         localStorage.setItem(
-                  //           'deviceData',
-                  //           JSON.stringify(deviceData)
-                  //         );
-                  //       }
-                  //     } else {
-                  //       this.dataProvider.loginEvent = {
-                  //         loggedIn: true,
-                  //         status: 'deviceNotRegistered',
-                  //       };
-                  //       this.dataProvider.userChanged.next(true);
-                  //       localStorage.setItem(
-                  //         'deviceData',
-                  //         JSON.stringify({ deviceId: 'test' })
-                  //       );
-                  //     }
-                  //   } else {
-                  //     this.dataProvider.loginEvent = {
-                  //       loggedIn: true,
-                  //       status: 'deviceNotRegistered',
-                  //     };
-                  //     this.dataProvider.userChanged.next(true);
-                  //     localStorage.setItem(
-                  //       'deviceData',
-                  //       JSON.stringify({ deviceId: 'test' })
-                  //     );
-                  //   }
-                  // } else {
-                  //   this.dataProvider.loginEvent = {
-                  //     loggedIn: true,
-                  //     status: 'noProjects',
-                  //   };
-                  //   this.dataProvider.userChanged.next(true);
-                  //   // console.log('no projects found for this user',this.dataProvider.loginEvent)
-                  // }
+                  this.dataProvider.currentProject = projects[0];
+                  docData(
+                    doc(
+                      this.firestore,
+                      'business/accounts/' +
+                        this.dataProvider.currentProject?.projectId +
+                        '/counters'
+                    ),
+                    { idField: 'id' }
+                  ).subscribe((data: any) => {
+                    console.log(
+                      'Counters',
+                      data,
+                      this.dataProvider.currentProject
+                    );
+                    // this.dataProvider.currentTokenNo = data[0].bills;
+                  });
+                  if (projects.length > 0) {
+                    this.dataProvider.projects = projects;
+                    var localDeviceData = localStorage.getItem('deviceData');
+                    if (localDeviceData) {
+                      try {
+                        var finalLocalDeviceData: any =
+                          JSON.parse(localDeviceData);
+                      } catch (error) {
+                        this.dataProvider.loginEvent = {
+                          loggedIn: true,
+                          status: 'deviceNotRegistered',
+                        };
+                        this.dataProvider.userChanged.next(true);
+                        var finalLocalDeviceData: any = {};
+                      }
+                      // console.log('local device data', localDeviceData,finalLocalDeviceData,projects)
+                      if (finalLocalDeviceData['deviceId'] != null) {
+                        const devicesProjects = projects.filter(
+                          (project: any) => {
+                            return (
+                              project.devices &&
+                              project.devices.includes(
+                                finalLocalDeviceData.deviceId
+                              )
+                            );
+                          }
+                        );
+                        if (devicesProjects.length > 0) {
+                          this.dataProvider.loginEvent = {
+                            loggedIn: true,
+                            status: 'withProject',
+                          };
+                          this.dataProvider.userChanged.next(true);
+                        } else {
+                          let id = this.generateRandomId();
+                          let users = finalLocalDeviceData.users || [];
+                          const duplicates = users.find(
+                            (element: any) =>
+                              element.email == u.email && element.uid == u.uid
+                          );
+                          if (!duplicates) {
+                            users = [
+                              {
+                                email: u.email || '',
+                                uid: u.uid || '',
+                              },
+                              ...(finalLocalDeviceData.users || []),
+                            ];
+                          }
+                          // console.log('users', projects)
+                          let deviceData: Device = {
+                            deviceId: id,
+                            registrationDate: new Date(),
+                            users: users,
+                            projectId: projects[0].projectId,
+                            projectName: projects[0].projectName,
+                          };
+                          // console.log('device data', deviceData)
+                          await addDoc(
+                            collection(
+                              this.firestore,
+                              'business/devices/' + id
+                            ),
+                            deviceData
+                          );
+                          await updateDoc(
+                            doc(this.firestore, 'business/accounts/'),
+                            {
+                              projects: projects.map((project: any) => {
+                                if (
+                                  project.projectId == projects[0].projectId
+                                ) {
+                                  return {
+                                    ...project,
+                                    devices: [...(project.devices || []), id],
+                                  };
+                                } else {
+                                  return project;
+                                }
+                              }),
+                            }
+                          );
+                          // console.log('device data', deviceData)
+                          localStorage.setItem(
+                            'deviceData',
+                            JSON.stringify(deviceData)
+                          );
+                        }
+                      } else {
+                        this.dataProvider.loginEvent = {
+                          loggedIn: true,
+                          status: 'deviceNotRegistered',
+                        };
+                        this.dataProvider.userChanged.next(true);
+                        localStorage.setItem(
+                          'deviceData',
+                          JSON.stringify({ deviceId: 'test' })
+                        );
+                      }
+                    } else {
+                      this.dataProvider.loginEvent = {
+                        loggedIn: true,
+                        status: 'deviceNotRegistered',
+                      };
+                      this.dataProvider.userChanged.next(true);
+                      localStorage.setItem(
+                        'deviceData',
+                        JSON.stringify({ deviceId: 'test' })
+                      );
+                    }
+                  } else {
+                    this.dataProvider.loginEvent = {
+                      loggedIn: true,
+                      status: 'noProjects',
+                    };
+                    this.dataProvider.userChanged.next(true);
+                    // console.log('no projects found for this user',this.dataProvider.loginEvent)
+                  }
                 } else {
                   // console.log('no projects found')
                   this.dataProvider.loginEvent = {

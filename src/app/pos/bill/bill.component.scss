@@ -11,6 +11,7 @@ main{
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  width:35vw;
   height: calc( 100vh  - 60px);
   border-left: 2px solid #e0e0e0;
   .nothing{
@@ -18,8 +19,9 @@ main{
     height: 200px;
   }
   .products{
+    width:calc(35vw - 40px);
     padding-top: 20px;
-    width: 100%;
+    // width: 100%;
     position: relative;
     z-index: 1;
     display: flex;
@@ -33,6 +35,8 @@ main{
     }
   }
   .billActions{
+    // width:100%;
+    width:calc(35vw - 40px);
     position: relative;
     z-index: 5;
     flex: 4;

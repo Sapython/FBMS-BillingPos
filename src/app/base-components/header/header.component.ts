@@ -1,6 +1,7 @@
 import { trigger, transition, style, animate } from '@angular/animations';
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 import { DataProviderService } from 'src/app/services/data-provider.service';
 import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts-and-notifications.service';
 import { TablesComponent } from 'src/app/tables/tables.component';
@@ -38,7 +39,7 @@ export class HeaderComponent implements OnInit {
   ]
   selectedTable:any;
   placeholder:string = this.placeholders[0];
-  constructor(public dataProvider:DataProviderService,private dialog:Dialog,private alertify:AlertsAndNotificationsService) { }
+  constructor(public dataProvider:DataProviderService,private dialog:Dialog,private alertify:AlertsAndNotificationsService,public authService:AuthenticationService) { }
   syncing:boolean = false;
   tableInst:any;
   allInst:any[] = [];
