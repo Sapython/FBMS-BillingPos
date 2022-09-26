@@ -18,7 +18,7 @@ fbmsDb = firestore.client(app=fbmsApp)
 dosaBucket = storage.bucket(app=dosaApp,name='dosaplaza-cv.appspot.com')
 fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 
-dataframe = openpyxl.load_workbook("triveni-snagam-price-list.xlsx")
+dataframe = openpyxl.load_workbook("triveni-snagam-room-price-list(1).xlsx")
 print(dataframe)
 sheet = dataframe.get_sheet_by_name('Sheet1')
 print(sheet)
@@ -26,17 +26,21 @@ data = []
 for row in sheet.rows:
     # data[row[0].value] = row[1].value
     # print(row[0].value, row[1].value)
+    # if len(data) == 0: continue
     data.append(
         {
             "name": row[0].value,
-            "price": row[1].value
+            "roomPrice": row[1].value,
+            "category":row[2].value,
+            "dishPrice":row[3].value
         }
     )
-# print(data)
-recipesRef = fbmsDb.collection('business/accounts/triveniSangam/recipes/recipes')
-recipes = []
-for recipe in recipesRef.stream():
-    recipes.append({**recipe.to_dict(),"ref":recipe.reference})
+print(data)
+# recipesRef = fbmsDb.collection('business/accounts/triveniSangam/recipes/recipes')
+# recipes = []
+# for recipe in recipesRef.stream():
+    # recipes.append({**recipe.to_dict(),"ref":recipe.reference})
+#     fbmsDb.collection('business/accounts/triveniSangam/recipes/roomRecipes').add(recipe.to_dict())
 # recipesRef = fbmsDb.collection('business/accounts/triveniSangam/recipes/recipes')
 # for recipe in recipesRef.stream():
 #     # print(recipe.to_dict())
@@ -54,47 +58,109 @@ for recipe in recipesRef.stream():
 #             break
 #     if not found:
 #         print(recipe.to_dict()['dishName'],"Not Found")
-#     # break
-oldCategory_ref = fbmsDb.collection(u'business/accounts/triveniSangam/recipes/categories')
-oldCategories = {}
-categoryNames = []
-for oldCategory in oldCategory_ref.stream():
-    # print(oldCategory.to_dict())
-    oldCategories[oldCategory.to_dict()['name']] = (oldCategory.to_dict())
-    categoryNames.append(oldCategory.to_dict()['name'])
+    # break
+# oldCategory_ref = fbmsDb.collection(u'business/accounts/triveniSangam/recipes/categories')
+# oldCategories = {}
+# categoryNames = []
+# for oldCategory in oldCategory_ref.stream():
+#     # print(oldCategory.to_dict())
+#     oldCategories[oldCategory.to_dict()['name']] = (oldCategory.to_dict())
+#     categoryNames.append(oldCategory.to_dict()['name'])
+# # print(oldCategories)
+# counter = 0
+# for item in data:
+#     for recipe in recipes:
+#         if item['name'].lower() == recipe['dishName']:
+#             print("---",recipe['categories']['displayName'],"---")
+#             counter +=1
+#             print(counter)
+#             dish = {
+#                 'platforms': [
+#                     {'value': 'web', 'checked': True, 'name': 'Web'}, 
+#                     {'value': 'mobile', 'checked': True, 'name': 'Mobile'}, 
+#                     {'value': 'desktop', 'checked': True, 'name': 'Desktop'}, 
+#                     {'value': 'other', 'checked': True, 'name': 'Other'}
+#                     ], 
+#                 'onlinePrice':item['price'], 
+#                 'tags': ['tagOne', 'tagTwo', 'tagThree'], 
+#                 'orderType': None, 
+#                 'dishName': item['name'],
+#                 'categories': oldCategories[recipe['categories']['displayName']],
+#                 'thirdPartyPrice': item['price'], 
+#                 'taxes': [], 
+#                 'availableOnQrMenu': True, 
+#                 'images': ['https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food(1).png?alt=media&token=558c361b-00a5-4a1b-b9ae-07ddaf7151ff'], 
+#                 'ingredients': [], 
+#                 'profitMargin': 1, 
+#                 'costPrice': 0, 
+#                 'sellingPrice':0, 
+#                 'shopPrice': item['price'], 
+#                 'additionalInstructions': None
+#             }
+            
+            # print(dish)
+            # break
+    # break
 
-for item in data:
-    found = False
-    for recipe in recipes:
-        if item['name'].lower() == recipe['dishName'].lower():
-            found = True
-    if not found:
-        dish = {
-            'platforms': [
-                {'value': 'web', 'checked': True, 'name': 'Web'}, 
-                {'value': 'mobile', 'checked': True, 'name': 'Mobile'}, 
-                {'value': 'desktop', 'checked': True, 'name': 'Desktop'}, 
-                {'value': 'other', 'checked': True, 'name': 'Other'}
-                ], 
-            'onlinePrice':item['price'], 
-            'tags': ['tagOne', 'tagTwo', 'tagThree'], 
-            'orderType': None, 
-            'dishName': item['name'], 
-            'categories': oldCategories['Indian Starters'],
-            'thirdPartyPrice': item['price'], 
-            'taxes': [], 
-            'availableOnQrMenu': True, 
-            'images': ['https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food(1).png?alt=media&token=558c361b-00a5-4a1b-b9ae-07ddaf7151ff'], 
-            'ingredients': [], 
-            'profitMargin': 1, 
-            'costPrice': 0, 
-            'sellingPrice':0, 
-            'shopPrice': item['price'], 
-            'additionalInstructions': None
-        }
-        ref = fbmsDb.collection('business/accounts/triveniSangam/recipes/recipes').add(dish)
-        print(dish,ref[1].id)
-        # break
+# for item in data:
+#     found = False
+#     for recipe in recipes:
+#         if item['name'].lower() == recipe['dishName'].lower():
+#             found = True
+            
+#             dish = {
+#                 'platforms': [
+#                     {'value': 'web', 'checked': True, 'name': 'Web'}, 
+#                     {'value': 'mobile', 'checked': True, 'name': 'Mobile'}, 
+#                     {'value': 'desktop', 'checked': True, 'name': 'Desktop'}, 
+#                     {'value': 'other', 'checked': True, 'name': 'Other'}
+#                     ], 
+#                 'onlinePrice':item['price'], 
+#                 'tags': ['tagOne', 'tagTwo', 'tagThree'], 
+#                 'orderType': None, 
+#                 'dishName': item['name'], 
+#                 'categories': oldCategories['Indian Starters'],
+#                 'thirdPartyPrice': item['price'], 
+#                 'taxes': [], 
+#                 'availableOnQrMenu': True, 
+#                 'images': ['https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food(1).png?alt=media&token=558c361b-00a5-4a1b-b9ae-07ddaf7151ff'], 
+#                 'ingredients': [], 
+#                 'profitMargin': 1, 
+#                 'costPrice': 0, 
+#                 'sellingPrice':0, 
+#                 'shopPrice': item['price'], 
+#                 'additionalInstructions': None
+#             }
+#             ref = fbmsDb.collection('business/accounts/triveniSangam/recipes/recipes').add(dish)
+#             print(dish,ref[1].id)
+#             break
+    # if not found:
+    #     dish = {
+    #         'platforms': [
+    #             {'value': 'web', 'checked': True, 'name': 'Web'}, 
+    #             {'value': 'mobile', 'checked': True, 'name': 'Mobile'}, 
+    #             {'value': 'desktop', 'checked': True, 'name': 'Desktop'}, 
+    #             {'value': 'other', 'checked': True, 'name': 'Other'}
+    #             ], 
+    #         'onlinePrice':item['price'], 
+    #         'tags': ['tagOne', 'tagTwo', 'tagThree'], 
+    #         'orderType': None, 
+    #         'dishName': item['name'], 
+    #         'categories': oldCategories['Indian Starters'],
+    #         'thirdPartyPrice': item['price'], 
+    #         'taxes': [], 
+    #         'availableOnQrMenu': True, 
+    #         'images': ['https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food(1).png?alt=media&token=558c361b-00a5-4a1b-b9ae-07ddaf7151ff'], 
+    #         'ingredients': [], 
+    #         'profitMargin': 1, 
+    #         'costPrice': 0, 
+    #         'sellingPrice':0, 
+    #         'shopPrice': item['price'], 
+    #         'additionalInstructions': None
+    #     }
+    #     ref = fbmsDb.collection('business/accounts/triveniSangam/recipes/recipes').add(dish)
+    #     print(dish,ref[1].id)
+    #     break
 
 # finalData = []
 # for i in range(len(dataframe.worksheets)):

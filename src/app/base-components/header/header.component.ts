@@ -7,6 +7,7 @@ import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts
 import { TablesComponent } from 'src/app/tables/tables.component';
 import { OptionsComponent } from '../options/options.component';
 
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -111,6 +112,8 @@ export class HeaderComponent implements OnInit {
     event.preventDefault()
     this.newOrder()
   }
-
+  changeBillerMode(){
+    
+  }
   
 }

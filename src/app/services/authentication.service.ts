@@ -192,7 +192,7 @@ export class AuthenticationService {
                       data,
                       this.dataProvider.currentProject
                     );
-                    // this.dataProvider.currentTokenNo = data[0].bills;
+                    this.dataProvider.currentTokenNo = data[0].bills;
                   });
                   if (projects.length > 0) {
                     this.dataProvider.projects = projects;

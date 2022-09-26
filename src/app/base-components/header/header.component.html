@@ -7,6 +7,10 @@
         <div class="buttons">
             <button class="tableNo" mat-stroked-button color="primary" *ngIf="dataProvider.selectedTable">Table No: {{dataProvider.selectedTable.tableNo}}</button>
             <button mat-stroked-button color="primary" class="higlighted" (click)="newOrder()">Select Table</button>
+            <mat-button-toggle-group name="fontStyle" aria-label="Font Style" (change)="changeBillerMode()">
+                <mat-button-toggle value="dineIn">Restaurant</mat-button-toggle>
+                <mat-button-toggle value="room">Room </mat-button-toggle>
+            </mat-button-toggle-group>
             <div (mouseenter)="extraSearchClass = 'active'" id="searchBar" class="search {{extraSearchClass}}">
                 <input (change)="extraSearchClass = 'active'" (input)="selectedTable ? dataProvider.searchEvent.next(search.value) : noTablesAlert()" #search [placeholder]="placeholder + '..'" type="text">
                 <div *ngIf="extraSearchClass">

@@ -92,16 +92,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
   font-family: 'Bill' !important;
 }
 @page { 
-  size: auto;
+  size: 72mm 297mm;
+  margin:.5cm;
   // margin: 15px;
   // margin-right: 0mm;
 }
 @media print { 
-  body{ 
+  body{
+    width: -100%;
     visibility: hidden;
     // display:none;
-    margin: 0%;
-    padding: 0%;
+    margin: 0% !important;
+    padding: 0% !important;
     #productsContainer{
       .productCard{
         visibility: hidden;
@@ -118,32 +120,43 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
         display: none !important;
       }
     }
+    .ri-arrow-right-s-line, .ri-arrow-down-s-fill, .ri-arrow-up-s-fill{
+      visibility: hidden;
+      display: none;
+    }
   }
   #bill,#billKot{
-    // display: block !important;
+    padding: 0% !important;
+    margin: 0% !important;
     visibility: visible !important;
     position: absolute;
     top: 0px;
     left: 0px;
-    width: 100%;
+    width: -100%;
     box-shadow: none;
-    font-size: 10px;
+    font-size: 17px;
+    overflow-x: visible;
     *{
+      overflow-x: visible;
+      width:100%;
       font-family: var(--primary-font) !important;
       margin:3px !important;
     }
     h3{
-      font-size: 28px !important;
+      font-size: 24px !important;
       font-weight: 700 !important;
+      // width: 230vw;
     }
     h4{
-      font-size: 20px !important;
+      font-size: 17px !important;
       font-weight: 600 !important;
+      // width: 230vw;
     }
     .topFields{
-      font-size: 20px !important;
+      font-size: 15px !important;
       text-align: start;
       font-weight:600;
+      // width: 230vw;
       padding-left:10px;
     }
     img{
@@ -157,10 +170,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
     table{
       border-top: 2px solid black;
       position: relative;
-      width: 100%;
+      // width: 230vw;
       tr{
         th{
-          font-size: 22px;
+          font-size: 18px;
           font-weight: 600;
           padding: 10px;
           border-bottom: 2px solid black;
@@ -170,7 +183,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
         }
         th,td{
           text-align: center;
-          font-size: 20px !important  ;
+          font-size: 17px !important  ;
           font-weight: 600;
         }
         td:nth-child(1){
@@ -182,29 +195,36 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
       border-bottom: 2px solid black;
       height: 0px;
       padding:0px;
-      width: 100%;
+      // width: 230vw;
+    }
+    .row{
+      display: flex;
+      justify-content: space-between;
+      h4{
+        width: fit-content;
+      }
     }
     .info{
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 600;
     }
     .detail{
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 600;
     }
     .tax{
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 20px;
+      font-size: 17px;
       margin-bottom: -5px;
       p{
         margin-bottom: -5px;
         padding:0px;
-        font-size: 20px;
+        font-size: 17px;
         font-weight: 600;
       }
     }
@@ -217,7 +237,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
       padding-right: 20px;
     }
     p.thanking{
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 500;
       text-align: center;
     }

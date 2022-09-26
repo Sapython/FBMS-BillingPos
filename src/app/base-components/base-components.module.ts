@@ -9,6 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { OptionsComponent } from './options/options.component';
 import { MatTabsModule } from '@angular/material/tabs';
+
+import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
+
 const comps = [HeaderComponent,
   FooterComponent]
 
@@ -24,7 +27,8 @@ const comps = [HeaderComponent,
     DialogModule,
     MatButtonModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    MatButtonToggleModule
   ],
   exports:comps
 })

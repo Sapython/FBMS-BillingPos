@@ -91,8 +91,10 @@
         {{customerInfoForm.value.fullName}}</h4>
     <h4 style="text-align: start" *ngIf="customerInfoForm.value.phoneNumber">Phone:
         {{customerInfoForm.value.phoneNumber}}</h4>
-    <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
-    <h4><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+    <div class="row">
+        <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
+        <h4><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+    </div>
     <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
     <table>
         <tr>
@@ -125,8 +127,8 @@
         </tr>
     </table>
     <hr>
-    <p class="info">Special Instructions: {{specialInstructions}}</p>
-    <hr>
+    <p *ngIf="specialInstructions" class="info">Special Instructions: {{specialInstructions}}</p>
+    <hr *ngIf="specialInstructions">
     <div class="info">
         <p>Total Qty: {{totalQuantity}}</p>
         <p>Sub Total: &#8377;{{toFixedValue(taxableValue)}}</p>
@@ -148,7 +150,7 @@
         <p>Taxable Amount</p>
         <p>&#8377;{{toFixedValue(taxableValue)}}</p>
     </div>
-    <div class="total">
+    <div class="total"> 
         <p>Total Tax</p>
         <p>&#8377;{{toFixedValue(totalTaxAmount)}}</p>
     </div>
@@ -158,7 +160,7 @@
     </div>
     <hr>
     <p class="thanking">Thanks for visiting {{dataProvider.currentProject.projectName || 'us !!'}}</p>
-    <p class="thanking">www.dosaplaza.com</p>
+    <p class="thanking">hoteltrivenisangam.com  </p>
 </div>
 <div id="billKot">
     <h3 style="text-align: center">{{dataProvider.currentProject.projectName}}</h3>
@@ -167,12 +169,14 @@
     <h3 *ngIf="deskKot">Order</h3>
     <h3 *ngIf="!deskKot">KOT</h3>
     <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
-    <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
-    <h4><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+    <div class="row">
+        <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
+        <h4><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+    </div>
     <table>
         <tr>
             <th>Product</th>
-            <th>Quantity</th>
+            <th>Qty</th>
         </tr>
         <tr *ngFor="let product of currentKot?.products || []">
             <td>{{product.dishName}}</td>
