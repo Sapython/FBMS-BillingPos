@@ -134,7 +134,7 @@ const numWords = require('num-words');
     ]),
   ],
 })
-export class BillComponent implements OnInit {
+export class BillComponent implements OnInit, OnChanges {
   currentBill: Bill | undefined;
   currentKot: Kot | undefined;
   discounts: any[] = [];
@@ -156,13 +156,17 @@ export class BillComponent implements OnInit {
     name: new FormControl(''),
     email: new FormControl('', [Validators.email]),
     phone: new FormControl('', [Validators.pattern('[0-9]{10}')]),
+    address: new FormControl(''),
   });
+  cancelledtokenNo: number = 0;
   today: Date = new Date();
   currentTable: Table | undefined;
   totalQuantity: number = 0;
   grandTotal = 0;
   paymentMethod: string = 'cash';
-
+  cancelledItems: any[] = [];
+  reprintKotItems: any[] = [];
+  reprinttokenNo: number = 0;
   constructor(
     public dataProvider: DataProviderService,
     private databaseService: DatabaseService,
@@ -173,12 +177,41 @@ export class BillComponent implements OnInit {
     this.databaseService.getDiscounts().subscribe((discounts) => {
       this.discounts = discounts;
     });
+    this.dataProvider.clearTableFunc = this.clearCurrentTable.bind(this);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.calculateTaxAndPrices()
+      if(this.currentKot?.products && this.currentKot?.products.length > 0){
+        this.dataProvider.kotActive = true;
+      } else {
+        this.dataProvider.kotActive = false;
+      }
+      const onlineKot = this.currentBill!.kots.filter((kot) => kot.finalized);
+      if (onlineKot.length > 0) {
+        this.dataProvider.kotFinalizedActive = true;
+      } else {
+        this.dataProvider.kotFinalizedActive = false;
+      }
+  }
+
+  clearCurrentTable() {
+    if (this.currentTable?.type=='table') {
+      this.databaseService.emptyTable(this.currentTable!.id);
+    } else {
+      this.databaseService.emptyRoom(this.currentTable!.id);
+    }
   }
 
   ngOnInit(): void {
     this.dataProvider.tableChanged.subscribe(async (table) => {
       this.resetValues();
+      // this.currentKot!.products = []
+      // this.currentKot = undefined
+      // this.allKotProducts = []
+      this.offlineKot = []
       this.currentTable = table;
+      // this.setupKot()
       if (this.currentTable && this.currentTable.bill) {
         // alert('Bill exists on current table');
         if (!this.currentBill) {
@@ -206,6 +239,13 @@ export class BillComponent implements OnInit {
         }
         // alert('Updating bill');
         this.updateBill();
+        // alert('Table has bill '+this.currentKot?.products.length);
+        if(this.currentKot?.products && this.currentKot?.products.length > 0){
+          this.dataProvider.kotActive = true;
+        } else {
+          this.dataProvider.kotActive = false;
+        }
+        this.changeDetection.detectChanges()
       } else {
         // alert('No Bill exists on current table. Creating one');
         this.createBill();
@@ -236,6 +276,13 @@ export class BillComponent implements OnInit {
             quantity: 1,
           });
         }
+        this.updateBill();
+        // alert('Table has bill '+this.currentKot?.products.length);
+        if(this.currentKot?.products && this.currentKot?.products.length > 0){
+          this.dataProvider.kotActive = true;
+        } else {
+          this.dataProvider.kotActive = false;
+        }
         // update in offline bill
         // TODO: update in online bill
         // this.dataProvider.allBills.forEach((bill) => {
@@ -248,17 +295,32 @@ export class BillComponent implements OnInit {
         //     });
         //   }
         // });
-        this.updateBill();
+        this.changeDetection.detectChanges()
       } else {
         this.currentKot = {
           id: this.generateRandomId(),
           products: [product],
           date: new Date(),
           finalized: false,
+          tokenNo: this.dataProvider.currentTokenNo+1,
+          cancelled:false
         };
+        this.databaseService.addTokenNo();
         this.currentBill!.kots.push(
           JSON.parse(JSON.stringify(this.currentKot))
         );
+        if(this.currentKot?.products && this.currentKot?.products.length > 0){
+          this.dataProvider.kotActive = true;
+        } else {
+          this.dataProvider.kotActive = false;
+        }
+        const onlineKot = this.currentBill!.kots.filter((kot) => kot.finalized);
+        if (onlineKot.length > 0) {
+          this.dataProvider.kotFinalizedActive = true;
+        } else {
+          this.dataProvider.kotFinalizedActive = false;
+        }
+        this.changeDetection.detectChanges()
         // this.offlineKot.push(this.currentKot);
       }
       // // KOt checker
@@ -300,7 +362,10 @@ export class BillComponent implements OnInit {
         products: [],
         date: new Date(),
         finalized: false,
+        tokenNo:this.dataProvider.currentTokenNo + 1,
+        cancelled:false
       };
+      this.databaseService.addTokenNo()
       this.currentBill!.kots.push(JSON.parse(JSON.stringify(this.currentKot)));
       // this.offlineKot.push(this.currentKot);
     }
@@ -336,11 +401,14 @@ export class BillComponent implements OnInit {
     // alert('calculateTaxAndPrices'+this.currentBill?.kots.length);
     this.currentBill?.kots.forEach((kot) => {
       // alert("kot.products "+kot.products)
-        kot.products.forEach((product: any) => {
-          // alert('calculateTaxAndPrices'+product.shopPrice);
-          this.taxableValue += product.shopPrice * product.quantity;
-          this.totalQuantity += product.quantity;
-        });
+        if(!kot.cancelled){
+          kot.products.forEach((product: any) => {
+            // alert('calculateTaxAndPrices'+product.shopPrice);
+            console.log("product.quantity",product.quantity)
+            this.taxableValue += product.shopPrice * product.quantity;
+            this.totalQuantity += product.quantity;
+          });
+        }
     });
     // alert('taxableValue' + this.taxableValue);
     this.selectDiscounts.forEach((discount) => {
@@ -384,23 +452,39 @@ export class BillComponent implements OnInit {
   updateQuantity(ref: any) {
     console.log(ref, this.currentKot);
     this.calculateTaxAndPrices();
+    this.updateBill()
   }
 
   updateBill(finalizedKot: boolean = false) {
+    console.log(this.currentBill,this.currentKot,finalizedKot)
+    // alert("")
     if (finalizedKot) {
       this.dataProvider.pageSetting.blur = true;
     }
     // alert('Upadting
     if (this.currentBill) {
-      console.log('KOT PRODUCTS', this.currentKot!.products);
-      this.currentBill.kots[this.currentBill.kots.length - 1].products =
-        JSON.parse(JSON.stringify(this.currentKot!.products));
+      // alert('Current bill passed')
+      if(this.currentKot){
+        // alert('Current kot passed')
+        console.log('KOT PRODUCTS', this.currentKot!.products);
+        // this.currentBill.kots[this.currentBill.kots.length - 1].products =
+        // JSON.parse(JSON.stringify(this.currentKot!.products));
+      }
       // alert('Updating bill');
+      console.log("this.currentBill",this.currentBill)
+      // alert('Current kot completed')
       this.updateBillData(this.currentBill, this.currentBill.id).finally(() => {
         if (finalizedKot) {
+          // alert('Finlaized kot passed')
           this.dataProvider.pageSetting.blur = false;
           this.currentKot!.products = [];
           console.log('Damn', this.currentKot, this.currentBill);
+          this.databaseService.getBill(this.currentTable!.bill).then((bill) => {
+            this.currentBill = bill.data() as Bill;
+            // this.setupKot();
+            console.log('Damn', this.currentKot, this.currentBill);
+            this.calculateTaxAndPrices()
+          })
         }
         this.calculateTaxAndPrices();
       });
@@ -410,6 +494,7 @@ export class BillComponent implements OnInit {
   }
 
   createBill() {
+    this.dataProvider.kotActive = true;
     this.currentBill = {
       date: new Date(),
       customerInfo: this.customerInfoForm.value,
@@ -455,20 +540,25 @@ export class BillComponent implements OnInit {
 
   finalizeKot() {
     document.getElementById('bill')!.style.display = 'none';
+    document.getElementById('cancelledBillKot')!.style.display = 'none';
     document.getElementById('billKot')!.style.display = 'block';
+    document.getElementById('reprintBillKot')!.style.display = 'none';
     this.deskKot = false;
     this.changeDetection.detectChanges();
     console.log('finalizing kot', this.currentKot!.products);
     window.print();
-    this.deskKot = true;
-    this.changeDetection.detectChanges();
-    console.log('finalizing kot', this.currentKot!.products);
-    window.print();
+    // this.deskKot = true;
+    // this.changeDetection.detectChanges();
+    // console.log('finalizing kot', this.currentKot!.products);
+    // window.print();
     document.getElementById('billKot')!.style.display = 'none';
     document.getElementById('bill')!.style.display = 'none';
+    document.getElementById('reprintBillKot')!.style.display = 'none';
+    document.getElementById('cancelledBillKot')!.style.display = 'none';
     this.currentBill!.kots[this.currentBill!.kots.length - 1]['finalized'] =
       true;
     this.updateBill(true);
+    this.dataProvider.kotActive = false;
     this.changeDetection.detectChanges();
   }
 
@@ -501,18 +591,31 @@ export class BillComponent implements OnInit {
           this.allKotProducts.push(product);
         });
       });
-      alert('ALlKOtPRoducstLength '+this.allKotProducts.length)
+      // alert('ALlKOtPRoducstLength '+this.allKotProducts.length)
       this.changeDetection.detectChanges();
       document.getElementById('bill')!.style.display = 'block';
+      document.getElementById('cancelledBillKot')!.style.display = 'none';
+      document.getElementById('reprintBillKot')!.style.display = 'none';
       document.getElementById('billKot')!.style.display = 'none';
       window.print();
       window.print();
+      document.getElementById('billKot')!.style.display = 'none';
       document.getElementById('bill')!.style.display = 'none';
+      document.getElementById('cancelledBillKot')!.style.display = 'none';
+      document.getElementById('reprintBillKot')!.style.display = 'none';
       this.currentBill!.completed = true;
       this.updateBill();
-      this.databaseService.emptyTable(this.currentTable!.id);
+      if (this.currentTable?.type=='table') {
+        this.databaseService.emptyTable(this.currentTable!.id);
+      } else {
+        this.databaseService.emptyRoom(this.currentTable!.id);
+      }
       this.dataProvider.openTableFunction();
       this.resetValues()
+      this.currentKot!.products = []
+      this.currentKot = undefined
+      this.allKotProducts = []
+      this.offlineKot = []
     });
   }
 
@@ -521,21 +624,28 @@ export class BillComponent implements OnInit {
       data: {},
     });
     inst.componentInstance?.completed.subscribe((data) => {
-      console.log(data);
+      console.log(this.currentBill,data);
       if (data && data.phone && data.reason) {
-        this.resetValues();
         this.dataProvider.pageSetting.blur = true;
         this.databaseService
-          .deleteBill(this.currentBill!.id, data.reason, data.phone.toString())
-          .then((data) => {
-            this.alertify.presentToast('Bill cancelled.');
-            inst.close();
-          })
-          .catch((error) => {
-            console.error('error', error);
-            this.alertify.presentToast('Error cannot cancel bill.', 'error');
-          })
-          .finally(() => {
+        .deleteBill(this.currentBill!.id, data.reason, data.phone.toString())
+        .then((data) => {
+          this.alertify.presentToast('Bill cancelled.');
+          inst.close();
+        })
+        .catch((error) => {
+          console.error('error', error);
+          this.alertify.presentToast('Error cannot cancel bill.', 'error');
+        })
+        .finally(() => {
+          console.log("Finally",this.currentTable)
+          if(this.currentTable?.type=='room'){
+            this.databaseService.emptyRoom(this.currentTable!.id);
+          } else {
+            this.databaseService.emptyTable(this.currentTable!.id);
+          }
+          this.dataProvider.openTableFunction()
+            this.resetValues();
             this.dataProvider.pageSetting.blur = false;
           });
       } else {
@@ -570,8 +680,12 @@ export class BillComponent implements OnInit {
   openUserInfoModal() {
     const inst = this.dialog.open(CustomerInfoModalComponent);
     inst.componentInstance?.done.subscribe((data) => {
+      console.log(data)
       if (data) {
         this.customerInfoForm.patchValue(data);
+        console.log(this.customerInfoForm.value);
+        this.updateBill();
+        inst.close();
       }
     });
   }
@@ -610,6 +724,42 @@ export class BillComponent implements OnInit {
           }
           inst.close();
         });
+        inst.componentInstance?.deleteKots.subscribe((data) => {
+          console.log(data)
+          const found = this.currentBill?.kots.find((kot) => kot.id == data.id)
+          if (found){
+            this.printCancelledKot(found.products,found.tokenNo)
+            // this.currentBill!.kots.find((kot) => kot.id == data.id)!.products = [];
+            this.currentBill!.kots.find((kot) => kot.id == data.id)!.cancelled = true;
+          }
+          inst.close();
+          this.updateBill();
+        })
+        inst.componentInstance?.reprint.subscribe((data) => {
+          console.log("edit kot",data)
+          const found = this.currentBill?.kots.find((kot) => kot.id == data.id)
+          if (found){
+            this.rePrintKot(found.products,found.tokenNo)
+            // this.currentBill!.kots.find((kot) => kot.id == data.id)!.products = [];
+          }
+          inst.close();
+          this.updateBill();
+        })
+        inst.componentInstance?.editKots.subscribe((data) => {
+          console.log("edit kot",data)
+          const found = this.currentBill?.kots.find((kot) => kot.id == data.id)
+          if (found){
+            this.printCancelledKot(found.products,found.tokenNo)
+            this.currentBill!.kots.find((kot) => kot.id == data.id)!.cancelled = true;
+            const res= JSON.parse(JSON.stringify(this.currentBill!.kots.find((kot) => kot.id == data.id)!.products));
+            res.forEach((product:any)=>{
+              this.dataProvider.selectedProduct.next(product);
+            })
+            // this.currentBill!.kots.find((kot) => kot.id == data.id)!.products = [];
+          }
+          inst.close();
+          this.updateBill();
+        })
       })
       .finally(() => {
         this.dataProvider.pageSetting.blur = false;
@@ -618,6 +768,48 @@ export class BillComponent implements OnInit {
         console.error('error', error);
         this.alertify.presentToast('Error cannot fetch bill.', 'error');
       });
+  }
+  printKot(products: any[], tokenNo: number) {
+    document.getElementById('bill')!.style.display = 'none';
+    document.getElementById('billKot')!.style.display = 'none';
+    document.getElementById('reprintBillKot')!.style.display = 'block';
+    document.getElementById('cancelledBillKot')!.style.display = 'none';
+    this.cancelledItems = products
+    this.cancelledtokenNo = tokenNo
+    this.changeDetection.detectChanges();
+    window.print();
+    document.getElementById('reprintBillKot')!.style.display = 'none';
+    document.getElementById('cancelledBillKot')!.style.display = 'none';
+    document.getElementById('billKot')!.style.display = 'none';
+    document.getElementById('bill')!.style.display = 'none';
+  }
+  printCancelledKot(products:any[],tokenNo:number){
+    document.getElementById('bill')!.style.display = 'none';
+    document.getElementById('billKot')!.style.display = 'none';
+    document.getElementById('cancelledBillKot')!.style.display = 'block';
+    document.getElementById('reprintBillKot')!.style.display = 'none';
+    this.cancelledItems = products
+    this.cancelledtokenNo = tokenNo
+    this.changeDetection.detectChanges();
+    window.print();
+    document.getElementById('reprintBillKot')!.style.display = 'none';
+    document.getElementById('cancelledBillKot')!.style.display = 'none';
+    document.getElementById('billKot')!.style.display = 'none';
+    document.getElementById('bill')!.style.display = 'none';
+  }
+  rePrintKot(products:any[],tokenNo:number){
+    document.getElementById('bill')!.style.display = 'none';
+    document.getElementById('billKot')!.style.display = 'none';
+    document.getElementById('cancelledBillKot')!.style.display = 'none';
+    document.getElementById('reprintBillKot')!.style.display = 'block';
+    this.reprintKotItems = products
+    this.reprinttokenNo = tokenNo
+    this.changeDetection.detectChanges();
+    window.print();
+    document.getElementById('reprintBillKot')!.style.display = 'none';
+    document.getElementById('cancelledBillKot')!.style.display = 'none';
+    document.getElementById('billKot')!.style.display = 'none';
+    document.getElementById('bill')!.style.display = 'none';
   }
 }
 
@@ -653,6 +845,8 @@ type Kot = {
   date: any;
   products: any[];
   finalized: boolean;
+  tokenNo: number;
+  cancelled:boolean;
 };
 
 type Table = {
@@ -662,4 +856,5 @@ type Table = {
   name: string;
   status: 'available' | 'occupied';
   tableNo: string;
+  type: 'table' | 'room';
 };

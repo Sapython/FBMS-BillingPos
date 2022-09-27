@@ -2,11 +2,18 @@
     <h2>All KOTs</h2>
     <div class="scrollable">
         <ng-container *ngFor="let kot of bill.kots">
-            <div class="container" *ngIf="kot.products.length > 0">
-                <p>KOT Id: {{kot.id}}
-                    <!-- <button mat-icon-button>
+            <div class="container" *ngIf="kot.products.length > 0 && !kot.cancelled">
+                <p>KOT Id: {{kot.id}}</p>
+                <p>
+                    <button mat-icon-button (click)="deleteKot(kot)">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="editKot(kot)">
                         <mat-icon>edit</mat-icon>
-                    </button> -->
+                    </button>
+                    <button mat-icon-button (click)="reprintKot(kot)">
+                        <mat-icon>print</mat-icon>
+                    </button>
                 </p>
                 <table [cellSpacing]="0">
                     <tr>
@@ -31,14 +38,13 @@
                         <td>{{product.quantity}}</td>
                         <td> &#8377;{{product.shopPrice}}</td>
                         <td> &#8377;{{product.quantity * product.shopPrice}}</td>
-                        <td>
-                            <button mat-icon-button (click)="deleteItemKot(kot,i)">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                        </td>
                     </tr>
                 </table>
             </div>
+        </ng-container>
+        <ng-container *ngIf="bill.kots.length==0 || bill.kots[0].products.length==0">
+            <p>No KOTs</p>
+            <img src="assets/notFound.svg" class="nothing">
         </ng-container>
     </div>
     <div class="actions">

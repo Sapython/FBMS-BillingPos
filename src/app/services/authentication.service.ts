@@ -16,6 +16,7 @@ import {
   DocumentReference,
   Firestore,
   getDoc,
+  setDoc,
 } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { updateDoc } from '@firebase/firestore';
@@ -191,8 +192,15 @@ export class AuthenticationService {
                       'Counters',
                       data,
                       this.dataProvider.currentProject
-                    );
-                    this.dataProvider.currentTokenNo = data[0].bills;
+                      );
+                      if (!(data && data.bills>=0)) {
+                        setDoc(doc(this.firestore,'business/accounts/' +
+                        this.dataProvider.currentProject?.projectId +
+                        '/counters'),{bills:0,ingredients:0});
+                      } else {
+                        this.dataProvider.currentTokenNo = data.bills;
+                        console.log("TOKEN NO",this.dataProvider.currentTokenNo);
+                      }
                   });
                   if (projects.length > 0) {
                     this.dataProvider.projects = projects;

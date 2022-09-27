@@ -28,7 +28,6 @@ import {MatSelectModule} from '@angular/material/select';
     ProductsComponent,
     BillComponent,
     BillProductCardComponent,
-    RoomsComponent,
   ],
   imports: [
     CommonModule,

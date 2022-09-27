@@ -25,37 +25,59 @@ export class ProductsComponent implements OnInit {
   searchedProducts: any[] = [];
   table: any;
   ngOnInit(): void {
+    this.dataProvider.modeSelected.subscribe((data) => {
+      this.filteredProducts = [];
+      this.products = [];
+      this.searchedProducts = [];
+    });
     this.dataProvider.menuSelected.subscribe((data) => {
       this.table = data;
-    })
+    });
     this.dataProvider.tableChanged.subscribe((table: string) => {
       this.table = table;
     });
     this.dataProvider.selectedCategory.subscribe((data: any) => {
+      this.searchedProducts = [];
       if (!this.table) {
         this.alertify.presentToast('Please select a table first', 'error');
-        this.dataProvider.openTableFunction()
+        this.dataProvider.openTableFunction();
       }
       this.filterProducts(data.name);
     });
     this.dataProvider.searchEvent.subscribe((data: string) => {
-      // console.log('searchEvent', data);
-      const options = {
-        keys: ['dishName', 'sellingPrice', 'onlinePrice'],
-      };
-      const fuse = new Fuse(this.dataProvider.products, options); // "list" is the item array
-      const result = fuse.search(data);
-      this.searchedProducts = [];
-      // console.log('result', result);
-      result.forEach((product: any) => {
-        this.searchedProducts.push(product.item);
-      });
+      if (data) {
+        console.log('searchEvent', data);
+        const options = {
+          keys: ['dishName', 'sellingPrice', 'onlinePrice'],
+        };
+        const fuse = new Fuse(this.dataProvider.products, options); // "list" is the item array
+        const result = fuse.search(data);
+        this.searchedProducts = [];
+        // console.log('result', result);
+        result.forEach((product: any) => {
+          this.searchedProducts.push(product.item);
+        });
+      } else {
+        this.searchedProducts = [];
+      }
     });
   }
   filterProducts(mainCategory: string) {
     this.filteredProducts = this.dataProvider.products.filter((item) => {
       return item && item.categories && item.categories.name == mainCategory;
     });
+    // sort alphabatically by dish name
+    this.filteredProducts.sort((a, b) => {
+      return a.dishName.localeCompare(b.dishName);
+    });
+  }
+
+  lengthWiseClass(text: string) {
+    if (text.length > 40) {
+      return 'larger';
+    } else {
+      return '';
+    }
   }
 
   addToBill(product: any) {

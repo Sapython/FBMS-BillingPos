@@ -13,4 +13,16 @@
             <button mat-flat-button color="primary" *ngIf="table.status == 'available' || !table.status" (click)="selectRoom(table)">Book</button>
         </div>
     </section>
+    <hr>
+    <h3>Rooms</h3>
+    <section>
+        <div *ngFor="let table of dataProvider.rooms" [class]="table.status== 'occupied' ? 'booked' : 'available'" (click)="table.status!= 'occupied' ? selectMenu(table) : {}">
+            <p>Room No <br> {{table.tableNo}}</p>
+            <span *ngIf="table.status != 'available'">Booked</span>
+            <span *ngIf="table.status == 'available'">Available</span>
+            <button class="empty" *ngIf="table.status == 'occupied'" (click)="selectMenu(table)">Select Menu</button>
+            <button class="empty" *ngIf="table.status == 'occupied'" (click)="emptyTable(table)">Mark As Empty</button>
+            <button mat-flat-button color="primary" *ngIf="table.status == 'available' || !table.status" (click)="selectRoom(table)">Book</button>
+        </div>
+    </section>
 </main>

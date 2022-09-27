@@ -35,12 +35,17 @@ export class DataProviderService {
   public currentPage:string = '';
   public setupComplete:boolean = false;
   public tables:any[] = []
+  public rooms:any[] = []
   public allBills:any[] = [];
   public currentTokenNo:number = 0;
   public syncer:Subject<boolean> = new Subject();
   public openTable:Subject<boolean> = new Subject();
   public menuSelected:Subject<any> = new Subject();
+  public modeSelected:Subject<'dineIn' | 'room'> = new Subject();
   public openTableFunction :any;
+  public kotActive:boolean = false;
+  public kotFinalizedActive:boolean = false;
+  public clearTableFunc:any;
   constructor(){
     setInterval(()=>{
       this.deviceData = JSON.parse(localStorage.getItem('deviceData') || '{}');

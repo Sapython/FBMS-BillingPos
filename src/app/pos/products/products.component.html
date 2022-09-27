@@ -1,6 +1,6 @@
 <main id="productsContainer">
     <ng-container *ngIf="table">
-        <button class="uk-animation-fast productCard"
+        <button [class]="'uk-animation-fast productCard ' + lengthWiseClass(product.dishName)"
             *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : filteredProducts"
             (click)="addToBill(product)">
             <div class="info">

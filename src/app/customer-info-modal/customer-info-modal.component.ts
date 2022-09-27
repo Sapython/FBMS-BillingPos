@@ -13,6 +13,7 @@ export class CustomerInfoModalComponent implements OnInit {
     name: new FormControl(''),
     email: new FormControl('',[Validators.email]),
     phone: new FormControl('',[Validators.pattern('[0-9]{10}')]),
+    address:new FormControl('')
   })
 
   ngOnInit(): void {}

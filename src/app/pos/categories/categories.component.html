@@ -5,7 +5,7 @@
     </div>
     <hr>
     <li *ngFor="let category of categories" class="mainCategory">
-        <span class="category" (click)="openSwitcher(category)">
+        <span class="category" (click)="openSwitcher(category,category?.subcategories[0])">
             <p>{{category?.name | titlecase}}</p>
             <button mat-icon-button>
                 <i *ngIf="category?.visible" class="ri-arrow-up-s-fill"></i>

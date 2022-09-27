@@ -3,7 +3,7 @@
     <div class="products" *ngIf="currentKot && currentKot.products.length"
         [@dishCardStagger]=" currentKot && currentKot.products.length">
         <app-bill-product-card [@dishCardState]="card.deleting ? 'deleted' : 'default'" #card
-            *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : currentKot!.products"
+            *ngFor="let product of currentKot!.products"
             (deleted)="delete(product.id,card)" (quantityChanged)="updateQuantity(card)" [product]="product">
         </app-bill-product-card>
     </div>
@@ -25,10 +25,10 @@
         </div>
         <div class="money">
             <span class="total">
-                <p>Bill No</p> <b>{{currentBill.tokenNo}}</b>
+                <p>Bill No</p> <b>{{currentBill?.tokenNo}}</b>
             </span>
             <span class="total">
-                <p>Bill Id</p> <b>{{currentBill.id}}</b>
+                <p>Bill Id</p> <b>{{currentBill?.id}}</b>
             </span>
             <span class="total">
                 <p>Total</p> <b>&#x20B9;{{grandTotal}}</b>
@@ -50,7 +50,7 @@
 
             <input type="text" class="specialInstruction" [(ngModel)]="specialInstructions"
                 placeholder="Special Instruction">
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline"  *ngIf="this.currentBill?.table?.type =='table'">
                 <mat-label>Table</mat-label>
                 <mat-select (selectionChange)="changeTable($event)">
                     <ng-container *ngFor="let table of dataProvider.tables" >
@@ -93,7 +93,8 @@
         {{customerInfoForm.value.phoneNumber}}</h4>
     <div class="row">
         <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
-        <h4><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+        <h4 *ngIf="currentTable?.type=='table'"><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+        <h4 *ngIf="currentTable?.type=='room'"><b>Room No.:</b> {{currentTable?.tableNo}}</h4>
     </div>
     <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
     <table>
@@ -171,7 +172,8 @@
     <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
     <div class="row">
         <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
-        <h4><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+        <h4 *ngIf="currentTable?.type=='table'"><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+        <h4 *ngIf="currentTable?.type=='room'"><b>Room No.:</b> {{currentTable?.tableNo}}</h4>
     </div>
     <table>
         <tr>
@@ -179,6 +181,55 @@
             <th>Qty</th>
         </tr>
         <tr *ngFor="let product of currentKot?.products || []">
+            <td>{{product.dishName}}</td>
+            <td>{{product.quantity}}</td>
+        </tr>
+    </table>
+    <hr>
+    <p class="info" *ngIf="specialInstructions">Special Instructions: {{specialInstructions}}</p>
+</div>
+<div id="reprintBillKot">
+    <h3 style="text-align: center">{{dataProvider.currentProject.projectName}}</h3>
+    <h4 style="text-align: center">{{today | date:'long'}}</h4>
+    <h4 style="text-align: center">Bill Id: {{currentBill?.id}}</h4>
+    <h3 *ngIf="deskKot">Order</h3>
+    <h3 *ngIf="!deskKot">KOT</h3>
+    <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
+    <div class="row">
+        <h4><b>Token No.:</b> {{reprinttokenNo}}</h4>
+        <h4 *ngIf="currentTable?.type=='table'"><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+        <h4 *ngIf="currentTable?.type=='room'"><b>Room No.:</b> {{currentTable?.tableNo}}</h4>
+    </div>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+        </tr>
+        <tr *ngFor="let product of reprintKotItems">
+            <td>{{product.dishName}}</td>
+            <td>{{product.quantity}}</td>
+        </tr>
+    </table>
+    <hr>
+    <p class="info" *ngIf="specialInstructions">Special Instructions: {{specialInstructions}}</p>
+</div>
+<div id="cancelledBillKot">
+    <h3 style="text-align: center">{{dataProvider.currentProject.projectName}}</h3>
+    <h4 style="text-align: center">{{today | date:'long'}}</h4>
+    <h4 style="text-align: center">Bill Id: {{currentBill?.id}}</h4>
+    <h3>Cancelled KOT</h3>
+    <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
+    <div class="row">
+        <h4><b>Token No.:</b> {{cancelledtokenNo}}</h4>
+        <h4 *ngIf="currentTable?.type=='table'"><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
+        <h4 *ngIf="currentTable?.type=='room'"><b>Room No.:</b> {{currentTable?.tableNo}}</h4>
+    </div>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+        </tr>
+        <tr *ngFor="let product of cancelledItems">
             <td>{{product.dishName}}</td>
             <td>{{product.quantity}}</td>
         </tr>

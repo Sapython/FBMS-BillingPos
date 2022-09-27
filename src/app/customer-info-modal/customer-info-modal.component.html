@@ -1,10 +1,14 @@
 <section>
     <form [formGroup]="customerInfoForm" (ngSubmit)="submit()">
         <h1>User Data</h1>
-        <input type="text" formControlName="name">
-        <input type="email" formControlName="email">
-        <input type="number" formControlName="phone">
-        <button mat-stroked-button color="primary" type="submit">Yes.</button>
-        <button mat-stroked-button color="primary" (click)="cancel()">No</button>
+        <input placeholder="Text" type="text" formControlName="name">
+        <input placeholder="Email" type="email" formControlName="email">
+        <input placeholder="Number" type="text" formControlName="phone">
+        <input placeholder="Address" type="text" formControlName="address">
+        <br>
+        <div class="row">
+            <button mat-stroked-button color="primary" [disabled]="!customerInfoForm.valid" (click)="done.emit(customerInfoForm.value)" type="submit">Yes.</button>
+            <button mat-stroked-button color="primary" (click)="cancel()">No</button>
+        </div>
     </form>
 </section>

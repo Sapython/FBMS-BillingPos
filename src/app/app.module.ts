@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -40,6 +40,7 @@ import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { CustomerInfoModalComponent } from './customer-info-modal/customer-info-modal.component';
+import { RollbarErrorHandler, rollbarFactory, RollbarService } from './services/rollbar.service';
 @NgModule({
   declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent, CustomerInfoModalComponent],
   imports: [
@@ -71,7 +72,9 @@ import { CustomerInfoModalComponent } from './customer-info-modal/customer-info-
     DataProviderService,
     DatabaseService,
     AuthenticationService,
-    AlertsAndNotificationsService
+    AlertsAndNotificationsService,
+    // { provide: ErrorHandler, useClass: RollbarErrorHandler },
+    // { provide: RollbarService, useFactory: rollbarFactory }
   ],
   bootstrap: [AppComponent],
 })

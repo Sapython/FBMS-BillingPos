@@ -11,6 +11,9 @@ import { AlertsAndNotificationsService } from '../services/uiService/alerts-and-
 })
 export class AllKotsComponent implements OnInit {
   @Output() done:EventEmitter<any> = new EventEmitter();
+  @Output() editKots:EventEmitter<any> = new EventEmitter();
+  @Output() deleteKots:EventEmitter<any> = new EventEmitter();
+  @Output() reprint:EventEmitter<any> = new EventEmitter();
   constructor(
     @Inject(DIALOG_DATA) public bill: any,
     private databaseService: DatabaseService,
@@ -22,8 +25,14 @@ export class AllKotsComponent implements OnInit {
     console.log('bill', this.bill);
   }
 
-  deleteItemKot(kot:any,index:number){
-    // delete product from kot
-    kot.products.splice(index,1)
+  deleteKot(kot:any){
+    this.deleteKots.emit(kot) 
+  }
+  editKot(kot:any){
+    this.editKots.emit(kot)
+  }
+
+  reprintKot(kot:any){
+    this.reprint.emit(kot)
   }
 }

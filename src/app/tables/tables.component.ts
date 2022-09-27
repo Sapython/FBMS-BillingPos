@@ -17,17 +17,37 @@ export class TablesComponent implements OnInit {
   close: EventEmitter<any> = new EventEmitter<any>();
   ngOnInit(): void {
     console.log('TABLEs',this.dataProvider.tables)
+    console.log('ROOMS',this.dataProvider.rooms)
+
     // console.log('shivam', this.dataProvider.tables);
   }
 
   selectRoom(table: any) {
+    if(table.type=='room'){
+      this.dataProvider.modeSelected.next('room');
+    } else {
+      this.dataProvider.modeSelected.next('dineIn');
+    }
     this.dataProvider.tableChanged.next(table);
     this.close.emit();
   }
   emptyTable(table:any){
-    this.databaseService.emptyTable(table.id);
+    if(table.status=='occupied'){
+      alert('Please either finalize bill or cancel order to empty table')
+      return
+    }
+    if(table.type=='room'){  
+      this.databaseService.emptyRoom(table.id);
+    } else {
+      this.databaseService.emptyTable(table.id);
+    }
   }
   selectMenu(table:any){
+    if(table.type=='room'){
+      this.dataProvider.modeSelected.next('room');
+    } else {
+      this.dataProvider.modeSelected.next('dineIn');
+    }
     this.dataProvider.tableChanged.next(table);
     this.close.emit();
   }

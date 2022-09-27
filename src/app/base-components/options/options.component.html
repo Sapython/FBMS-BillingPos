@@ -67,7 +67,7 @@
                         <p><b>Total Kots:</b> {{deletedMenu?.kots.length}}</p>
                         <p><b>User Id:</b> {{deletedMenu?.user}}</p>
                         <p><b>Reason:</b> {{deletedMenu?.reason}}</p>
-                        <p><b>Phone:</b> {{deletedMenu?.reason}}</p>
+                        <p><b>Phone:</b> {{deletedMenu?.phone}}</p>
                         <p><b>Date:</b> {{deletedMenu?.date.toDate() | date}}</p>
                         <p *ngIf="deletedMenu?.date.table">Table No: {{deletedMenu?.date.table.tableNo}}</p>
                         <button mat-flat-button color="primary" (click)="recover(deletedMenu)">Recover</button>

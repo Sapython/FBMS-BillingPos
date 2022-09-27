@@ -28,8 +28,7 @@ export class DatabaseService {
   constructor(
     private fs: Firestore,
     private dataProvider: DataProviderService
-  ) {
-  }
+  ) {}
   deviceName: string = '';
   getCategories() {
     return getDocs(collection(this.fs, 'categories'));
@@ -39,19 +38,38 @@ export class DatabaseService {
     return collectionSnapshots(query(collection(this.fs, 'recipes')));
   }
 
+  addTokenNo(){
+    return updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/counters'
+      ),
+      {
+        bills: increment(1),
+      }
+    );
+  }
+
   getRecipes() {
-    // console.log(
-    //   'Recipes path',
-    //   'business/accounts/' +
-    //     this.dataProvider.currentProject?.projectId +
-    //     '/recipes/recipes'
-    // );
     return getDocs(
       collection(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
           '/recipes/recipes'
+      )
+    );
+  }
+
+  getRoomRecipes() {
+    return getDocs(
+      collection(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/recipes/roomRecipes'
       )
     );
   }
@@ -132,8 +150,21 @@ export class DatabaseService {
       )
     );
   }
+  getRooms() {
+    return collectionSnapshots(
+      query(
+        collection(
+          this.fs,
+          'business/accounts/' +
+            this.dataProvider.currentProject?.projectId +
+            '/rooms/rooms'
+        ),
+        orderBy('tableNo')
+      )
+    );
+  }
 
-  getCustomers(){
+  getCustomers() {
     return collectionSnapshots(
       query(
         collection(
@@ -141,7 +172,8 @@ export class DatabaseService {
           'business/accounts/' +
             this.dataProvider.currentProject?.projectId +
             '/bills/bills'
-        ),where('customerInfoForm.phoneNumber','!=','')
+        ),
+        where('customerInfoForm.phoneNumber', '!=', '')
       )
     );
   }
@@ -169,27 +201,30 @@ export class DatabaseService {
     );
   }
 
-  getCounters(){
+  getCounters() {
     return docData(
       doc(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
           '/counters'
-      ),{idField:'id'}
+      ),
+      { idField: 'id' }
     );
   }
 
-  async useTable(table:any,billId:string){
+  async useTable(table: any, billId: string) {
     await updateDoc(
       doc(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
-          '/bills/bills/'+billId
-      ),{
-        tableId:table.id,
-        table:table,
+          '/bills/bills/' +
+          billId
+      ),
+      {
+        tableId: table.id,
+        table: table,
       }
     );
     await updateDoc(
@@ -207,42 +242,73 @@ export class DatabaseService {
     );
   }
 
-  async createBill(billData: any,id:string) {
+  async createBill(billData: any, id: string) {
+    // alert('CReating bill');
+    // console.log('billData', billData);
     const res = await setDoc(
       doc(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
-          '/bills/bills/'+id
+          '/bills/bills/' +
+          id
       ),
       billData
     );
-    await updateDoc(
+    if (billData.table.type == 'table') {
+      await updateDoc(
+        doc(
+          this.fs,
+          'business/accounts/' +
+            this.dataProvider.currentProject?.projectId +
+            '/tables/tables/' +
+            billData.tableId
+        ),
+        {
+          status: 'occupied',
+          bill: id,
+        }
+      );
+    } else {
+      await updateDoc(
+        doc(
+          this.fs,
+          'business/accounts/' +
+            this.dataProvider.currentProject?.projectId +
+            '/rooms/rooms/' +
+            billData.tableId
+        ),
+        {
+          status: 'occupied',
+          bill: id,
+        }
+      );
+    }
+    await setDoc(
       doc(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
-          '/tables/tables/' +
-          billData.tableId
+          '/counters'
       ),
       {
-        status: 'occupied',
-        bill: id,
-      }
-    );
-    await setDoc(
-      doc(this.fs,'business/accounts/'+this.dataProvider.currentProject?.projectId+'/counters'),
-      {
-        bills:increment(1)
+        bills: increment(1),
       },
       {
-        merge:true
+        merge: true,
       }
-    )
+    );
     return res;
   }
 
-  async updateBill(billData: any, billId:string) {
+  async updateBill(billData: any, billId: string) {
+    console.log(
+      this.fs,
+      'business/accounts/' +
+        this.dataProvider.currentProject?.projectId +
+        '/bills/bills/' +
+        billId
+    );
     return await updateDoc(
       doc(
         this.fs,
@@ -251,17 +317,19 @@ export class DatabaseService {
           '/bills/bills/' +
           billId
       ),
-       billData
+      billData
     );
   }
-  addToKot(kotData: any, id:string,billId:string) {
+  addToKot(kotData: any, id: string, billId: string) {
     return updateDoc(
       doc(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
           '/bills/bills/' +
-          billId + '/kots/' + id
+          billId +
+          '/kots/' +
+          id
       ),
       {
         products: kotData,
@@ -269,34 +337,57 @@ export class DatabaseService {
     );
   }
 
-  async finalizeKot(billData: any, id: string,billId:string,tableId:string){
-    await updateDoc(
-      doc(
-        this.fs,
-        'business/accounts/' +
-          this.dataProvider.currentProject?.projectId +
-          '/tables/tables/' +
-          tableId
-      ),
-      {
-        status: 'occupied',
-        bill: billId,
-      }
-    );
+  async finalizeKot(
+    billData: any,
+    id: string,
+    billId: string,
+    tableId: string
+  ) {
+    if (billData.table.type == 'table') {
+      await updateDoc(
+        doc(
+          this.fs,
+          'business/accounts/' +
+            this.dataProvider.currentProject?.projectId +
+            '/tables/tables/' +
+            tableId
+        ),
+        {
+          status: 'occupied',
+          bill: billId,
+        }
+      );
+    } else {
+      await updateDoc(
+        doc(
+          this.fs,
+          'business/accounts/' +
+            this.dataProvider.currentProject?.projectId +
+            '/rooms/rooms/' +
+            tableId
+        ),
+        {
+          status: 'occupied',
+          bill: billId,
+        }
+      );
+    }
     await updateDoc(
       doc(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
           '/bills/bills/' +
-          billId + '/kots/' + id
+          billId +
+          '/kots/' +
+          id
       ),
       {
-        products:billData
+        products: billData,
       }
     );
 
-    return await this.createKot([],billId);
+    return await this.createKot([], billId);
   }
 
   getBills() {
@@ -310,13 +401,14 @@ export class DatabaseService {
     );
   }
 
-  getBill(billId:string){
+  getBill(billId: string) {
     return getDoc(
       doc(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
-          '/bills/bills/'+billId
+          '/bills/bills/' +
+          billId
       )
     );
   }
@@ -347,7 +439,7 @@ export class DatabaseService {
     );
   }
 
-  deleteBill(id: string, reason: string,phone:string) {
+  deleteBill(id: string, reason: string, phone: string) {
     // /business/accounts//bills/bills/vuh0GUX9K609Gjr9szaP
     return updateDoc(
       doc(
@@ -360,7 +452,7 @@ export class DatabaseService {
       {
         deleted: true,
         reason: reason,
-        phone:phone
+        phone: phone,
       }
     );
   }
@@ -395,7 +487,7 @@ export class DatabaseService {
     );
   }
 
-  updatePaymentType(id:string,data:any){
+  updatePaymentType(id: string, data: any) {
     return updateDoc(
       doc(
         this.fs,
@@ -404,11 +496,11 @@ export class DatabaseService {
           '/bills/bills/' +
           id
       ),
-      {paymentType:data}
+      { paymentType: data }
     );
   }
 
-  updateDineMethod(id:string,data:any){
+  updateDineMethod(id: string, data: any) {
     return updateDoc(
       doc(
         this.fs,
@@ -417,11 +509,11 @@ export class DatabaseService {
           '/bills/bills/' +
           id
       ),
-      {dineMethod:data}
+      { dineMethod: data }
     );
   }
 
-  async createKot(kotData: any,billId:any) {
+  async createKot(kotData: any, billId: any) {
     // await setDoc(doc(this.fs,'business/accounts/'+this.dataProvider.currentProject?.projectId +'/bills'),{
     //   dailyCounter:increment(1),
     // },{merge:true});
@@ -430,13 +522,15 @@ export class DatabaseService {
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
-          '/bills/bills/'+billId+'/kots'
+          '/bills/bills/' +
+          billId +
+          '/kots'
       ),
-      {products:kotData,billId:billId}
+      { products: kotData, billId: billId }
     );
   }
 
-  getKot(kotId:string,billId:string){
+  getKot(kotId: string, billId: string) {
     // console.log('business/accounts/' +
     // this.dataProvider.currentProject?.projectId +
     // '/bills/bills/'+billId+'/kots/'+kotId)
@@ -445,12 +539,15 @@ export class DatabaseService {
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
-          '/bills/bills/'+billId+'/kots/'+kotId
+          '/bills/bills/' +
+          billId +
+          '/kots/' +
+          kotId
       )
     );
   }
 
-  emptyTable(id:string){
+  emptyTable(id: string) {
     return updateDoc(
       doc(
         this.fs,
@@ -466,9 +563,25 @@ export class DatabaseService {
     );
   }
 
-  async finalizeBill(id:string,table:any){
+  emptyRoom(id: string) {
+    return updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/rooms/rooms/' +
+          id
+      ),
+      {
+        status: 'available',
+        bill: '',
+      }
+    );
+  }
+
+  async finalizeBill(id: string, table: any) {
     // make table available
-    await this.emptyTable(table.id)
+    await this.emptyTable(table.id);
     return updateDoc(
       doc(
         this.fs,
@@ -483,25 +596,38 @@ export class DatabaseService {
     );
   }
 
-  getMainCategories(){
-    console.log('business/accounts/'+ this.dataProvider.currentProject?.projectId +'/recipes/categoryGroups')
-    return getDocs(collection(this.fs,'business/accounts/'+ this.dataProvider.currentProject?.projectId +'/recipes/categoryGroups'));
+  getMainCategories() {
+    console.log(
+      'business/accounts/' +
+        this.dataProvider.currentProject?.projectId +
+        '/recipes/categoryGroups'
+    );
+    return getDocs(
+      collection(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/recipes/categoryGroups'
+      )
+    );
   }
 
-  updateKot(kotId:string,billId:string,data:any){
+  updateKot(kotId: string, billId: string, data: any) {
     return updateDoc(
       doc(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
-          '/bills/bills/'+billId+'/kots/'+kotId
+          '/bills/bills/' +
+          billId +
+          '/kots/' +
+          kotId
       ),
-      {products:data}
+      { products: data }
     );
   }
 
-
-  getDiscounts(){
+  getDiscounts() {
     return collectionData(
       collection(
         this.fs,
@@ -509,8 +635,7 @@ export class DatabaseService {
           this.dataProvider.currentProject?.projectId +
           '/discounts/discounts'
       ),
-      {idField:'id'}
+      { idField: 'id' }
     );
   }
-
 }
