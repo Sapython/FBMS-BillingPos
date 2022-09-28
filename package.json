@@ -40,7 +40,6 @@
     "@angular/platform-browser": "^14.0.0",
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
-    "@angular/service-worker": "^14.0.0",
     "dexie": "^3.2.2",
     "fuse.js": "^6.6.2",
     "num-words": "^1.2.2",
