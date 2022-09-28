@@ -41,6 +41,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { CustomerInfoModalComponent } from './customer-info-modal/customer-info-modal.component';
 import { RollbarErrorHandler, rollbarFactory, RollbarService } from './services/rollbar.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
 @NgModule({
   declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent, CustomerInfoModalComponent],
   imports: [
@@ -64,7 +65,13 @@ import { RollbarErrorHandler, rollbarFactory, RollbarService } from './services/
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [
     ScreenTrackingService,

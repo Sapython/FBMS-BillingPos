@@ -17,7 +17,7 @@
     "fbms-shreeva-demo": {
       "hosting": {
         "FBMS-BillingPos": [
-          "fbms-shreeva-demo"
+          "viraj-pos"
         ]
       }
     }
