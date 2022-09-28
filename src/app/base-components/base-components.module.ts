@@ -14,6 +14,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { SettingsComponent } from './settings/settings.component'; 
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 const comps = [HeaderComponent,
   FooterComponent]
@@ -35,7 +36,8 @@ const comps = [HeaderComponent,
     MatButtonToggleModule,
     MatSelectModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatInputModule
   ],
   exports:comps
 })
