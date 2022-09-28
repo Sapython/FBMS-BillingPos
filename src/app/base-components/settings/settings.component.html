@@ -1,0 +1,21 @@
+<section>
+    <h1>Settings</h1>
+    <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
+        <mat-form-field appearance="fill">
+            <mat-label>Choose Printer For KOT</mat-label>
+            <mat-select formControlName="kotPrinter">
+              <mat-option>Clear</mat-option>
+              <mat-option [value]="printer" *ngFor="let printer of printers">{{printer}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Choose Printer For Bill</mat-label>
+            <mat-select formControlName="billPrinter">
+              <mat-option>Clear</mat-option>
+              <mat-option [value]="printer" *ngFor="let printer of printers">{{printer}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button color="primary" style="margin-right:20px;" (click)="cancelSettings()" mat-stroked-button type="button"> Cancel</button>
+          <button color="primary" style="margin-right:20px;" mat-flat-button type="submit"> Submit</button>
+    </form>
+</section>

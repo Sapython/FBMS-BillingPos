@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-settings',
@@ -7,6 +7,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
+  @Output() cancel = new EventEmitter();
+  @Output() save = new EventEmitter();
   settingsForm:FormGroup = new FormGroup({
     kotPrinter: new FormControl('',[Validators.required]),
     billPrinter: new FormControl('',[Validators.required]),
@@ -17,12 +19,19 @@ export class SettingsComponent implements OnInit {
     'printer3'
   ]
   constructor() { }
-
+  cancelSettings(){
+    this.cancel.emit()
+  }
+  
   ngOnInit(): void {
+    if (localStorage.getItem('printerSettings')){
+      this.settingsForm.patchValue(JSON.parse(localStorage.getItem('printerSettings')!))
+    }
   }
 
   saveSettings(){
     console.log(this.settingsForm.value);
+    this.save.emit(this.settingsForm.value)
   }
 
 }

@@ -12,6 +12,7 @@ import { DataProviderService } from 'src/app/services/data-provider.service';
 import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts-and-notifications.service';
 import { TablesComponent } from 'src/app/tables/tables.component';
 import { OptionsComponent } from '../options/options.component';
+import { SettingsComponent } from '../settings/settings.component';
 
 @Component({
   selector: 'app-header',
@@ -137,6 +138,20 @@ export class HeaderComponent implements OnInit {
       'No tables found. Please select a table to search.',
       'error'
     );
+  }
+
+  openSettings(){
+    const inst = this.dialog.open(SettingsComponent);
+    inst.componentInstance?.cancel.subscribe(() => {
+      inst.close();
+    })
+    inst.componentInstance?.save.subscribe((value) => {
+      this.savePrinterSettings(value);
+      inst.close();
+    })
+  }
+  savePrinterSettings(value:any){
+    localStorage.setItem('printerSettings', JSON.stringify(value));
   }
   // ctrl + s
   @HostListener('document:keydown.control.s', ['$event'])

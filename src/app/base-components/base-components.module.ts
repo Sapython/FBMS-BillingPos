@@ -10,7 +10,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { OptionsComponent } from './options/options.component';
 import { MatTabsModule } from '@angular/material/tabs';
 
-import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { SettingsComponent } from './settings/settings.component'; 
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const comps = [HeaderComponent,
   FooterComponent]
@@ -19,7 +22,8 @@ const comps = [HeaderComponent,
   declarations: [
     comps,
     SidebarComponent,
-    OptionsComponent
+    OptionsComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -28,7 +32,10 @@ const comps = [HeaderComponent,
     MatButtonModule,
     MatIconModule,
     MatTabsModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   exports:comps
 })
