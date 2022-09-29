@@ -1,14 +1,26 @@
 <section>
+    <h1>User Data</h1>
     <form [formGroup]="customerInfoForm" (ngSubmit)="submit()">
-        <h1>User Data</h1>
-        <input placeholder="Text" type="text" formControlName="name">
-        <input placeholder="Email" type="email" formControlName="email">
-        <input placeholder="Number" type="text" formControlName="phone">
-        <input placeholder="Address" type="text" formControlName="address">
+        <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input placeholder="Name" type="text" formControlName="name" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="primary">
+            <mat-label>Email</mat-label>
+            <input placeholder="Email" type="email" formControlName="email" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="primary">
+            <mat-label>Phone</mat-label>
+            <input placeholder="Number" type="text" formControlName="phone" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="primary">
+            <mat-label>Address</mat-label>
+            <textarea placeholder="Address" type="text" formControlName="address" matInput> </textarea>
+        </mat-form-field>
         <br>
         <div class="row">
-            <button mat-stroked-button color="primary" [disabled]="!customerInfoForm.valid" (click)="done.emit(customerInfoForm.value)" type="submit">Yes.</button>
-            <button mat-stroked-button color="primary" (click)="cancel()">No</button>
+            <button mat-flat-button color="primary" [disabled]="!customerInfoForm.valid" (click)="done.emit(customerInfoForm.value)" type="submit">Save.</button>
+            <button mat-stroked-button color="primary"  type="button" (click)="cancel()">Cancel</button>
         </div>
     </form>
 </section>

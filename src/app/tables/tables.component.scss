@@ -27,21 +27,24 @@ main {
       color: white;
       border-radius: 5px;
       padding: 15px;
-      width:130px;
-      height:200px;
+      width:80px;
+      height:100px;
       font-size: 15px;
       text-align: center;
       transition: all .2s ease-in;
       &:hover{
         scale: 1.08;
       }
+      p{
+        margin:0px;
+      }
       span{
         // border:2px 
         // background: white;
         border-radius: 10px;
-        padding: 05px;
+        padding: 5px;
         color:white;
-        font-size: 15px;
+        font-size: 12px;
         cursor: pointer;
       }
       button{
@@ -50,19 +53,22 @@ main {
     }
     .available{
       display: flex;
-      width:130px;
-      height:200px;
+      width:80px;
+      height:100px;
       flex-direction: column;
       border: 3px solid var(--primary);
       color:  var(--primary);
       border-radius: 5px;
       padding: 15px;
-      font-size: 25px;
       text-align: center;
       transition: all .2s ease-in;
       cursor: pointer;
       &:hover{
         scale: 1.08;
+      }
+      p{
+        margin:0px;
+        font-size: 15px;
       }
       span{
         // border:2px 
@@ -70,7 +76,7 @@ main {
         border-radius: 10px;
         padding: 05px;
         color:var(--primary);
-        font-size: 15px;
+        font-size: 12px;
         cursor: pointer;
       }
     }
@@ -79,7 +85,7 @@ main {
     text-align: center;
     font-family: var(--primary-font);
   }
-  div {
+  .booked,.available {
     box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);
     background: white;
     border: 2px solid var(--primary);
@@ -87,14 +93,20 @@ main {
     height: fit-content;
     padding: 10px;
     border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
   }
-  .empty{
-    background-color: #fff;
-    border: 1px solid var(--primary);
-    color: var(--primary);
-    padding: 5px 10px;
-    margin-top: 10px;
-    border-radius: 10px;
-    font-family: var(--primary-font);
+  .row{
+    display: flex;
+    justify-content: space-between;
   }
+  // .empty{
+  //   background-color: #fff;
+  //   border: 1px solid var(--primary);
+  //   color: var(--primary);
+  //   padding: 5px 10px;
+  //   margin-top: 10px;
+  //   border-radius: 10px;
+  //   font-family: var(--primary-font);
+  // }
 }

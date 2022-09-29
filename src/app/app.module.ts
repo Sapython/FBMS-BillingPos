@@ -36,7 +36,7 @@ import { TablesComponent } from './tables/tables.component';
 import { MatButtonModule } from '@angular/material/button';
 import { AllKotsComponent } from './all-kots/all-kots.component';
 import { CancelModalComponent } from './cancel-modal/cancel-modal.component';
-import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { CustomerInfoModalComponent } from './customer-info-modal/customer-info-modal.component';

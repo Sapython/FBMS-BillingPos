@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -8,7 +9,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class CustomerInfoModalComponent implements OnInit {
   done:EventEmitter<any> = new EventEmitter();
-  constructor() { }
+  constructor(@Inject(DIALOG_DATA) public infoFormValue: any,) { }
   customerInfoForm:FormGroup = new FormGroup({
     name: new FormControl(''),
     email: new FormControl('',[Validators.email]),
@@ -16,7 +17,9 @@ export class CustomerInfoModalComponent implements OnInit {
     address:new FormControl('')
   })
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.customerInfoForm.patchValue(this.infoFormValue);
+  }
   submit(){
     this.done.emit(this.customerInfoForm.value);
   }

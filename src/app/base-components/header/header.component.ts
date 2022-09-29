@@ -13,6 +13,7 @@ import { AlertsAndNotificationsService } from 'src/app/services/uiService/alerts
 import { TablesComponent } from 'src/app/tables/tables.component';
 import { OptionsComponent } from '../options/options.component';
 import { SettingsComponent } from '../settings/settings.component';
+import Fuse from 'fuse.js';
 
 @Component({
   selector: 'app-header',
@@ -55,7 +56,24 @@ export class HeaderComponent implements OnInit {
   syncing: boolean = false;
   tableInst: any;
   allInst: any[] = [];
+  autocompleteValue:any;
+  filteredOptions: any[] = [];
   ngOnInit(): void {
+    this.dataProvider.searchEvent.subscribe((data: string) => {
+      if (data) {
+        const options = {
+          keys: ['dishName', 'sellingPrice', 'onlinePrice'],
+        };
+        const fuse = new Fuse(this.dataProvider.products, options); // "list" is the item array
+        const result = fuse.search(data);
+        this.filteredOptions = [];
+        result.forEach((product: any) => {
+          this.filteredOptions.push(product.item);
+        });
+      } else {
+        this.filteredOptions = [];
+      }
+    });
     this.dataProvider.openTableFunction = this.newOrder.bind(this);
     this.dataProvider.openTable.subscribe((data) => {
       this.newOrder();
@@ -76,6 +94,19 @@ export class HeaderComponent implements OnInit {
       this.placeholder =
         this.placeholders[Math.floor(Math.random() * this.placeholders.length)];
     }, 1000);
+  }
+  addToBill(data: any) {
+    console.log(data);
+    const product = data.option.value
+    if (!product.quantity) {
+      product.quantity = 1;
+    }
+    this.dataProvider.selectedProduct.next(product);
+    this.autocompleteValue = null;
+    data.option.value = 'null';
+  }
+  log($event:any){
+    console.log($event)
   }
 
   fireEvent() {

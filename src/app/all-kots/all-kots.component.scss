@@ -37,8 +37,10 @@ main{
         justify-content: space-between;
         align-items: center;
         box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        margin: 20px;
         table{
             border-radius: 10px;
+            width: 100%;
         }
         table,th,td {
             border: 1px solid rgb(177, 177, 177);

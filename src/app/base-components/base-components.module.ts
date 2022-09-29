@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { OptionsComponent } from './options/options.component';
 import { MatTabsModule } from '@angular/material/tabs';
 
+import {MatAutocompleteModule} from '@angular/material/autocomplete'; 
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { SettingsComponent } from './settings/settings.component'; 
 import { MatSelectModule } from '@angular/material/select';
@@ -37,7 +38,8 @@ const comps = [HeaderComponent,
     MatSelectModule,
     ReactiveFormsModule,
     FormsModule,
-    MatInputModule
+    MatInputModule,
+    MatAutocompleteModule
   ],
   exports:comps
 })

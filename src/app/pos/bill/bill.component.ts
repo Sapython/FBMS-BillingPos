@@ -167,6 +167,7 @@ export class BillComponent implements OnInit, OnChanges {
   cancelledItems: any[] = [];
   reprintKotItems: any[] = [];
   reprinttokenNo: number = 0;
+  complimentaryName: string = '';
   constructor(
     public dataProvider: DataProviderService,
     private databaseService: DatabaseService,
@@ -273,7 +274,7 @@ export class BillComponent implements OnInit, OnChanges {
         } else {
           this.currentKot!.products.push({
             ...product,
-            quantity: 1,
+            quantity: product.quantity || 1,
           });
         }
         this.updateBill();
@@ -492,6 +493,10 @@ export class BillComponent implements OnInit, OnChanges {
       this.alertify.presentToast('No bill to update', 'error');
     }
   }
+  saveBill(){
+    this.updateBill();
+    this.calculateTaxAndPrices();
+  }
 
   createBill() {
     this.dataProvider.kotActive = true;
@@ -563,6 +568,11 @@ export class BillComponent implements OnInit, OnChanges {
   }
 
   finalizeBill() {
+
+    if (this.paymentMethod == 'pickUp' && !this.customerInfoForm.value.name && !this.customerInfoForm.value.address) {
+      alert('Cannot finalize bill without customer name and address');
+      return;
+    }
     console.log('CURRENT BILL BEFORE FINAL', this.currentBill);
     this.allKotProducts = [];
     this.databaseService.getBill(this.currentBill!.id).then((bill) => {
@@ -678,15 +688,17 @@ export class BillComponent implements OnInit, OnChanges {
   }
 
   openUserInfoModal() {
-    const inst = this.dialog.open(CustomerInfoModalComponent);
+    const inst = this.dialog.open(CustomerInfoModalComponent,{
+      data:this.customerInfoForm.value
+    });
     inst.componentInstance?.done.subscribe((data) => {
       console.log(data)
       if (data) {
         this.customerInfoForm.patchValue(data);
         console.log(this.customerInfoForm.value);
         this.updateBill();
-        inst.close();
       }
+      inst.close();
     });
   }
 
@@ -699,16 +711,6 @@ export class BillComponent implements OnInit, OnChanges {
     }
   }
   seeAllKots() {
-    // this.allKotProducts = [];
-    // console.log('L', this.currentBill?.kots);
-    // this.currentBill?.kots.forEach((kot) => {
-    //   console.log('M', kot);
-    //   if (kot.finalized) {
-    //     kot.products.forEach((product: any) => {
-    //       this.allKotProducts.push(product);
-    //     });
-    //   }
-    // });
     this.dataProvider.pageSetting.blur = true;
     this.databaseService
       .getBill(this.currentBill!.id)
@@ -751,8 +753,10 @@ export class BillComponent implements OnInit, OnChanges {
           if (found){
             this.printCancelledKot(found.products,found.tokenNo)
             this.currentBill!.kots.find((kot) => kot.id == data.id)!.cancelled = true;
-            const res= JSON.parse(JSON.stringify(this.currentBill!.kots.find((kot) => kot.id == data.id)!.products));
-            res.forEach((product:any)=>{
+            // const res= JSON.parse(JSON.stringify(this.currentBill!.kots.find((kot) => kot.id == data.id)!.products));
+            // console.log(res)
+            console.log("found.products",found.products)
+            found.products.forEach((product:any)=>{
               this.dataProvider.selectedProduct.next(product);
             })
             // this.currentBill!.kots.find((kot) => kot.id == data.id)!.products = [];
@@ -810,6 +814,27 @@ export class BillComponent implements OnInit, OnChanges {
     document.getElementById('cancelledBillKot')!.style.display = 'none';
     document.getElementById('billKot')!.style.display = 'none';
     document.getElementById('bill')!.style.display = 'none';
+  }
+  setComplimentary(event:any){
+    console.log(event)
+    if (event.checked){
+      let res:any = ''
+      while (res==''){
+        res = prompt("Enter Name of Complimentary Person")
+        console.log('res',res)
+      }
+      if(res){
+        this.complimentaryName = res
+        console.log('passed')
+      } else {
+        setTimeout(()=>{
+          this.isNonChargeable = false
+          this.calculateTaxAndPrices()
+        },100)
+        this.changeDetection.detectChanges()
+        console.log('failed')
+      }
+    }
   }
 }
 

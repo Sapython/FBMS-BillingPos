@@ -26,7 +26,6 @@ const routes: Routes = [
         (m) => m.ProjectSelectorModule
       ),
   },
-  { path: 'settings', loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule) },
 ];
 
 @NgModule({

@@ -11,14 +11,14 @@
 $ssspay-palette: (
  50: #ffeccf,
  100: #ffce7a,
- 200: #51ffd1,
- 300: #0dffbe,
- 400:rgb(12, 202, 151),
- 500:#00be8b,
- 600:#03a479,
+ 200: #ffce7a,
+ 300: #ffce7a,
+ 400:#ffce7a,
+ 500:#ffce7a,
+ 600:#ffa99a,
  700:#ea7c69,
- 800:#016e51,
- 900:#008d67,
+ 800:#ffce7a,
+ 900:#ffce7a,
  contrast: (
    50: rgba(black, 0.87),
    100: rgba(black, 0.87),
@@ -33,7 +33,7 @@ $ssspay-palette: (
  )
 );
 $my-primary: mat.define-palette($ssspay-palette, 700);
-$my-accent: mat.define-palette(mat.$cyan-palette, A200, A100, A400);
+$my-accent: mat.define-palette($ssspay-palette, 600);
 $my-foreground: mat.define-palette($ssspay-palette, 700);
 $my-success: mat.define-palette($ssspay-palette, 600);
 

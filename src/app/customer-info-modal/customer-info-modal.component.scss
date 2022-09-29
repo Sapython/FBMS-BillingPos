@@ -2,27 +2,14 @@ section{
     background: white;
     padding: 20px;
     border-radius: 20px;
-    width: 400px;
+    min-width: 400px;
     mat-form-field{
         width: 100%;
     }
     form{
-        display: flex;
-        justify-content: flex-start;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap:20px;
-        textarea,input{
-            width: 70%;
-            font-size: 16px;
-            border: 2px solid var(--primary);
-            padding:7px;
-            border-radius:7px;
-            background: rgb(250,250,250);
-            &:focus{
-                outline: none;
-                border: 2px solid var(--primary);
-            }
-        }
         .row{
             display: flex;
             justify-content: flex-end;

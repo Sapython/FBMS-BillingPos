@@ -6,11 +6,16 @@
       <input matInput type="text" formControlName="projectName">
     </mat-form-field>
     <mat-form-field class="example-form-field" appearance="fill">
+      <mat-label>Phone Number:</mat-label>
       <input matInput type="text" formControlName="phoneNumber">
     </mat-form-field>
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label>Address:</mat-label>
       <input matInput type="text" formControlName="address">
+    </mat-form-field>
+    <mat-form-field class="example-form-field" appearance="fill">
+      <mat-label>GST No:</mat-label>
+      <input matInput type="text" formControlName="gstNumber">
     </mat-form-field>
     <mat-form-field appearance="fill">
       <mat-label>Choose Printer For KOT</mat-label>
@@ -25,10 +30,6 @@
         <mat-option>Clear</mat-option>
         <mat-option [value]="printer" *ngFor="let printer of printers">{{printer}}</mat-option>
       </mat-select>
-    </mat-form-field>
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>GST No:</mat-label>
-      <input matInput type="text" formControlName="gstNo">
     </mat-form-field>
     <mat-form-field class="example-form-field" appearance="fill">
       <mat-label>FSSAI No:</mat-label>

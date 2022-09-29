@@ -2,7 +2,7 @@ section{
     background: white;
     padding: 20px;
     border-radius: 20px;
-    width: 400px;
+    min-width: 400px;
     mat-form-field{
         width: 100%;
     }
@@ -21,5 +21,6 @@ section{
     form{
         display:grid;
         grid-template-columns: 1fr 1fr;
+        gap:10px;
     }
 }

@@ -4,31 +4,52 @@
             <img src="assets/viraj-logo.png" alt="">
         </div>
         <div class="buttons">
-            <button class="tableNo" mat-stroked-button color="primary" *ngIf="dataProvider.selectedTable">{{dataProvider.selectedTable.type=='table' ? 'Table No' : 'Room No'}}: {{dataProvider.selectedTable.tableNo}}</button>
-            <button mat-stroked-button color="primary" class="higlighted" (click)="newOrder()">Select Table/Room</button>
-            <mat-button-toggle-group name="fontStyle" [value]="(this.dataProvider.modeSelected | async) || 'dineIn'" aria-label="Font Style" (change)="changeBillerMode($event)">
+            <button class="tableNo" mat-stroked-button color="primary"
+                *ngIf="dataProvider.selectedTable">{{dataProvider.selectedTable.type=='table' ? 'Table No' : 'Room
+                No'}}: {{dataProvider.selectedTable.tableNo}}</button>
+            <button mat-stroked-button color="primary" class="higlighted" (click)="newOrder()">Select
+                Table/Room</button>
+            <mat-button-toggle-group name="fontStyle" [value]="(this.dataProvider.modeSelected | async) || 'dineIn'"
+                aria-label="Font Style" (change)="changeBillerMode($event)">
                 <mat-button-toggle value="dineIn">Restaurant</mat-button-toggle>
                 <mat-button-toggle value="room">Room</mat-button-toggle>
             </mat-button-toggle-group>
             <div (mouseenter)="extraSearchClass = 'active'" id="searchBar" class="search {{extraSearchClass}}">
-                <input (change)="extraSearchClass = 'active'" (input)="selectedTable ? dataProvider.searchEvent.next(search.value) : noTablesAlert()" #search [placeholder]="placeholder + '..'" type="text">
+                <input (change)="extraSearchClass = 'active'"
+                    (input)="selectedTable ? dataProvider.searchEvent.next(search.value) : noTablesAlert()" #search
+                    [placeholder]="placeholder + '..'" type="text" [matAutocomplete]="auto" name="fieldName" ngDefaultControl [(ngModel)]="autocompleteValue">
                 <div *ngIf="extraSearchClass">
-                    <button (click)="search.value = ''" mat-icon-button color="primary"><mat-icon>close</mat-icon></button>
+                    <button (click)="search.value = ''" mat-icon-button color="primary">
+                        <mat-icon>close</mat-icon>
+                    </button>
                 </div>
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="addToBill($event)">
+                    <mat-option *ngFor="let option of filteredOptions" [value]="option">
+                        {{option.dishName | titlecase}}
+                    </mat-option>
+                </mat-autocomplete>
             </div>
         </div>
         <div class="support">
-            <button mat-stroked-button color="primary" color="primary"><mat-icon>call</mat-icon>+919311064422</button>
-            <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSepJpdp3clwVi3ou63mTbgd0yKR7MsABhD7CrgoZRR08lW7dQ/viewform?usp=sf_link"><button mat-stroked-button color="primary"><mat-icon>bug_report</mat-icon>Report A Bug</button></a>
+            <button mat-stroked-button color="primary" color="primary">
+                <mat-icon>call</mat-icon>+919311064422
+            </button>
+            <a target="_blank"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSepJpdp3clwVi3ou63mTbgd0yKR7MsABhD7CrgoZRR08lW7dQ/viewform?usp=sf_link"><button
+                    mat-stroked-button color="primary">
+                    <mat-icon>bug_report</mat-icon>Report A Bug
+                </button></a>
             <button mat-stroked-button *ngIf="syncing">
                 Syncing with server...
             </button>
         </div>
         <div class="actions">
-            <button mat-icon-button color="primary"><i class="ri-logout-circle-r-line" (click)="authService.logout()"></i></button>
+            <button mat-icon-button color="primary"><i class="ri-logout-circle-r-line"
+                    (click)="authService.logout()"></i></button>
             <button mat-icon-button color="primary"><i class="ri-settings-5-fill" (click)="openSettings()"></i></button>
             <button mat-icon-button color="primary" (click)="openOptions()"><i class="ri-stack-fill"></i></button>
-            <button mat-icon-button color="primary" (click)="dataProvider.locked = true"><i class="ri-lock-fill"></i></button>
+            <button mat-icon-button color="primary" (click)="dataProvider.locked = true"><i
+                    class="ri-lock-fill"></i></button>
         </div>
     </nav>
     <app-sidebar *ngIf="openMenu" (close)="openMenu = false"></app-sidebar>

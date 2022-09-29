@@ -3,23 +3,23 @@
     <div class="products" *ngIf="currentKot && currentKot.products.length"
         [@dishCardStagger]=" currentKot && currentKot.products.length">
         <app-bill-product-card [@dishCardState]="card.deleting ? 'deleted' : 'default'" #card
-            *ngFor="let product of currentKot!.products"
-            (deleted)="delete(product.id,card)" (quantityChanged)="updateQuantity(card)" [product]="product">
+            *ngFor="let product of currentKot!.products;let i = index" (deleted)="delete(product.id,card)"
+            (instructionSet)="saveBill()" (quantityChanged)="updateQuantity(card)" [product]="currentKot!.products[i]">
         </app-bill-product-card>
     </div>
     <div class="billActions" *ngIf="currentBill">
         <div class="actions">
             <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'cash'"
-                (click)="paymentMethod = 'cash'">Cash</button>
+                (click)="paymentMethod = 'cash';saveBill()">Cash</button>
             <button mat-flat-button color="primary" *ngIf="paymentMethod == 'cash'">Cash</button>
             <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'card'"
-                (click)="paymentMethod = 'card'">Card</button>
+                (click)="paymentMethod = 'card';saveBill()">Card</button>
             <button mat-flat-button color="primary" *ngIf="paymentMethod == 'card'">Card</button>
             <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'dineIn'"
-                (click)="paymentMethod = 'dineIn'">Dine In</button>
+                (click)="paymentMethod = 'dineIn';saveBill()">Dine In</button>
             <button mat-flat-button color="primary" *ngIf="paymentMethod == 'dineIn'">Dine In</button>
             <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'pickUp'"
-                (click)="paymentMethod = 'pickUp'">Pick Up</button>
+                (click)="paymentMethod = 'pickUp';saveBill()">Pick Up</button>
             <button mat-flat-button color="primary" *ngIf="paymentMethod == 'pickUp'">Pick Up</button>
             <button mat-raised-button color="primary" (click)="seeAllKots()">Manage KOTs</button>
         </div>
@@ -43,18 +43,19 @@
                 </mat-select>
             </mat-form-field>
             <span>
-                <mat-slide-toggle (change)="calculateTaxAndPrices()" class="example-margin"
+                <mat-slide-toggle (change)="setComplimentary($event);calculateTaxAndPrices()" class="example-margin"
                     [(ngModel)]="isNonChargeable" color="primary"></mat-slide-toggle>
                 <p>Non Chargeable</p>
             </span>
 
             <input type="text" class="specialInstruction" [(ngModel)]="specialInstructions"
                 placeholder="Special Instruction">
-            <mat-form-field appearance="outline"  *ngIf="this.currentBill?.table?.type =='table'">
+            <mat-form-field appearance="outline" *ngIf="this.currentBill?.table?.type =='table'">
                 <mat-label>Table</mat-label>
                 <mat-select (selectionChange)="changeTable($event)">
-                    <ng-container *ngFor="let table of dataProvider.tables" >
-                        <mat-option *ngIf="table.status=='available'" [value]="table">Table: {{table.tableNo}}</mat-option>
+                    <ng-container *ngFor="let table of dataProvider.tables">
+                        <mat-option *ngIf="table.status=='available'" [value]="table">Table: {{table.tableNo}}
+                        </mat-option>
                     </ng-container>
                 </mat-select>
             </mat-form-field>
@@ -74,6 +75,14 @@
         {{dataProvider.currentProject?.address}}</h4>
     <h4 style="text-align: center" *ngIf="dataProvider.currentProject?.phoneNumber">Phone:
         {{dataProvider.currentProject?.phoneNumber}}</h4>
+    <hr *ngIf="isNonChargeable">
+    <h3 *ngIf="isNonChargeable">COMPLIMENTARY BILL</h3>
+    <h3 *ngIf="isNonChargeable">{{complimentaryName}}</h3>
+    <hr>
+        <h4 *ngIf="paymentMethod=='cash'">Paid With Cash</h4>
+        <h4 *ngIf="paymentMethod=='card'">Paid With Card</h4>
+        <h4 *ngIf="paymentMethod=='dineIn'">Dine In</h4>
+        <h4 *ngIf="paymentMethod=='pickUp'">Pick Up</h4>
     <hr>
     <div class="topFields" *ngIf="dataProvider.currentProject?.gstNo">GST No.
         {{dataProvider.currentProject?.gstNo}}</div>
@@ -87,10 +96,17 @@
         {{dataProvider.currentProject?.deviceName}}</div>
     <div class="topFields" *ngIf="today">{{today | date:'medium'}}</div>
     <div class="topFields" *ngIf="currentBill?.id">Bill Id: {{currentBill?.id}}</div>
+    <hr>
     <h4 style="text-align: start" *ngIf="customerInfoForm.value.fullName">Name:
         {{customerInfoForm.value.fullName}}</h4>
     <h4 style="text-align: start" *ngIf="customerInfoForm.value.phoneNumber">Phone:
         {{customerInfoForm.value.phoneNumber}}</h4>
+    <h4 style="text-align: start" *ngIf="customerInfoForm.value.email">Email:
+        {{customerInfoForm.value.email}}</h4>
+    <h4 style="text-align: start" *ngIf="customerInfoForm.value.address">Address:
+        {{customerInfoForm.value.address}}</h4>
+    <hr
+        *ngIf="customerInfoForm.value.fullName || customerInfoForm.value.phoneNumber || customerInfoForm.value.email || customerInfoForm.value.address">
     <div class="row">
         <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
         <h4 *ngIf="currentTable?.type=='table'"><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
@@ -147,21 +163,13 @@
         <p>&#8377;{{toFixedValue(sgst)}}</p>
     </div>
     <hr>
-    <!-- <div class="total">
-        <p>Taxable Amount</p>
-        <p>&#8377;{{toFixedValue(taxableValue)}}</p>
-    </div> -->
-    <div class="total"> 
-        <p>Total Tax</p>
-        <p>&#8377;{{toFixedValue(totalTaxAmount)}}</p>
-    </div>
     <div class="total">
         <p>Grand Total</p>
         <p>&#8377;{{toFixedValue(grandTotal)}}</p>
     </div>
     <hr>
     <p class="thanking">Thanks for visiting {{dataProvider.currentProject.projectName || 'us !!'}}</p>
-    <p class="thanking">hoteltrivenisangam.com  </p>
+    <p class="thanking">hoteltrivenisangam.com </p>
 </div>
 <div id="billKot">
     <h3 style="text-align: center">{{dataProvider.currentProject.projectName}}</h3>
@@ -171,7 +179,7 @@
     <h3 *ngIf="!deskKot">KOT</h3>
     <h3 *ngIf="isNonChargeable">Non Chargeable</h3>
     <div class="row">
-        <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
+        <h4><b>Token No.:</b> {{currentKot?.tokenNo}}</h4>
         <h4 *ngIf="currentTable?.type=='table'"><b>Table No.:</b> {{currentTable?.tableNo}}</h4>
         <h4 *ngIf="currentTable?.type=='room'"><b>Room No.:</b> {{currentTable?.tableNo}}</h4>
     </div>
@@ -180,10 +188,17 @@
             <th>Product</th>
             <th>Qty</th>
         </tr>
-        <tr *ngFor="let product of currentKot?.products || []">
-            <td>{{product.dishName}}</td>
-            <td>{{product.quantity}}</td>
-        </tr>
+        <ng-container *ngFor="let product of currentKot?.products || []">
+            <tr>
+                <td>{{product.dishName | titlecase}}</td>
+                <td>{{product.quantity}}</td>
+            </tr>
+            <tr *ngIf="product.instruction">
+                <td colspan="2">
+                    Ins: {{product.instruction | titlecase}}
+                </td>
+            </tr>
+        </ng-container>
     </table>
     <hr>
     <p class="info" *ngIf="specialInstructions">Special Instructions: {{specialInstructions}}</p>

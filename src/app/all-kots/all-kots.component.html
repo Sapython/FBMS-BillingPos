@@ -3,15 +3,15 @@
     <div class="scrollable">
         <ng-container *ngFor="let kot of bill.kots">
             <div class="container" *ngIf="kot.products.length > 0 && !kot.cancelled">
-                <p>KOT Id: {{kot.id}}</p>
                 <p>
-                    <button mat-icon-button (click)="deleteKot(kot)">
+                    KOT Id: {{kot.id}}
+                    <button color="primary" mat-icon-button (click)="deleteKot(kot)">
                         <mat-icon>delete</mat-icon>
                     </button>
-                    <button mat-icon-button (click)="editKot(kot)">
+                    <button color="primary" mat-icon-button (click)="editKot(kot)">
                         <mat-icon>edit</mat-icon>
                     </button>
-                    <button mat-icon-button (click)="reprintKot(kot)">
+                    <button color="primary" mat-icon-button (click)="reprintKot(kot)">
                         <mat-icon>print</mat-icon>
                     </button>
                 </p>
@@ -29,12 +29,9 @@
                         <th>
                             <h4>Total</h4>
                         </th>
-                        <th>
-                            <h4>Actions</h4>
-                        </th>
                     </tr>
                     <tr *ngFor="let product of kot.products; let i = index">
-                        <td>{{product.dishName}}</td>
+                        <td>{{product.dishName | titlecase}}</td>
                         <td>{{product.quantity}}</td>
                         <td> &#8377;{{product.shopPrice}}</td>
                         <td> &#8377;{{product.quantity * product.shopPrice}}</td>

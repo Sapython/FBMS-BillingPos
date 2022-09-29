@@ -32,6 +32,7 @@ div.product{
             font-weight: 500px;
             color:var(--primary);
         }
+        
         p.price{
             flex: 2;
             padding-right: 10px;
@@ -39,6 +40,13 @@ div.product{
             font-family: var(--primary-font);
             color:var(--success);
             text-align: end;
+        }
+        p.instruction{
+            flex: 2;
+            padding-right: 10px;
+            font-size: 12px;
+            font-family: var(--primary-font);
+            color:var(--primary);
         }
         .delete{
             color:var(--primary);
