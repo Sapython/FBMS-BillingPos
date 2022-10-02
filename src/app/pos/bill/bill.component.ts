@@ -11,6 +11,7 @@ import {
 import {
   ChangeDetectorRef,
   Component,
+  HostListener,
   OnChanges,
   OnInit,
   SimpleChanges,
@@ -148,6 +149,7 @@ export class BillComponent implements OnInit, OnChanges {
   selectDiscounts: any[] = [];
   discountValues: any[] = [];
   taxableValue: number = 0;
+  
   cgst: number = 0;
   sgst: number = 0;
   totalTaxAmount: number = 0;
@@ -179,6 +181,20 @@ export class BillComponent implements OnInit, OnChanges {
       this.discounts = discounts;
     });
     this.dataProvider.clearTableFunc = this.clearCurrentTable.bind(this);
+  }
+
+  @HostListener('window:keydown',['$event'])
+  logKeyEvent(event:any){
+    console.log(event)
+    if(this.currentBill){
+      if(event.key=='f6'){
+        event.preventDefault()
+        this.finalizeKot()
+      } else if(event.key=='f8'){
+        event.preventDefault()
+        this.finalizeBill()
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -266,6 +282,14 @@ export class BillComponent implements OnInit, OnChanges {
       console.log('onlineKot', onlineKot);
       if (onlineKot && onlineKot.length > 0) {
         this.currentKot = onlineKot[0];
+        if(this.currentKot && !(this.currentKot.tokenNo in this.currentBill!.kotTokens || [])){
+          // check if kottokns is an array
+          if(this.currentBill!.kotTokens && this.currentBill!.kotTokens.length > 0){
+            this.currentBill?.kotTokens.push(...[this.currentKot.tokenNo])
+          } else {
+            this.currentBill!.kotTokens = [this.currentKot.tokenNo]
+          }
+        }
         let productIndex = this.currentKot!.products.findIndex(
           (p) => p.id == product.id
         );
@@ -306,6 +330,14 @@ export class BillComponent implements OnInit, OnChanges {
           tokenNo: this.dataProvider.currentTokenNo+1,
           cancelled:false
         };
+        if(this.currentKot && !(this.currentKot.tokenNo in this.currentBill!.kotTokens || [])){
+          // check if kottokns is an array
+          if(this.currentBill!.kotTokens && this.currentBill!.kotTokens.length > 0){
+            this.currentBill?.kotTokens.push(...[this.currentKot.tokenNo])
+          } else {
+            this.currentBill!.kotTokens = [this.currentKot.tokenNo]
+          }
+        }
         this.databaseService.addTokenNo();
         this.currentBill!.kots.push(
           JSON.parse(JSON.stringify(this.currentKot))
@@ -366,6 +398,7 @@ export class BillComponent implements OnInit, OnChanges {
         tokenNo:this.dataProvider.currentTokenNo + 1,
         cancelled:false
       };
+      this.currentBill?.kotTokens.push(this.currentKot.tokenNo);
       this.databaseService.addTokenNo()
       this.currentBill!.kots.push(JSON.parse(JSON.stringify(this.currentKot)));
       // this.offlineKot.push(this.currentKot);
@@ -433,7 +466,7 @@ export class BillComponent implements OnInit, OnChanges {
     this.grandTotal = Math.ceil(this.taxableValue + this.totalTaxAmount);
     if (this.isNonChargeable) {
       this.grandTotal = 0;
-      this.taxableValue = 0;
+      // this.taxableValue = 0;
       this.changeDetection.detectChanges();
     }
   }
@@ -518,6 +551,7 @@ export class BillComponent implements OnInit, OnChanges {
       selectedDiscounts: this.discounts,
       specialInstructions: '',
       tokenNo: this.dataProvider.currentTokenNo + 1,
+      kotTokens:[]
     };
     this.currentTable!.bill = this.currentBill.id;
     console.log(this.currentBill);
@@ -544,22 +578,31 @@ export class BillComponent implements OnInit, OnChanges {
   openDiscountsPanel() {}
 
   finalizeKot() {
-    document.getElementById('bill')!.style.display = 'none';
-    document.getElementById('cancelledBillKot')!.style.display = 'none';
-    document.getElementById('billKot')!.style.display = 'block';
-    document.getElementById('reprintBillKot')!.style.display = 'none';
     this.deskKot = false;
     this.changeDetection.detectChanges();
+    if(this.currentKot && !(this.currentKot.tokenNo in this.currentBill!.kotTokens || [])){
+      this.currentBill?.kotTokens.push(...[this.currentKot.tokenNo])
+    }
     console.log('finalizing kot', this.currentKot!.products);
-    window.print();
-    // this.deskKot = true;
-    // this.changeDetection.detectChanges();
-    // console.log('finalizing kot', this.currentKot!.products);
-    // window.print();
-    document.getElementById('billKot')!.style.display = 'none';
-    document.getElementById('bill')!.style.display = 'none';
-    document.getElementById('reprintBillKot')!.style.display = 'none';
-    document.getElementById('cancelledBillKot')!.style.display = 'none';
+    const data = {
+      "printer": this.dataProvider.currentProject.kotPrinter,
+      "currentProject":this.dataProvider.currentProject,
+      "tokenNo": this.currentKot!.tokenNo,
+      "currentTable": this.currentTable,
+      "allProducts":this.currentKot!.products
+    }
+    console.log(data)
+      fetch('http://127.0.0.1:8080/printKot',{
+        method:'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        console.log("Contente",res)
+      }).catch((err) => {
+        console.log("Error",err)
+      })
     this.currentBill!.kots[this.currentBill!.kots.length - 1]['finalized'] =
       true;
     this.updateBill(true);
@@ -584,6 +627,7 @@ export class BillComponent implements OnInit, OnChanges {
         this.alertify.presentToast('Bill not found', 'error');
         return 
       };
+      const allKOTsTokens:string[] = []
       billData?.['kots'].forEach((kot:any) => {
         if (!kot.finalized && kot.products.length > 0) {
           if (
@@ -598,21 +642,56 @@ export class BillComponent implements OnInit, OnChanges {
           }
         }
         kot.products.forEach((product: any) => {
-          this.allKotProducts.push(product);
+          // check if product exists in allKotProducts if not add it or else add quantity
+          this.allKotProducts.find(
+            (p) => p.id === product.id
+          )
+            ? (this.allKotProducts.find(
+                (p) => p.id === product.id
+              )!.quantity += product.quantity)
+            : this.allKotProducts.push(product);
         });
+        allKOTsTokens.push(kot.tokenNo)
       });
-      // alert('ALlKOtPRoducstLength '+this.allKotProducts.length)
+      this.currentBill!.grandTotal = this.grandTotal;
+      this.currentBill!.kotTokens = allKOTsTokens;
       this.changeDetection.detectChanges();
-      document.getElementById('bill')!.style.display = 'block';
-      document.getElementById('cancelledBillKot')!.style.display = 'none';
-      document.getElementById('reprintBillKot')!.style.display = 'none';
-      document.getElementById('billKot')!.style.display = 'none';
-      window.print();
-      window.print();
-      document.getElementById('billKot')!.style.display = 'none';
-      document.getElementById('bill')!.style.display = 'none';
-      document.getElementById('cancelledBillKot')!.style.display = 'none';
-      document.getElementById('reprintBillKot')!.style.display = 'none';
+      const modifiedDiscounts = JSON.parse(JSON.stringify(this.selectDiscounts))
+      modifiedDiscounts.forEach((discount:any) => {
+        
+      })
+      const data = {
+        "printer":this.dataProvider.currentProject.billPrinter,
+        "currentProject":this.dataProvider.currentProject,
+        "isNonChargeable":this.isNonChargeable,
+        "complimentaryName":this.complimentaryName,
+        "customerInfoForm":this.customerInfoForm.value,
+        "kotsToken":this.joinByComma(this.currentBill!.kotTokens),
+        "tokenNo":this.currentBill!.tokenNo,
+        "currentTable":this.currentTable,
+        "allProducts":this.allKotProducts,
+        "selectDiscounts":this.selectDiscounts,
+        "specialInstructions":this.specialInstructions,
+        "totalQuantity":this.totalQuantity,
+        "taxableValue":this.taxableValue,
+        "cgst":(this.cgst).toFixed(2),
+        "sgst":(this.sgst).toFixed(2),
+        "grandTotal":(this.grandTotal).toFixed(2),
+        "paymentMethod":this.paymentMethod,
+        "id":this.currentBill!.id
+      }
+      console.log(data)
+      fetch('http://127.0.0.1:8080/printBill',{
+        method:'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        console.log("Contente",res)
+      }).catch((err) => {
+        console.log("Error",err)
+      })
       this.currentBill!.completed = true;
       this.updateBill();
       if (this.currentTable?.type=='table') {
@@ -734,8 +813,8 @@ export class BillComponent implements OnInit, OnChanges {
             // this.currentBill!.kots.find((kot) => kot.id == data.id)!.products = [];
             this.currentBill!.kots.find((kot) => kot.id == data.id)!.cancelled = true;
           }
-          inst.close();
           this.updateBill();
+          inst.close();
         })
         inst.componentInstance?.reprint.subscribe((data) => {
           console.log("edit kot",data)
@@ -774,46 +853,75 @@ export class BillComponent implements OnInit, OnChanges {
       });
   }
   printKot(products: any[], tokenNo: number) {
-    document.getElementById('bill')!.style.display = 'none';
-    document.getElementById('billKot')!.style.display = 'none';
-    document.getElementById('reprintBillKot')!.style.display = 'block';
-    document.getElementById('cancelledBillKot')!.style.display = 'none';
-    this.cancelledItems = products
-    this.cancelledtokenNo = tokenNo
-    this.changeDetection.detectChanges();
-    window.print();
-    document.getElementById('reprintBillKot')!.style.display = 'none';
-    document.getElementById('cancelledBillKot')!.style.display = 'none';
-    document.getElementById('billKot')!.style.display = 'none';
-    document.getElementById('bill')!.style.display = 'none';
+    console.log(products);
+    const data = {
+      "printer": this.dataProvider.currentProject.kotPrinter,
+      "currentProject":this.dataProvider.currentProject,
+      "tokenNo": tokenNo,
+      "currentTable": this.currentTable,
+      "allProducts":this.currentKot!.products
+    }
+    console.log(data)
+      fetch('http://127.0.0.1:8080/printKot',{
+        method:'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        console.log("Contente",res)
+      }).catch((err) => {
+        console.log("Error",err)
+      })
   }
   printCancelledKot(products:any[],tokenNo:number){
-    document.getElementById('bill')!.style.display = 'none';
-    document.getElementById('billKot')!.style.display = 'none';
-    document.getElementById('cancelledBillKot')!.style.display = 'block';
-    document.getElementById('reprintBillKot')!.style.display = 'none';
     this.cancelledItems = products
     this.cancelledtokenNo = tokenNo
     this.changeDetection.detectChanges();
-    window.print();
-    document.getElementById('reprintBillKot')!.style.display = 'none';
-    document.getElementById('cancelledBillKot')!.style.display = 'none';
-    document.getElementById('billKot')!.style.display = 'none';
-    document.getElementById('bill')!.style.display = 'none';
+    const data = {
+      "printer": this.dataProvider.currentProject.kotPrinter,
+      "currentProject":this.dataProvider.currentProject,
+      "tokenNo": this.cancelledtokenNo,
+      "currentTable": this.currentTable,
+      "allProducts":this.cancelledItems,
+      "cancelled":true
+    }
+    console.log(data)
+      fetch('http://127.0.0.1:8080/printKot',{
+        method:'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        console.log("Contente",res)
+      }).catch((err) => {
+        console.log("Error",err)
+      })
   }
   rePrintKot(products:any[],tokenNo:number){
-    document.getElementById('bill')!.style.display = 'none';
-    document.getElementById('billKot')!.style.display = 'none';
-    document.getElementById('cancelledBillKot')!.style.display = 'none';
-    document.getElementById('reprintBillKot')!.style.display = 'block';
     this.reprintKotItems = products
     this.reprinttokenNo = tokenNo
     this.changeDetection.detectChanges();
-    window.print();
-    document.getElementById('reprintBillKot')!.style.display = 'none';
-    document.getElementById('cancelledBillKot')!.style.display = 'none';
-    document.getElementById('billKot')!.style.display = 'none';
-    document.getElementById('bill')!.style.display = 'none';
+    const data = {
+      "printer": this.dataProvider.currentProject.kotPrinter,
+      "currentProject":this.dataProvider.currentProject,
+      "tokenNo": this.reprinttokenNo,
+      "currentTable": this.currentTable,
+      "allProducts":this.reprintKotItems
+    }
+    console.log(data)
+      fetch('http://127.0.0.1:8080/printKot',{
+        method:'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        console.log("Contente",res)
+      }).catch((err) => {
+        console.log("Error",err)
+      })
   }
   setComplimentary(event:any){
     console.log(event)
@@ -836,6 +944,17 @@ export class BillComponent implements OnInit, OnChanges {
       }
     }
   }
+
+  joinByComma(kotTokens?:any[]){
+    // console.log("kotTokens",kotTokens)
+    if(kotTokens){
+      let res = ''
+    kotTokens.forEach((token:any)=>{
+      res = res + token + ','
+    })
+      return res.slice(0,-1)
+    } return ''
+  }
 }
 
 type Bill = {
@@ -856,6 +975,7 @@ type Bill = {
   user: string;
   isNonChargeable: boolean;
   specialInstructions: string;
+  kotTokens:any[];
 };
 
 type Tax = {

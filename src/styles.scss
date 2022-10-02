@@ -61,7 +61,7 @@ $my-theme: mat.define-light-theme((
 
 @font-face {
   font-family: 'Bill';
-  src: url('assets/fonts/regular.ttf') format('truetype');
+  src: url('assets/fonts/Space_Mono/SpaceMono-Regular.ttf') format('truetype');
 }
 
 /* You can add global styles to this file, and also import other style files */
@@ -87,7 +87,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
 *{
   font-family: var(--primary-font);
 }
-#bill,#billKot{
+#bill,#billKot,#cancelledBillKot,#reprintBillKot,#reprintBill{
   visibility: hidden;
   font-family: 'Bill' !important;
 }
@@ -125,7 +125,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif;overflow: hi
       display: none;
     }
   }
-  #bill,#billKot,#cancelledBillKot,#reprintBillKot{
+  #bill,#billKot,#cancelledBillKot,#reprintBillKot,#reprintBill{
     padding: 0% !important;
     margin: 0% !important;
     visibility: visible !important;

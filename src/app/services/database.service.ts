@@ -38,6 +38,18 @@ export class DatabaseService {
     return collectionSnapshots(query(collection(this.fs, 'recipes')));
   }
 
+  updateProject(projects:any[]) {
+    return updateDoc(
+      doc(
+        this.fs,
+        'business/accounts'
+      ),
+      {
+        projects: projects,
+      }
+    );
+  }
+
   addTokenNo(){
     return updateDoc(
       doc(
@@ -397,6 +409,20 @@ export class DatabaseService {
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
           '/bills/bills'
+      )
+    );
+  }
+
+  getCompletedBills() {
+    return collectionSnapshots(
+      query(
+        collection(
+          this.fs,
+          'business/accounts/' +
+            this.dataProvider.currentProject?.projectId +
+            '/bills/bills'
+        ),
+        where('completed', '==', true)
       )
     );
   }

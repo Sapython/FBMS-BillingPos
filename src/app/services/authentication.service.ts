@@ -164,8 +164,10 @@ export class AuthenticationService {
                 doc(this.firestore, 'business/accounts')
               ).subscribe(async (projectsData: any) => {
                 console.log("BUISNESS ACCOUNTS", projectsData);
+                this.dataProvider.allProjects = []
                 this.dataProvider.userChanged.next(data);
                 if (projectsData) {
+                  this.dataProvider.allProjects = projectsData.projects;
                   const projects:any[] = projectsData['projects'].filter(
                     (project: any) =>
                       project &&

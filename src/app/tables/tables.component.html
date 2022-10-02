@@ -22,9 +22,11 @@
             <p>Room No {{table.tableNo}}</p>
             <span *ngIf="table.status != 'available'">Booked</span>
             <span *ngIf="table.status == 'available'">Available</span>
-            <button class="empty" *ngIf="table.status == 'occupied'" (click)="selectMenu(table)">Select</button>
-            <button class="empty" *ngIf="table.status == 'occupied'" (click)="emptyTable(table)">Mark Empty</button>
-            <button mat-flat-button color="primary" *ngIf="table.status == 'available' || !table.status" (click)="selectRoom(table)">Book</button>
+            <div class="row">
+                <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="selectMenu(table)"><mat-icon>check_circle</mat-icon></button>
+                <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="emptyTable(table)"><mat-icon>delete</mat-icon></button>
+                <button mat-flat-button color="primary" *ngIf="table.status == 'available' || !table.status" (click)="selectRoom(table)">Book</button>
+            </div>
         </div>
     </section>
 </main>

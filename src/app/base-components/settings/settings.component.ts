@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataProviderService } from 'src/app/services/data-provider.service';
+import { DatabaseService } from 'src/app/services/database.service';
 
 @Component({
   selector: 'app-settings',
@@ -27,13 +28,16 @@ export class SettingsComponent implements OnInit {
     'printer2',
     'printer3'
   ]
-  constructor(private dataProvider:DataProviderService) { }
+  constructor(private dataProvider:DataProviderService,private databaseService:DatabaseService) { }
   cancelSettings(){
     this.cancel.emit()
   }
   
   ngOnInit(): void {
-    fetch()
+    fetch('http://127.0.0.1:8080/getPrinters',{method:'GET'}).then(res=>res.json()).then(res=>{
+      console.log("PRINTERS",res)
+      this.printers = res.printers
+    })
     if (localStorage.getItem('printerSettings')){
       this.settingsForm.patchValue(JSON.parse(localStorage.getItem('printerSettings')!))
     }
@@ -49,14 +53,15 @@ export class SettingsComponent implements OnInit {
     },{})
     console.log("filtered settings",settings)
     console.log(this.settingsForm.value,this.dataProvider.projects);
-    this.dataProvider.projects.forEach((project:any,index:number)=>{
+    this.dataProvider.allProjects.forEach((project:any,index:number)=>{
       if (project.projectId === this.dataProvider.currentProject.projectId){
         // this.dataProvider.currentProject = project
         console.log({...project,...settings});
-        this.dataProvider.projects[index] = {...project,...settings}
+        this.dataProvider.allProjects[index] = {...project,...settings}
       }
     })
-    console.log(this.dataProvider.projects);
+    // console.log(this.dataProvider.allProjects);
+    this.databaseService.updateProject(this.dataProvider.allProjects)
     // this.save.emit(this.settingsForm.value)
   }
 

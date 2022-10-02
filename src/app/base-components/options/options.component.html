@@ -2,12 +2,15 @@
     <mat-tab-group>
         <mat-tab label="Saved Orders">
             <div class="savedOrdersContainer">
-                <div class="savedOrder" *ngFor="let savedMenu of kots">
-                    <p><b>Total Products:</b> {{savedMenu.kots?.length}}</p>
-                    <p><b>User Id:</b> {{savedMenu.user}}</p>
+                <div class="savedOrder" *ngFor="let savedMenu of bills">
+                    <p><b>Total KOTs:</b> {{savedMenu.kots?.length}}</p>
+                    <p><b>Total Products:</b> {{savedMenu.user}}</p>
                     <p><b>Date:</b> {{savedMenu.date.toDate() | date}}</p>
-                    <p *ngIf="savedMenu.date.table">Table No: {{savedMenu.date.table.tableNo}}</p>
-                    <button color="primary">Complete</button>
+                    <p><b>Amount:</b> {{savedMenu.grandTotal}}</p>
+                    <p><b>Bill Id:</b> {{savedMenu.id}}</p>
+                    <p><b>Payment Type:</b> {{savedMenu.paymentType}}</p>
+                    <p><b>Table/Room No:</b> {{savedMenu.table.tableNo}}</p>
+                    <button color="primary" (click)="reprintBill(savedMenu)">Re-Print Bill</button>
                 </div>
                 <p></p>
                 <p></p>
@@ -20,29 +23,9 @@
                 <p></p>
                 <p></p>
                 <p></p>
-                <h3 *ngIf="kots.length==0">No customers found</h3>
+                <h3 *ngIf="bills.length==0">No customers found</h3>
             </div>
         </mat-tab>
-        <!-- <mat-tab label="Old KOTs">
-            <div class="oldKotsContainer">
-                <div class="kot" *ngFor="let kot of kots">
-                    <p>Table No: {{kot.tableNo}}</p>
-                    <p>Waiter: {{kot.waiter}}</p>
-                    <p>Time: {{kot.time | date}}</p>
-                    <p>Products: {{kot.products.length}}</p>
-                    <table>
-                        <tr>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                        </tr>
-                        <tr *ngFor="let product of kot.products">
-                            <td>{{product.dishName}}</td>
-                            <td>{{product.quantity}}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </mat-tab> -->
         <mat-tab label="Customers">
             <div class="customerContainer">
                 <div class="customer" *ngFor="let bill of customers">
@@ -88,3 +71,109 @@
         </mat-tab>
     </mat-tab-group>
 </main>
+
+<div id="reprintBill">
+    <h3 style="text-align: center;font-style:bold;">{{dataProvider.currentProject?.projectName}}</h3>
+    <h4 style="text-align: center" *ngIf="dataProvider.currentProject?.address">
+        {{dataProvider.currentProject?.address}}</h4>
+    <h4 style="text-align: center" *ngIf="dataProvider.currentProject?.phoneNumber">Phone:
+        {{dataProvider.currentProject?.phoneNumber}}</h4>
+    <hr *ngIf="currentBill?.isNonChargeable">
+    <h3 *ngIf="currentBill?.isNonChargeable">COMPLIMENTARY BILL</h3>
+    <h3 *ngIf="currentBill?.isNonChargeable">{{currentBill?.complimentaryName}}</h3>
+    <hr>
+        <h4 *ngIf="currentBill?.paymentType=='cash'">Paid With Cash</h4>
+        <h4 *ngIf="currentBill?.paymentType=='card'">Paid With Card</h4>
+        <h4 *ngIf="currentBill?.paymentType=='dineIn'">Dine In</h4>
+        <h4 *ngIf="currentBill?.paymentType=='pickUp'">Pick Up</h4>
+    <hr>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.gstNo">GST No.
+        {{dataProvider.currentProject?.gstNo}}</div>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.fssaiNo">FSSAI No.
+        {{dataProvider.currentProject?.fssaiNo}}</div>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.counterNo">Counter No.
+        {{dataProvider.currentProject?.counterNo}}</div>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.cashierName">Cashier.
+        {{dataProvider.currentProject?.cashierName}}</div>
+    <div class="topFields" *ngIf="dataProvider.currentProject?.deviceName">Device Name.
+        {{dataProvider.currentProject?.deviceName}}</div>
+    <div class="row">
+        <div class="topFields" *ngIf="today">{{today | date:'short'}}</div>
+        <div class="topFields" *ngIf="currentBill?.id">Bill Id: {{currentBill?.id}}</div>
+    </div>
+    <hr>
+    <h4 style="text-align: start" *ngIf="currentBill?.customerInfoForm.fullName">Name:
+        {{currentBill?.customerInfoForm.fullName}}</h4>
+    <h4 style="text-align: start" *ngIf="currentBill?.customerInfoForm.phoneNumber">Phone:
+        {{currentBill?.customerInfoForm.phoneNumber}}</h4>
+    <h4 style="text-align: start" *ngIf="currentBill?.customerInfoForm.email">Email:
+        {{currentBill?.customerInfoForm.email}}</h4>
+    <h4 style="text-align: start" *ngIf="currentBill?.customerInfoForm.address">Address:
+        {{currentBill?.customerInfoForm.address}}</h4>
+    <hr
+        *ngIf="currentBill?.customerInfoForm.fullName || currentBill?.customerInfoForm.phoneNumber || currentBill?.customerInfoForm.email || currentBill?.customerInfoForm.address">
+    <div class="row">
+        <h4><b>Token No.:</b> {{currentBill?.tokenNo}}</h4>
+        <h4 *ngIf="currentBill?.table?.type=='table'"><b>Table No.:</b> {{currentBill?.table?.tableNo}}</h4>
+        <h4 *ngIf="currentBill?.    table?.type=='room'"><b>Room No.:</b> {{currentBill?.table?.tableNo}}</h4>
+    </div>
+    <h4><b>KOTs.:</b> {{joinByComma(currentBill?.kotTokens)}}</h4>
+    <h3 *ngIf="currentBill?.isNonChargeable">Non Chargeable</h3>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>Amt</th>
+        </tr>
+        <tr *ngFor="let product of currentBill?.allKotProducts || []">
+            <td>{{product.dishName}}</td>
+            <td>{{product.quantity}}</td>
+            <td>&#8377;{{product.shopPrice}}</td>
+            <td>&#8377;{{toFixedValue(product.shopPrice * product.quantity)}}</td>
+        </tr>
+    </table>
+    <hr *ngIf="currentBill?.selectDiscounts.length > 0">
+    <table *ngIf="currentBill?.selectDiscounts.length > 0">
+        <h3>Discounts</h3>
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Final</th>
+        </tr>
+        <tr *ngFor="let item of currentBill?.selectDiscounts;let i = index;">
+            <td>{{item.title}}</td>
+            <td>{{item.discountValue}}</td>
+            <td>{{item.discountType}}</td>
+            <td>{{item.discountedValue}}</td>
+        </tr>
+    </table>
+    <hr>
+    <p *ngIf="currentBill?.specialInstructions" class="info">Special Instructions: {{currentBill?.specialInstructions}}</p>
+    <hr *ngIf="currentBill?.specialInstructions">
+    <div class="info">
+        <p>Total Qty: {{currentBill?.totalQuantity}}</p>
+        <p>Sub Total: &#8377;{{toFixedValue(currentBill?.taxableValue)}}</p>
+    </div>
+    <p class="detail">*Net Total Inclusive of GST</p>
+    <hr>
+    <div class="tax">
+        <p>CGST</p>
+        <p>%2.5</p>
+        <p>&#8377;{{toFixedValue(currentBill?.cgst)}}</p>
+    </div>
+    <div class="tax">
+        <p>SGST</p>
+        <p>%2.5</p>
+        <p>&#8377;{{toFixedValue(currentBill?.sgst)}}</p>
+    </div>
+    <hr>
+    <div class="total">
+        <p>Grand Total</p>
+        <p>&#8377;{{toFixedValue(currentBill?.grandTotal)}}</p>
+    </div>
+    <hr>
+    <p class="thanking">Thanks for visiting {{dataProvider.currentProject.projectName || 'us !!'}}</p>
+    <p class="thanking">hoteltrivenisangam.com </p>
+</div>

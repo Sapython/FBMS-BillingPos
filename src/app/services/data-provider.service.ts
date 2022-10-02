@@ -9,6 +9,7 @@ import { DatabaseService } from './database.service';
 })
 export class DataProviderService {
   public projects:any[] = []
+  public allProjects:any[] = []
   public pageSetting: PageSetting = {
     blur: false,
     lastRedirect: '',
