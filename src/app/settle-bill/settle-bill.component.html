@@ -1,0 +1,40 @@
+<section>
+    <form [formGroup]="customerInfoForm">
+        <div class="actions">
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'cash'"
+                (click)="paymentMethod = 'cash';">Cash</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'cash'">Cash</button>
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'card'"
+                (click)="paymentMethod = 'card';">Card</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'card'">Card</button>
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'dineIn'"
+                (click)="paymentMethod = 'dineIn';">Dine In</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'dineIn'">Dine In</button>
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'pickUp'"
+                (click)="paymentMethod = 'pickUp';">Pick Up</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'pickUp'">Pick Up</button>
+        </div>
+        <p></p>
+        <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input placeholder="Name" type="text" formControlName="name" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="primary">
+            <mat-label>Email</mat-label>
+            <input placeholder="Email" type="email" formControlName="email" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="primary">
+            <mat-label>Phone</mat-label>
+            <input placeholder="Number" type="text" formControlName="phone" matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" color="primary">
+            <mat-label>Address</mat-label>
+            <textarea placeholder="Address" type="text" formControlName="address" matInput> </textarea>
+        </mat-form-field>
+        <br>
+        <div class="row">
+            <button mat-flat-button color="primary" [disabled]="!customerInfoForm.valid" (click)="settleBill()" type="submit">Save.</button>
+            <button mat-stroked-button color="primary"  type="button" (click)="cancel()">Cancel</button>
+        </div>
+    </form>
+</section>

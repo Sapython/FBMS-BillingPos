@@ -42,8 +42,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { CustomerInfoModalComponent } from './customer-info-modal/customer-info-modal.component';
 import { RollbarErrorHandler, rollbarFactory, RollbarService } from './services/rollbar.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { SettleBillComponent } from './settle-bill/settle-bill.component';
 @NgModule({
-  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent, CustomerInfoModalComponent],
+  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent, CustomerInfoModalComponent, SettleBillComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -20,13 +20,17 @@ main {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    .uk-dropdown{
+      max-height: 300px;
+      overflow-y: auto;
+    }
     .booked{
       display: flex;
       flex-direction: column;
       background: var(--primary);
       color: white;
       border-radius: 5px;
-      padding: 15px;
+      padding: 5px;
       width:80px;
       height:100px;
       font-size: 15px;
@@ -53,13 +57,13 @@ main {
     }
     .available{
       display: flex;
-      width:80px;
+      width:70px;
       height:100px;
       flex-direction: column;
       border: 3px solid var(--primary);
       color:  var(--primary);
       border-radius: 5px;
-      padding: 15px;
+      padding: 5px;
       text-align: center;
       transition: all .2s ease-in;
       cursor: pointer;
@@ -76,6 +80,36 @@ main {
         border-radius: 10px;
         padding: 05px;
         color:var(--primary);
+        font-size: 12px;
+        cursor: pointer;
+      }
+    }
+    .notSettled{
+      display: flex;
+      width:70px;
+      height:100px;
+      flex-direction: column;
+      border:none;
+      color: white;
+      background-color:  var(--success);
+      border-radius: 5px;
+      padding: 5px;
+      text-align: center;
+      transition: all .2s ease-in;
+      cursor: pointer;
+      &:hover{
+        scale: 1.08;
+      }
+      p{
+        margin:0px;
+        font-size: 15px;
+      }
+      span{
+        // border:2px 
+        background: white;
+        border-radius: 10px;
+        padding: 05px;
+        color:var(--success);
         font-size: 12px;
         cursor: pointer;
       }

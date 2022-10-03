@@ -60,7 +60,7 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        <div class="finalButtons">
+        <div class="finalButtons" *ngIf="!currentBill.completed">
             <button mat-flat-button color="primary" (click)="openUserInfoModal()">Add Customer Info</button>
             <button mat-flat-button color="primary" (click)="finalizeKot()">Finalize Kot</button>
             <button mat-flat-button color="primary" (click)="finalizeBill()">Finalize Bill</button>
@@ -79,10 +79,10 @@
     <h3 *ngIf="isNonChargeable">COMPLIMENTARY BILL</h3>
     <h3 *ngIf="isNonChargeable">{{complimentaryName}}</h3>
     <hr>
-        <h4 *ngIf="paymentMethod=='cash'">Paid With Cash</h4>
-        <h4 *ngIf="paymentMethod=='card'">Paid With Card</h4>
-        <h4 *ngIf="paymentMethod=='dineIn'">Dine In</h4>
-        <h4 *ngIf="paymentMethod=='pickUp'">Pick Up</h4>
+    <h4 *ngIf="paymentMethod=='cash'">Paid With Cash</h4>
+    <h4 *ngIf="paymentMethod=='card'">Paid With Card</h4>
+    <h4 *ngIf="paymentMethod=='dineIn'">Dine In</h4>
+    <h4 *ngIf="paymentMethod=='pickUp'">Pick Up</h4>
     <hr>
     <div class="topFields" *ngIf="dataProvider.currentProject?.gstNo">GST No.
         {{dataProvider.currentProject?.gstNo}}</div>
@@ -95,7 +95,7 @@
     <div class="topFields" *ngIf="dataProvider.currentProject?.deviceName">Device Name.
         {{dataProvider.currentProject?.deviceName}}</div>
     <div class="topFields" *ngIf="today">{{today | date:'medium'}}</div>
-    <div class="topFields" *ngIf="currentBill?.id">Bill Id: {{currentBill?.id}}</div>
+    <div class="topFields" *ngIf="currentBill?.id">Bill No: {{currentBill?.billNo}}</div>
     <hr>
     <h4 style="text-align: start" *ngIf="customerInfoForm.value.fullName">Name:
         {{customerInfoForm.value.fullName}}</h4>

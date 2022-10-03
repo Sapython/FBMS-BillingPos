@@ -20,6 +20,7 @@ import {
 import { DataProviderService } from './data-provider.service';
 import { AuthenticationService } from './authentication.service';
 import { first } from 'rxjs';
+import { Bill } from '../pos/bill/bill.component';
 @Injectable({
   providedIn: 'root',
 })
@@ -60,6 +61,20 @@ export class DatabaseService {
       ),
       {
         bills: increment(1),
+      }
+    );
+  }
+
+  addBillNo(){
+    return updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/counters'
+      ),
+      {
+        allBills: increment(1),
       }
     );
   }
@@ -446,7 +461,7 @@ export class DatabaseService {
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
           '/bills/bills'
-      )
+      ),{idField: 'id'}
     );
   }
 
@@ -585,6 +600,7 @@ export class DatabaseService {
       {
         status: 'available',
         bill: '',
+        billData:null
       }
     );
   }
@@ -601,6 +617,7 @@ export class DatabaseService {
       {
         status: 'available',
         bill: '',
+        billData:null
       }
     );
   }
@@ -662,6 +679,18 @@ export class DatabaseService {
           '/discounts/discounts'
       ),
       { idField: 'id' }
+    );
+  }
+
+  settleBill(billData:Bill,customerInfo:any,paymentMethod:string){
+    return addDoc(
+      collection(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/bills/bills'
+      ),
+      { ...billData, customerInfo: customerInfo, paymentType: paymentMethod }
     );
   }
 }

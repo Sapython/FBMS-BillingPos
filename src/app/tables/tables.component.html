@@ -1,32 +1,78 @@
 <main>
-    <h3>Tables</h3>
-    <section>
-        <div *ngFor="let table of dataProvider.tables" [class]="table.status== 'occupied' ? 'booked' : 'available'" (click)="table.status!= 'occupied' ? selectMenu(table) : {}">
-            <!-- <p>Name: {{table.name}}</p> -->
-            <!-- <p>{{table.status}}</p> -->
-            <p>Table No {{table.tableNo}}</p>
-            <span *ngIf="table.status != 'available'">Booked</span>
-            <span *ngIf="table.status == 'available'">Available</span>
-            <!-- <p>Max: {{table.maxOccupancy}}</p> -->
-            <div class="row">
-                <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="selectMenu(table)"><mat-icon>check_circle</mat-icon></button>
-                <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="emptyTable(table)"><mat-icon>delete</mat-icon></button>
-                <button mat-flat-button color="primary" *ngIf="table.status == 'available' || !table.status" (click)="selectRoom(table)">Book</button>
+    <ng-container *ngIf="dataProvider.tables.length > 0">
+        <h3>Tables</h3>
+        <section>
+            <div *ngFor="let table of dataProvider.tables">
+                <div [class]="table.status== 'occupied' ? (table.billData?.completed==true ? 'notSettled' : 'booked' ) : 'available'"
+                    (click)="table.status!= 'occupied' ? selectMenu(table) : {}">
+                    <p>Tbl No {{table.tableNo}}</p>
+                    <span *ngIf="table.status == 'occupied'">
+                        <ng-container *ngIf="!table.billData?.completed">Booked</ng-container>
+                        <ng-container *ngIf="table.billData?.completed">Finalized</ng-container>
+                    </span>
+                    <span *ngIf="table.status == 'available' || table.status != 'occupied' ">Available</span>
+                    <div class="row">
+                        <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="selectMenu(table)">
+                            <mat-icon>check_circle</mat-icon>
+                        </button>
+                        <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="settleTable(table)">
+                            <mat-icon>save</mat-icon>
+                        </button>
+                        <button mat-flat-button color="primary" *ngIf="table.status == 'available' || !table.status"
+                            (click)="selectRoom(table)">Book</button>
+                    </div>
+                </div>
+                <div class="uk-dropdown" *ngIf="table.status == 'occupied' && table.billData " uk-dropdown>
+                    <h5>Total: <b>&#x20B9;{{table.billData.grandTotal}}</b></h5>
+                    <ol>
+                        <ng-container *ngFor="let kot of table.billData?.kots || []">
+                            <li *ngFor="let product of kot.products">
+                                <p>{{product.dishName | titlecase}} - {{product.quantity}} - {{product.shopPrice}}</p>
+                            </li>
+                        </ng-container>
+                    </ol>
+                    <div *ngIf="!table.billData">
+                        <p>No Bill</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
-    <hr>
-    <h3>Rooms</h3>
-    <section>
-        <div *ngFor="let table of dataProvider.rooms" [class]="table.status== 'occupied' ? 'booked' : 'available'" (click)="table.status!= 'occupied' ? selectMenu(table) : {}">
-            <p>Room No {{table.tableNo}}</p>
-            <span *ngIf="table.status != 'available'">Booked</span>
-            <span *ngIf="table.status == 'available'">Available</span>
-            <div class="row">
-                <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="selectMenu(table)"><mat-icon>check_circle</mat-icon></button>
-                <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="emptyTable(table)"><mat-icon>delete</mat-icon></button>
-                <button mat-flat-button color="primary" *ngIf="table.status == 'available' || !table.status" (click)="selectRoom(table)">Book</button>
+        </section>
+    </ng-container>
+    <ng-container *ngIf="dataProvider.rooms.length >0">
+        <hr>
+        <h3>Rooms</h3>
+        <section>
+            <div *ngFor="let table of dataProvider.rooms">
+                <div  [class]="table.status== 'occupied' ? 'booked' : 'available'"
+                (click)="table.status!= 'occupied' ? selectMenu(table) : {}">
+                <p>Room No {{table.tableNo}}</p>
+                <span *ngIf="table.status != 'available'">Booked</span>
+                <span *ngIf="table.status == 'available'">Available</span>
+                <div class="row">
+                    <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="selectMenu(table)">
+                        <mat-icon>check_circle</mat-icon>
+                    </button>
+                    <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="settleTable(table)">
+                        <mat-icon>save</mat-icon>
+                    </button>
+                    <button mat-flat-button color="primary" *ngIf="table.status == 'available' || !table.status"
+                        (click)="selectRoom(table)">Book</button>
+                </div>
             </div>
-        </div>
-    </section>
+            <div class="uk-dropdown" *ngIf="table.status == 'occupied' && table.billData " uk-dropdown>
+                <h5>Total: <b>&#x20B9;{{table.billData.grandTotal}}</b></h5>
+                <ol>
+                    <ng-container *ngFor="let kot of table.billData?.kots || []">
+                        <li *ngFor="let product of kot.products">
+                            <p>{{product.dishName | titlecase}} - {{product.quantity}} - {{product.shopPrice}}</p>
+                        </li>
+                    </ng-container>
+                </ol>
+                <div *ngIf="!table.billData">
+                    <p>No Bill</p>
+                </div>
+            </div>
+            </div>
+        </section>
+    </ng-container>
 </main>

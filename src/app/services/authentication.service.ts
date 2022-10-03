@@ -201,6 +201,7 @@ export class AuthenticationService {
                         '/counters'),{bills:0,ingredients:0});
                       } else {
                         this.dataProvider.currentTokenNo = data.bills;
+                        this.dataProvider.billNo = data.allBills;
                         console.log("TOKEN NO",this.dataProvider.currentTokenNo);
                       }
                   });
@@ -272,7 +273,7 @@ export class AuthenticationService {
                           await updateDoc(
                             doc(this.firestore, 'business/accounts/'),
                             {
-                              projects: projects.map((project: any) => {
+                              projects: this.dataProvider.allProjects.map((project: any) => {
                                 if (
                                   project.projectId == projects[0].projectId
                                 ) {
@@ -286,6 +287,22 @@ export class AuthenticationService {
                               }),
                             }
                           );
+                          console.log(projects[0].projectId,id,
+                            {
+                              projects: this.dataProvider.allProjects.map((project: any) => {
+                                if (
+                                  project.projectId == projects[0].projectId
+                                ) {
+                                  return {
+                                    ...project,
+                                    devices: [...(project.devices || []), id],
+                                  };
+                                } else {
+                                  return project;
+                                }
+                              }),
+                            }
+                          )
                           // console.log('device data', deviceData)
                           localStorage.setItem(
                             'deviceData',

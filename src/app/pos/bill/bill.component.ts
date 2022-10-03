@@ -149,7 +149,7 @@ export class BillComponent implements OnInit, OnChanges {
   selectDiscounts: any[] = [];
   discountValues: any[] = [];
   taxableValue: number = 0;
-  
+  subTotal: number = 0;
   cgst: number = 0;
   sgst: number = 0;
   totalTaxAmount: number = 0;
@@ -185,7 +185,6 @@ export class BillComponent implements OnInit, OnChanges {
 
   @HostListener('window:keydown',['$event'])
   logKeyEvent(event:any){
-    console.log(event)
     if(this.currentBill){
       if(event.key=='f6'){
         event.preventDefault()
@@ -228,9 +227,7 @@ export class BillComponent implements OnInit, OnChanges {
       // this.allKotProducts = []
       this.offlineKot = []
       this.currentTable = table;
-      // this.setupKot()
       if (this.currentTable && this.currentTable.bill) {
-        // alert('Bill exists on current table');
         if (!this.currentBill) {
           console.log(this.dataProvider.allBills);
           const bill = this.dataProvider.allBills.find(
@@ -269,19 +266,23 @@ export class BillComponent implements OnInit, OnChanges {
       }
     });
     this.dataProvider.selectedProduct.subscribe(async (product) => {
-      if(!this.currentBill){
-        this.createBill();
-      }
       if (!this.currentTable) {
         this.alertify.presentToast('Please select a table', 'error');
         this.dataProvider.openTableFunction();
         return;
       }
+      console.log("selectedProduct",product)
+      if(!this.currentBill){
+        this.createBill();
+        // alert("Created a bill")
+      }
       // quantity handler
       const onlineKot = this.currentBill!.kots.filter((kot) => !kot.finalized);
       console.log('onlineKot', onlineKot);
       if (onlineKot && onlineKot.length > 0) {
+        // alert("Adding to existing kot")
         this.currentKot = onlineKot[0];
+        console.log('this.currentBill!.kotTokens',this.currentBill)
         if(this.currentKot && !(this.currentKot.tokenNo in this.currentBill!.kotTokens || [])){
           // check if kottokns is an array
           if(this.currentBill!.kotTokens && this.currentBill!.kotTokens.length > 0){
@@ -294,13 +295,16 @@ export class BillComponent implements OnInit, OnChanges {
           (p) => p.id == product.id
         );
         if (productIndex != -1) {
+          // alert("Product already exists in kot")
           this.currentKot!.products[productIndex].quantity += 1;
         } else {
+          // alert("Product does not exist in kot")
           this.currentKot!.products.push({
             ...product,
             quantity: product.quantity || 1,
           });
         }
+        console.log("this.currentKot",this.currentKot)
         this.updateBill();
         // alert('Table has bill '+this.currentKot?.products.length);
         if(this.currentKot?.products && this.currentKot?.products.length > 0){
@@ -308,20 +312,9 @@ export class BillComponent implements OnInit, OnChanges {
         } else {
           this.dataProvider.kotActive = false;
         }
-        // update in offline bill
-        // TODO: update in online bill
-        // this.dataProvider.allBills.forEach((bill) => {
-        //   if (bill.id == this.currentBill!.id) {
-        //     bill.kots.forEach((kot: any) => {
-        //       if (kot.id == this.currentKot!.id) {
-        //         if (kot.products[productIndex]) {
-        //         }
-        //       }
-        //     });
-        //   }
-        // });
         this.changeDetection.detectChanges()
       } else {
+        // alert("Creating a new kot")
         this.currentKot = {
           id: this.generateRandomId(),
           products: [product],
@@ -331,7 +324,6 @@ export class BillComponent implements OnInit, OnChanges {
           cancelled:false
         };
         if(this.currentKot && !(this.currentKot.tokenNo in this.currentBill!.kotTokens || [])){
-          // check if kottokns is an array
           if(this.currentBill!.kotTokens && this.currentBill!.kotTokens.length > 0){
             this.currentBill?.kotTokens.push(...[this.currentKot.tokenNo])
           } else {
@@ -354,10 +346,7 @@ export class BillComponent implements OnInit, OnChanges {
           this.dataProvider.kotFinalizedActive = false;
         }
         this.changeDetection.detectChanges()
-        // this.offlineKot.push(this.currentKot);
       }
-      // // KOt checker
-
       if (this.currentTable.bill) {
         if (!this.currentBill) {
           const bill = this.dataProvider.allBills.find(
@@ -378,7 +367,6 @@ export class BillComponent implements OnInit, OnChanges {
             this.dataProvider.pageSetting.blur = false;
           }
         }
-        // this.updateBill();
       } else {
         this.createBill();
       }
@@ -401,27 +389,7 @@ export class BillComponent implements OnInit, OnChanges {
       this.currentBill?.kotTokens.push(this.currentKot.tokenNo);
       this.databaseService.addTokenNo()
       this.currentBill!.kots.push(JSON.parse(JSON.stringify(this.currentKot)));
-      // this.offlineKot.push(this.currentKot);
     }
-    // this.offlineKot = this.currentBill!.kots;
-    // if (this.currentBill && this.currentBill.kots.length > 0) {
-    //   this.currentBill.kots[this.currentBill.kots.length - 1].products.forEach(
-    //     (onlineProduct: any) => {
-    //       let counter = 0;
-    //       this.currentKot!.products.find((product) => {
-    //         if (product.id == onlineProduct.id) {
-    //           product.quantity += onlineProduct.quantity;
-    //         } else {
-    //           counter++;
-    //         }
-    //       });
-    //       if (counter == this.currentKot!.products.length) {
-    //         this.currentKot!.products.push(onlineProduct);
-    //       }
-    //     }
-    //   );
-    //   this.updateBill();
-    // }
   }
 
   generateRandomId() {
@@ -432,20 +400,18 @@ export class BillComponent implements OnInit, OnChanges {
     this.taxableValue = 0;
     this.totalQuantity = 0;
     this.totalTaxAmount = 0;
-    // alert('calculateTaxAndPrices'+this.currentBill?.kots.length);
+    this.subTotal = 0;
     this.currentBill?.kots.forEach((kot) => {
-      // alert("kot.products "+kot.products)
         if(!kot.cancelled){
           kot.products.forEach((product: any) => {
-            // alert('calculateTaxAndPrices'+product.shopPrice);
             console.log("product.quantity",product.quantity)
             this.taxableValue += product.shopPrice * product.quantity;
+            this.subTotal += product.shopPrice * product.quantity;
             this.totalQuantity += product.quantity;
           });
         }
     });
-    // alert('taxableValue' + this.taxableValue);
-    this.selectDiscounts.forEach((discount) => {
+    this.selectDiscounts.forEach((discount,index) => {
       if (discount.discountType == 'flat') {
         const val = discount.discountValue;
         this.discountValues.push(val);
@@ -454,19 +420,16 @@ export class BillComponent implements OnInit, OnChanges {
         const val = (this.taxableValue / 100) * discount.discountValue;
         this.discountValues.push(val);
         this.taxableValue -= val;
+        this.selectDiscounts[index].appliedDiscountValue = Math.floor(val);
       }
     });
     this.sgst = (this.taxableValue / 100) * 2.5;
     this.cgst = (this.taxableValue / 100) * 2.5;
     this.totalTaxAmount = this.sgst + this.cgst;
     this.taxableValue = Math.ceil(this.taxableValue);
-    // console.log('taxable value', this.taxableValue);
-    // console.log('total tax amount', this.totalTaxAmount);
-    // console.log('total quantity', this.totalQuantity);
     this.grandTotal = Math.ceil(this.taxableValue + this.totalTaxAmount);
     if (this.isNonChargeable) {
       this.grandTotal = 0;
-      // this.taxableValue = 0;
       this.changeDetection.detectChanges();
     }
   }
@@ -491,31 +454,21 @@ export class BillComponent implements OnInit, OnChanges {
 
   updateBill(finalizedKot: boolean = false) {
     console.log(this.currentBill,this.currentKot,finalizedKot)
-    // alert("")
     if (finalizedKot) {
       this.dataProvider.pageSetting.blur = true;
     }
-    // alert('Upadting
     if (this.currentBill) {
-      // alert('Current bill passed')
       if(this.currentKot){
-        // alert('Current kot passed')
         console.log('KOT PRODUCTS', this.currentKot!.products);
-        // this.currentBill.kots[this.currentBill.kots.length - 1].products =
-        // JSON.parse(JSON.stringify(this.currentKot!.products));
       }
-      // alert('Updating bill');
       console.log("this.currentBill",this.currentBill)
-      // alert('Current kot completed')
       this.updateBillData(this.currentBill, this.currentBill.id).finally(() => {
         if (finalizedKot) {
-          // alert('Finlaized kot passed')
           this.dataProvider.pageSetting.blur = false;
           this.currentKot!.products = [];
           console.log('Damn', this.currentKot, this.currentBill);
           this.databaseService.getBill(this.currentTable!.bill).then((bill) => {
             this.currentBill = bill.data() as Bill;
-            // this.setupKot();
             console.log('Damn', this.currentKot, this.currentBill);
             this.calculateTaxAndPrices()
           })
@@ -534,7 +487,9 @@ export class BillComponent implements OnInit, OnChanges {
   createBill() {
     this.dataProvider.kotActive = true;
     this.currentBill = {
+      settled: false,
       date: new Date(),
+      billNo:this.dataProvider.billNo+1,
       customerInfo: this.customerInfoForm.value,
       completed: false,
       deviceId: this.dataProvider.deviceData.deviceId,
@@ -553,9 +508,9 @@ export class BillComponent implements OnInit, OnChanges {
       tokenNo: this.dataProvider.currentTokenNo + 1,
       kotTokens:[]
     };
+    this.databaseService.addBillNo()
     this.currentTable!.bill = this.currentBill.id;
     console.log(this.currentBill);
-    // check in allBills if the bill doesn't exist add it
     this.dataProvider.allBills.find((bill) => bill.id === this.currentBill!.id)
       ? null
       : this.dataProvider.allBills.push(this.currentBill);
@@ -629,29 +584,31 @@ export class BillComponent implements OnInit, OnChanges {
       };
       const allKOTsTokens:string[] = []
       billData?.['kots'].forEach((kot:any) => {
-        if (!kot.finalized && kot.products.length > 0) {
-          if (
-            confirm(
-              'Products in current kot are not finalized yet. Should we finalize them?'
-            )
-          ) {
-            this.finalizeKot();
-            kot.finalized = true;
-          } else {
-            return;
+        if (kot.cancelled==false){
+          if (!kot.finalized && kot.products.length > 0) {
+            if (
+              confirm(
+                'Products in current kot are not finalized yet. Should we finalize them?'
+              )
+            ) {
+              this.finalizeKot();
+              kot.finalized = true;
+            } else {
+              return;
+            }
           }
+          kot.products.forEach((product: any) => {
+            // check if product exists in allKotProducts if not add it or else add quantity
+            this.allKotProducts.find(
+              (p) => p.id === product.id
+            )
+              ? (this.allKotProducts.find(
+                  (p) => p.id === product.id
+                )!.quantity += product.quantity)
+              : this.allKotProducts.push(product);
+          });
+          allKOTsTokens.push(kot.tokenNo)
         }
-        kot.products.forEach((product: any) => {
-          // check if product exists in allKotProducts if not add it or else add quantity
-          this.allKotProducts.find(
-            (p) => p.id === product.id
-          )
-            ? (this.allKotProducts.find(
-                (p) => p.id === product.id
-              )!.quantity += product.quantity)
-            : this.allKotProducts.push(product);
-        });
-        allKOTsTokens.push(kot.tokenNo)
       });
       this.currentBill!.grandTotal = this.grandTotal;
       this.currentBill!.kotTokens = allKOTsTokens;
@@ -673,12 +630,13 @@ export class BillComponent implements OnInit, OnChanges {
         "selectDiscounts":this.selectDiscounts,
         "specialInstructions":this.specialInstructions,
         "totalQuantity":this.totalQuantity,
-        "taxableValue":this.taxableValue,
+        "taxableValue":this.subTotal,
         "cgst":(this.cgst).toFixed(2),
         "sgst":(this.sgst).toFixed(2),
         "grandTotal":(this.grandTotal).toFixed(2),
         "paymentMethod":this.paymentMethod,
-        "id":this.currentBill!.id
+        "id":this.currentBill!.id,
+        "billNo":this.currentBill!.billNo,
       }
       console.log(data)
       fetch('http://127.0.0.1:8080/printBill',{
@@ -694,11 +652,6 @@ export class BillComponent implements OnInit, OnChanges {
       })
       this.currentBill!.completed = true;
       this.updateBill();
-      if (this.currentTable?.type=='table') {
-        this.databaseService.emptyTable(this.currentTable!.id);
-      } else {
-        this.databaseService.emptyRoom(this.currentTable!.id);
-      }
       this.dataProvider.openTableFunction();
       this.resetValues()
       this.currentKot!.products = []
@@ -957,8 +910,10 @@ export class BillComponent implements OnInit, OnChanges {
   }
 }
 
-type Bill = {
+export type Bill = {
+  settled: boolean;
   id: string;
+  billNo:number,
   completed: boolean;
   customerInfo: any;
   date: any;
@@ -978,14 +933,14 @@ type Bill = {
   kotTokens:any[];
 };
 
-type Tax = {
+export type Tax = {
   value: number;
   type: 'percentage' | 'flat';
   name: string;
   id?: string;
 };
 
-type Kot = {
+export type Kot = {
   id: string;
   date: any;
   products: any[];
@@ -994,7 +949,7 @@ type Kot = {
   cancelled:boolean;
 };
 
-type Table = {
+export type Table = {
   id: string;
   bill: string;
   maxOccupancy: string;
