@@ -16,6 +16,8 @@ import { SettingsComponent } from './settings/settings.component';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 const comps = [HeaderComponent,
   FooterComponent]
@@ -39,7 +41,9 @@ const comps = [HeaderComponent,
     ReactiveFormsModule,
     FormsModule,
     MatInputModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   exports:comps
 })

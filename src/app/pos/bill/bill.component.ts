@@ -170,6 +170,9 @@ export class BillComponent implements OnInit, OnChanges {
   reprintKotItems: any[] = [];
   reprinttokenNo: number = 0;
   complimentaryName: string = '';
+  kotModificationMode: any;
+  deletedItems:any[] = []
+
   constructor(
     public dataProvider: DataProviderService,
     private databaseService: DatabaseService,
@@ -440,6 +443,7 @@ export class BillComponent implements OnInit, OnChanges {
 
   delete(id: string, item: any) {
     const index = this.currentKot!.products.findIndex((p) => p.id == id);
+    this.deletedItems.push(item.product);
     if (index != -1) {
       this.currentKot!.products.splice(index, 1);
     }
@@ -539,25 +543,53 @@ export class BillComponent implements OnInit, OnChanges {
       this.currentBill?.kotTokens.push(...[this.currentKot.tokenNo])
     }
     console.log('finalizing kot', this.currentKot!.products);
-    const data = {
-      "printer": this.dataProvider.currentProject.kotPrinter,
-      "currentProject":this.dataProvider.currentProject,
-      "tokenNo": this.currentKot!.tokenNo,
-      "currentTable": this.currentTable,
-      "allProducts":this.currentKot!.products
+    if (this.kotModificationMode){
+      alert("KOT Modification Mode")
+      const data = {
+        "printer": this.dataProvider.currentProject.kotPrinter,
+        "currentProject":this.dataProvider.currentProject,
+        "tokenNo": this.kotModificationMode.tokenNo,
+        "currentTable": this.currentTable,
+        "allProducts":this.currentKot!.products,
+        "deleted":this.deletedItems,
+        "mode":"edited",
+        "billNo":this.currentBill!.billNo
+      }
+      console.log("modified",data)
+        fetch('http://127.0.0.1:8080/printKot',{
+          method:'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then((res) => {
+          console.log("Contente",res)
+        }).catch((err) => {
+          console.log("Error",err)
+        }).finally(() => {this.kotModificationMode=false;})
+    } else {
+      const data = {
+        "printer": this.dataProvider.currentProject.kotPrinter,
+        "currentProject":this.dataProvider.currentProject,
+        "tokenNo": this.currentKot!.tokenNo,
+        "currentTable": this.currentTable,
+        "allProducts":this.currentKot!.products,
+        "mode":"normal",
+        "billNo":this.currentBill!.billNo
+      }
+      console.log(data)
+        fetch('http://127.0.0.1:8080/printKot',{
+          method:'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then((res) => {
+          console.log("Contente",res)
+        }).catch((err) => {
+          console.log("Error",err)
+        })
     }
-    console.log(data)
-      fetch('http://127.0.0.1:8080/printKot',{
-        method:'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then((res) => {
-        console.log("Contente",res)
-      }).catch((err) => {
-        console.log("Error",err)
-      })
     this.currentBill!.kots[this.currentBill!.kots.length - 1]['finalized'] =
       true;
     this.updateBill(true);
@@ -631,6 +663,7 @@ export class BillComponent implements OnInit, OnChanges {
         "specialInstructions":this.specialInstructions,
         "totalQuantity":this.totalQuantity,
         "taxableValue":this.subTotal,
+        "date":(new Date()).toLocaleDateString(),
         "cgst":(this.cgst).toFixed(2),
         "sgst":(this.sgst).toFixed(2),
         "grandTotal":(this.grandTotal).toFixed(2),
@@ -649,7 +682,15 @@ export class BillComponent implements OnInit, OnChanges {
         console.log("Contente",res)
       }).catch((err) => {
         console.log("Error",err)
+        alert("Error occurredd while printing bill")
       })
+      if (this.currentTable?.type=='table') {
+        this.databaseService.finalizeTable(this.currentTable!.id);
+        // alert("Clearing table")
+      } else {
+        this.databaseService.finalizeRoom(this.currentTable!.id);
+        // alert("Clearing room")
+      }
       this.currentBill!.completed = true;
       this.updateBill();
       this.dataProvider.openTableFunction();
@@ -783,7 +824,8 @@ export class BillComponent implements OnInit, OnChanges {
           console.log("edit kot",data)
           const found = this.currentBill?.kots.find((kot) => kot.id == data.id)
           if (found){
-            this.printCancelledKot(found.products,found.tokenNo)
+            // this.printCancelledKot(found.products,found.tokenNo)
+            this.kotModificationMode = data
             this.currentBill!.kots.find((kot) => kot.id == data.id)!.cancelled = true;
             // const res= JSON.parse(JSON.stringify(this.currentBill!.kots.find((kot) => kot.id == data.id)!.products));
             // console.log(res)
@@ -812,7 +854,8 @@ export class BillComponent implements OnInit, OnChanges {
       "currentProject":this.dataProvider.currentProject,
       "tokenNo": tokenNo,
       "currentTable": this.currentTable,
-      "allProducts":this.currentKot!.products
+      "allProducts":this.currentKot!.products,
+      "billNo": this.currentBill?.billNo,
     }
     console.log(data)
       fetch('http://127.0.0.1:8080/printKot',{
@@ -837,7 +880,8 @@ export class BillComponent implements OnInit, OnChanges {
       "tokenNo": this.cancelledtokenNo,
       "currentTable": this.currentTable,
       "allProducts":this.cancelledItems,
-      "cancelled":true
+      "cancelled":true,
+      "billNo": this.currentBill?.billNo,
     }
     console.log(data)
       fetch('http://127.0.0.1:8080/printKot',{
@@ -861,7 +905,8 @@ export class BillComponent implements OnInit, OnChanges {
       "currentProject":this.dataProvider.currentProject,
       "tokenNo": this.reprinttokenNo,
       "currentTable": this.currentTable,
-      "allProducts":this.reprintKotItems
+      "allProducts":this.reprintKotItems,
+      "billNo": this.currentBill?.billNo,
     }
     console.log(data)
       fetch('http://127.0.0.1:8080/printKot',{
@@ -902,9 +947,9 @@ export class BillComponent implements OnInit, OnChanges {
     // console.log("kotTokens",kotTokens)
     if(kotTokens){
       let res = ''
-    kotTokens.forEach((token:any)=>{
-      res = res + token + ','
-    })
+      kotTokens.forEach((token:any)=>{
+        res = res + token + ', '
+      })
       return res.slice(0,-1)
     } return ''
   }

@@ -6,15 +6,7 @@
                 <div class="container" *ngIf="kot.products.length > 0 && !kot.cancelled">
                     <p>
                         KOT Id: {{kot.tokenNo}}
-                        <button color="primary" mat-icon-button (click)="deleteKot(kot)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                        <button color="primary" mat-icon-button (click)="editKot(kot)">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                        <button color="primary" mat-icon-button (click)="reprintKot(kot)">
-                            <mat-icon>print</mat-icon>
-                        </button>
+                        <button mat-icon-button (click)="print(kot)"><mat-icon>print</mat-icon></button>
                     </p>
                     <table [cellSpacing]="0">
                         <tr>
@@ -47,7 +39,6 @@
         </ng-container>
     </div>
     <div class="actions">
-        <button color="primary" mat-stroked-button (click)="done.emit(null)">Cancel</button>
-        <button color="primary" mat-flat-button (click)="done.emit(bill)">Submit</button>
+        <button color="primary" mat-stroked-button (click)="close.emit(null)">Close</button>
     </div>
 </main>

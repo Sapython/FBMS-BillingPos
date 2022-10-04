@@ -14,6 +14,8 @@
                 (click)="paymentMethod = 'pickUp';">Pick Up</button>
             <button mat-flat-button color="primary" *ngIf="paymentMethod == 'pickUp'">Pick Up</button>
         </div>
+        <hr>
+        <button *ngIf="this.dataProvider.currentProject.manageBill" mat-flat-button color="primary" (click)="manageBill()">Manage Bill</button>
         <p></p>
         <mat-form-field appearance="outline">
             <mat-label>Name</mat-label>
@@ -32,6 +34,7 @@
             <textarea placeholder="Address" type="text" formControlName="address" matInput> </textarea>
         </mat-form-field>
         <br>
+        
         <div class="row">
             <button mat-flat-button color="primary" [disabled]="!customerInfoForm.valid" (click)="settleBill()" type="submit">Save.</button>
             <button mat-stroked-button color="primary"  type="button" (click)="cancel()">Cancel</button>

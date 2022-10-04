@@ -19,25 +19,15 @@ export class TablesComponent implements OnInit {
   ngOnInit(): void {
     this.getTableBills()
     this.databaseService.getTables().subscribe(()=>{
-      alert("tables changed")
+      // alert("tables changed")
       this.getTableBills()
     })
     this.dataProvider.tableChanged.subscribe((tables) => {
-      alert("tables changed in")
+      // alert("tables changed in")
       this.getTableBills()
     })
   }
   async getTableBills(){
-    this.dataProvider.tables = await Promise.all(this.dataProvider.tables.map(async(table) => {
-      if (table.status == 'occupied'){
-        const data = await this.databaseService.getBill(table.bill)
-        table.billData = data.data();
-        return table;
-      } else {
-        return table;
-      }
-    }))
-    console.log("this.dataProvider.tables",this.dataProvider.tables)
   }
 
   selectRoom(table: any) {

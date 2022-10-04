@@ -21,11 +21,11 @@
             <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'pickUp'"
                 (click)="paymentMethod = 'pickUp';saveBill()">Pick Up</button>
             <button mat-flat-button color="primary" *ngIf="paymentMethod == 'pickUp'">Pick Up</button>
-            <button mat-raised-button color="primary" (click)="seeAllKots()">Manage KOTs</button>
+            <button mat-raised-button color="primary" (click)="seeAllKots()"  *ngIf="!currentBill.completed">Manage KOTs</button>
         </div>
         <div class="money">
             <span class="total">
-                <p>Bill No</p> <b>{{currentBill?.tokenNo}}</b>
+                <p>Bill No</p> <b>{{currentBill?.billNo}}</b>
             </span>
             <span class="total">
                 <p>Bill Id</p> <b>{{currentBill?.id}}</b>
@@ -60,11 +60,11 @@
                 </mat-select>
             </mat-form-field>
         </div>
-        <div class="finalButtons" *ngIf="!currentBill.completed">
-            <button mat-flat-button color="primary" (click)="openUserInfoModal()">Add Customer Info</button>
-            <button mat-flat-button color="primary" (click)="finalizeKot()">Finalize Kot</button>
+        <div class="finalButtons" >
+            <button mat-flat-button *ngIf="!currentBill.completed" color="primary" (click)="openUserInfoModal()">Add Customer Info</button>
+            <button mat-flat-button color="primary" *ngIf="!currentBill.completed && currentKot?.products?.length" (click)="finalizeKot()">{{  kotModificationMode ? "Modify" : 'Finalize'}} Kot</button>
             <button mat-flat-button color="primary" (click)="finalizeBill()">Finalize Bill</button>
-            <button mat-flat-button color="primary" (click)="cancel()">Cancel</button>
+            <button mat-flat-button color="primary" (click)="cancel()" *ngIf="!currentBill.completed">Cancel</button>
         </div>
     </div>
 </main>

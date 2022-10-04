@@ -174,7 +174,7 @@ export class DatabaseService {
             '/tables/tables'
         ),
         orderBy('tableNo')
-      )
+      ),
     );
   }
   getRooms() {
@@ -428,7 +428,7 @@ export class DatabaseService {
     );
   }
 
-  getCompletedBills() {
+  getCompletedBills(startDate:Date,endDate:Date) {
     return collectionSnapshots(
       query(
         collection(
@@ -437,7 +437,8 @@ export class DatabaseService {
             this.dataProvider.currentProject?.projectId +
             '/bills/bills'
         ),
-        where('completed', '==', true)
+        where('date', '>=', startDate),
+        where('date', '<=', endDate),
       )
     );
   }
@@ -622,6 +623,36 @@ export class DatabaseService {
     );
   }
 
+  finalizeTable(id: string) {
+    return updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/tables/tables/' +
+          id
+      ),
+      {
+        finalized: true,
+      }
+    );
+  }
+
+  finalizeRoom(id: string) {
+    return updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/rooms/rooms/' +
+          id
+      ),
+      {
+        finalized: true,
+      }
+    );
+  }
+
   async finalizeBill(id: string, table: any) {
     // make table available
     await this.emptyTable(table.id);
@@ -692,5 +723,26 @@ export class DatabaseService {
       ),
       { ...billData, customerInfo: customerInfo, paymentType: paymentMethod }
     );
+  }
+
+  async saveBillModification(oldBillData:any,newBillData:any){
+    await addDoc(
+      collection(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/bills/bills/'+oldBillData.id+'/modifications'
+      ),
+      { oldBillData: oldBillData, newBillData: newBillData }
+    );
+    return updateDoc(doc(
+      this.fs,
+      'business/accounts/' +
+        this.dataProvider.currentProject?.projectId +
+        '/bills/bills/' +
+        oldBillData.id
+    ),{
+      ...newBillData,modified:true
+    })
   }
 }

@@ -48,6 +48,7 @@ export class DataProviderService {
   public kotActive:boolean = false;
   public kotFinalizedActive:boolean = false;
   public clearTableFunc:any;
+  public updateTables:Subject<any> = new Subject()
   constructor(){
     setInterval(()=>{
       this.deviceData = JSON.parse(localStorage.getItem('deviceData') || '{}');

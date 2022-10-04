@@ -1,0 +1,65 @@
+<main>
+    <h2>Modify Bill</h2>
+    <div class="scrollable">
+        <table [cellSpacing]="0">
+            <tr>
+                <th>
+                    <h4>Product</h4>
+                </th>
+                <th>
+                    <h4>Quantity</h4>
+                </th>
+                <th>
+                    <h4>Price</h4>
+                </th>
+                <th>
+                    <h4>Total</h4>
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+            <ng-container *ngFor="let kot of table.billData.kots">
+                <ng-container *ngIf="!kot.cancelled">
+                    <tr *ngFor="let product of kot.products; let i = index">
+                        <td>{{product.dishName | titlecase}}</td>
+                        <td><input type="number" [(ngModel)]="product.quantity"></td>
+                        <td> &#8377;{{product.shopPrice}}</td>
+                        <td> &#8377;{{product.quantity * product.shopPrice}}</td>
+                        <td><button mat-icon-button (click)="removeItem(kot,product)" color="primary">
+                                <mat-icon>remove</mat-icon>
+                            </button></td>
+                    </tr>
+                </ng-container>
+            </ng-container>
+        </table>
+        <ng-container *ngIf="table.billData.kots.length==0 || table.billData.kots[0].products.length==0">
+            <p>No KOTs</p>
+            <img src="assets/notFound.svg" class="nothing">
+        </ng-container>
+    </div>
+    <hr>
+    <div>
+        <input (input)="searchProduct(search.value)" placeholder="Search Product" #search type="text" [matAutocomplete]="auto" name="fieldName" ngDefaultControl [(ngModel)]="autocompleteValue">
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="addProduct($event)">
+            <mat-option *ngFor="let option of filteredOptions" [value]="option">
+                {{option.dishName | titlecase}}
+            </mat-option>
+        </mat-autocomplete>
+    </div>
+    <mat-form-field appearance="outline">
+        <mat-label>Discounts</mat-label>
+        <mat-select [(ngModel)]="this.table.billData.selectDiscounts" multiple>
+            <mat-option *ngFor="let discount of discounts" [value]="discount">{{discount.title}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <form>
+        <label for="NonChargable">Non Chargable</label>
+        <input type="checkbox" name="NonChargable" (change)="setComplimentary($event)" placeholder="Non Chargable"
+            id="">
+    </form>
+    <div class="actions">
+        <button color="primary" mat-stroked-button (click)="cancel.emit(null)">Cancel</button>
+        <button color="primary" mat-flat-button (click)="print.emit(table.billData)">Print Bill</button>
+    </div>
+</main>

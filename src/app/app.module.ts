@@ -43,8 +43,12 @@ import { CustomerInfoModalComponent } from './customer-info-modal/customer-info-
 import { RollbarErrorHandler, rollbarFactory, RollbarService } from './services/rollbar.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { SettleBillComponent } from './settle-bill/settle-bill.component';
+import { ManageBillComponent } from './manage-bill/manage-bill.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ReprintKotComponent } from './reprint-kot/reprint-kot.component';
 @NgModule({
-  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent, CustomerInfoModalComponent, SettleBillComponent],
+  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent, CustomerInfoModalComponent, SettleBillComponent, ManageBillComponent, ReprintKotComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -66,6 +70,8 @@ import { SettleBillComponent } from './settle-bill/settle-bill.component';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
+    MatAutocompleteModule,
     MatIconModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
