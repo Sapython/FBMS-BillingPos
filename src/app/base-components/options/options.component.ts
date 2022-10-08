@@ -97,7 +97,6 @@ export class OptionsComponent implements OnInit {
   taxableValue: number = 0;
   totalQuantity: number = 0;
   totalTaxAmount: number = 0;
-  subTotal: number = 0;
   constructor(
     private databaseService: DatabaseService,
     private alertify: AlertsAndNotificationsService,
@@ -178,22 +177,42 @@ export class OptionsComponent implements OnInit {
     });
   }
 
+  
+
   reprintBill(bill: any) {
     console.log(bill)
+    this.taxableValue = 0;
+    this.totalQuantity = 0;
+    this.totalTaxAmount = 0;
+    let subtotal = 0
     let allKotProducts: any[] = [];
     bill?.kots.forEach((kot: any) => {
       if (!kot.cancelled) {
+        alert(kot.products.length)
         kot.products.forEach((product: any) => {
           console.log('product.quantity', product.quantity);
           this.taxableValue += product.shopPrice * product.quantity;
-          this.subTotal += product.shopPrice * product.quantity;
+          subtotal += product.shopPrice * product.quantity;
           this.totalQuantity += product.quantity;
-          allKotProducts.push(product);
+          allKotProducts.push({...product,kot:kot.tokenNo});
         });
       }
     });
+    alert(allKotProducts.length)
+    let disc = 0
+    bill['selectedDiscounts'].forEach((discount:any)=>{
+      if(discount.discountType == 'percentage'){
+        disc += (this.taxableValue/100) * Number(discount.discountValue)
+      } else {
+        disc += Number(discount.discountValue)
+      }
+    })
+    console.log("disc",disc)
+    this.taxableValue = this.taxableValue - Math.floor(disc)
     const sgst = (this.taxableValue / 100) * 2.5;
     const cgst = (this.taxableValue / 100) * 2.5;
+    console.log('sgst', sgst);
+    console.log('cgst', cgst);
     const data = {
       printer: this.dataProvider.currentProject.billPrinter,
       currentProject: this.dataProvider.currentProject,
@@ -203,15 +222,15 @@ export class OptionsComponent implements OnInit {
       kotsToken: this.joinByComma(bill.kotTokens),
       tokenNo: bill!.billNo,
       currentTable: bill.table,
-      date: (bill.date.toDate()).toLocaleDateString(),
+      date: (bill.date.toDate()).toLocaleDateString('en-GB'),
       allProducts: allKotProducts,
-      selectDiscounts: bill.selectDiscounts,
+      selectDiscounts: bill.selectedDiscounts,
       specialInstructions: 'Modified',
       totalQuantity: this.totalQuantity,
-      taxableValue: this.subTotal,
+      taxableValue: Math.ceil(subtotal),
       cgst: cgst.toFixed(2),
       sgst: sgst.toFixed(2),
-      grandTotal: bill.grandTotal.toFixed(2),
+      grandTotal: Math.ceil(this.taxableValue + cgst + sgst).toFixed(2),
       paymentMethod: bill.paymentType,
       id: bill!.id,
       billNo: bill!.billNo,

@@ -399,6 +399,11 @@ export class BillComponent implements OnInit, OnChanges {
     return Math.floor(Math.random() * 100000000000000000).toString();
   }
 
+  setDiscount(event:any){
+    this.currentBill!.selectedDiscounts = event.value
+    this.updateBill();
+  }
+
   calculateTaxAndPrices() {
     this.taxableValue = 0;
     this.totalQuantity = 0;
@@ -507,7 +512,7 @@ export class BillComponent implements OnInit, OnChanges {
       grandTotal: this.grandTotal,
       id: this.generateRandomId(),
       isNonChargeable: false,
-      selectedDiscounts: this.discounts,
+      selectedDiscounts: [],
       specialInstructions: '',
       tokenNo: this.dataProvider.currentTokenNo + 1,
       kotTokens:[]
@@ -598,7 +603,6 @@ export class BillComponent implements OnInit, OnChanges {
   }
 
   finalizeBill() {
-
     if (this.paymentMethod == 'pickUp' && !this.customerInfoForm.value.name && !this.customerInfoForm.value.address) {
       alert('Cannot finalize bill without customer name and address');
       return;
@@ -639,7 +643,9 @@ export class BillComponent implements OnInit, OnChanges {
                 )!.quantity += product.quantity)
               : this.allKotProducts.push(product);
           });
-          allKOTsTokens.push(kot.tokenNo)
+          if (kot.products.length > 0){
+            allKOTsTokens.push(kot.tokenNo)
+          }
         }
       });
       this.currentBill!.grandTotal = this.grandTotal;
@@ -663,7 +669,7 @@ export class BillComponent implements OnInit, OnChanges {
         "specialInstructions":this.specialInstructions,
         "totalQuantity":this.totalQuantity,
         "taxableValue":this.subTotal,
-        "date":(new Date()).toLocaleDateString(),
+        "date":(new Date()).toLocaleDateString('en-GB'),
         "cgst":(this.cgst).toFixed(2),
         "sgst":(this.sgst).toFixed(2),
         "grandTotal":(this.grandTotal).toFixed(2),
@@ -682,7 +688,7 @@ export class BillComponent implements OnInit, OnChanges {
         console.log("Contente",res)
       }).catch((err) => {
         console.log("Error",err)
-        alert("Error occurredd while printing bill")
+        alert("Error occurred while printing bill")
       })
       if (this.currentTable?.type=='table') {
         this.databaseService.finalizeTable(this.currentTable!.id);
@@ -703,38 +709,56 @@ export class BillComponent implements OnInit, OnChanges {
   }
 
   cancel() {
-    const inst = this.dialog.open(CancelModalComponent, {
-      data: {},
-    });
-    inst.componentInstance?.completed.subscribe((data) => {
-      console.log(this.currentBill,data);
-      if (data && data.phone && data.reason) {
-        this.dataProvider.pageSetting.blur = true;
-        this.databaseService
-        .deleteBill(this.currentBill!.id, data.reason, data.phone.toString())
-        .then((data) => {
-          this.alertify.presentToast('Bill cancelled.');
-          inst.close();
-        })
-        .catch((error) => {
-          console.error('error', error);
-          this.alertify.presentToast('Error cannot cancel bill.', 'error');
-        })
-        .finally(() => {
-          console.log("Finally",this.currentTable)
-          if(this.currentTable?.type=='room'){
-            this.databaseService.emptyRoom(this.currentTable!.id);
-          } else {
-            this.databaseService.emptyTable(this.currentTable!.id);
-          }
-          this.dataProvider.openTableFunction()
-            this.resetValues();
-            this.dataProvider.pageSetting.blur = false;
-          });
+    const allProds = []
+    this.currentBill?.kots.forEach((kot:any) => {
+      kot.products.forEach((prod:any) => {
+        allProds.push(prod)
+      })
+    })
+    alert(allProds.length)
+    if (allProds.length > 0){  
+      // const inst = this.dialog.open(CancelModalComponent, {
+      //   data: {},
+      // });
+      // inst.componentInstance?.completed.subscribe((data) => {
+      //   console.log(this.currentBill,data);
+      //   if (data && data.phone && data.reason) {
+      //     this.dataProvider.pageSetting.blur = true;
+      //     this.databaseService
+      //     .deleteBill(this.currentBill!.id, data.reason, data.phone.toString())
+      //     .then((data) => {
+      //       this.alertify.presentToast('Bill cancelled.');
+      //       inst.close();
+      //     })
+      //     .catch((error) => {
+      //       console.error('error', error);
+      //       this.alertify.presentToast('Error cannot cancel bill.', 'error');
+      //     })
+      //     .finally(() => {
+      //       console.log("Finally",this.currentTable)
+      //       if(this.currentTable?.type=='room'){
+      //         this.databaseService.emptyRoom(this.currentTable!.id);
+      //       } else {
+      //         this.databaseService.emptyTable(this.currentTable!.id);
+      //       }
+      //       this.dataProvider.openTableFunction()
+      //         this.resetValues();
+      //         this.dataProvider.pageSetting.blur = false;
+      //       });
+      //   } else {
+      //     inst.close();
+      //   }
+      // });
+    } else {
+      alert('Clearing table')
+      if (this.currentTable?.type=='table') {
+        this.databaseService.emptyTable(this.currentTable!.id);
+        // alert("Clearing table")
       } else {
-        inst.close();
+        this.databaseService.emptyRoom(this.currentTable!.id);
+        // alert("Clearing room")
       }
-    });
+    }
   }
 
   resetValues() {

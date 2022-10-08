@@ -56,7 +56,7 @@ export class HeaderComponent implements OnInit {
   syncing: boolean = false;
   tableInst: any;
   allInst: any[] = [];
-  autocompleteValue:any;
+  autocompleteValue: any;
   filteredOptions: any[] = [];
   ngOnInit(): void {
     this.dataProvider.searchEvent.subscribe((data: string) => {
@@ -97,7 +97,7 @@ export class HeaderComponent implements OnInit {
   }
   addToBill(data: any) {
     console.log(data);
-    const product = data.option.value
+    const product = data.option.value;
     if (!product.quantity) {
       product.quantity = 1;
     }
@@ -105,8 +105,8 @@ export class HeaderComponent implements OnInit {
     this.autocompleteValue = null;
     data.option.value = 'null';
   }
-  log($event:any){
-    console.log($event)
+  log($event: any) {
+    console.log($event);
   }
 
   fireEvent() {
@@ -119,39 +119,47 @@ export class HeaderComponent implements OnInit {
   }
 
   newOrder() {
-    // alert(this.dataProvider.kotActive)
-    if (this.dataProvider.kotActive) {
-      if(confirm('ALERT! You have NOT finalized your KOT.Do you want to delete selected items ?')){
-      // if(confirm('ALERT! Do you want to delete selected items ?')){
-      if (!this.dataProvider.kotFinalizedActive){
-        this.dataProvider.clearTableFunc();
-      }  
-        this.closeTableModal();
-        const inst = this.dialog.open(TablesComponent, { disableClose: true });
-        inst.disableClose = true;
-        this.allInst.push(inst);
-        inst.componentInstance?.close.subscribe(() => {
-          // inst.close()
-          this.closeTableModal();
-        });
-        // inst.backdropClick.subscribe(() => {
-        //   this.closeTableModal();
-        // });  
-      }
-      return
-    } else {
+    this.closeTableModal();
+    const inst = this.dialog.open(TablesComponent, { disableClose: true });
+    inst.disableClose = true;
+    this.allInst.push(inst);
+    inst.componentInstance?.close.subscribe(() => {
+      // inst.close()
       this.closeTableModal();
-      const inst = this.dialog.open(TablesComponent, { disableClose: true });
-      inst.disableClose = true;
-      this.allInst.push(inst);
-      inst.componentInstance?.close.subscribe(() => {
-        // inst.close()
-        this.closeTableModal();
-      });
-      // inst.backdropClick.subscribe(() => {
-      //   this.closeTableModal();
-      // });
-    }
+    });
+    // // alert(this.dataProvider.kotActive)
+    // if (this.dataProvider.kotActive) {
+    //   if(confirm('ALERT! You have NOT finalized your KOT.Do you want to delete selected items ?')){
+    //   // if(confirm('ALERT! Do you want to delete selected items ?')){
+    //   if (!this.dataProvider.kotFinalizedActive){
+    //     this.dataProvider.clearTableFunc();
+    //   }
+    //     this.closeTableModal();
+    //     const inst = this.dialog.open(TablesComponent, { disableClose: true });
+    //     inst.disableClose = true;
+    //     this.allInst.push(inst);
+    //     inst.componentInstance?.close.subscribe(() => {
+    //       // inst.close()
+    //       this.closeTableModal();
+    //     });
+    //     // inst.backdropClick.subscribe(() => {
+    //     //   this.closeTableModal();
+    //     // });
+    //   }
+    //   return
+    // } else {
+    //   this.closeTableModal();
+    //   const inst = this.dialog.open(TablesComponent, { disableClose: true });
+    //   inst.disableClose = true;
+    //   this.allInst.push(inst);
+    //   inst.componentInstance?.close.subscribe(() => {
+    //     // inst.close()
+    //     this.closeTableModal();
+    //   });
+    //   // inst.backdropClick.subscribe(() => {
+    //   //   this.closeTableModal();
+    //   // });
+    // }
   }
 
   openOptions() {
@@ -171,17 +179,17 @@ export class HeaderComponent implements OnInit {
     );
   }
 
-  openSettings(){
+  openSettings() {
     const inst = this.dialog.open(SettingsComponent);
     inst.componentInstance?.cancel.subscribe(() => {
       inst.close();
-    })
+    });
     inst.componentInstance?.save.subscribe((value) => {
       this.savePrinterSettings(value);
       inst.close();
-    })
+    });
   }
-  savePrinterSettings(value:any){
+  savePrinterSettings(value: any) {
     localStorage.setItem('printerSettings', JSON.stringify(value));
   }
   // ctrl + s

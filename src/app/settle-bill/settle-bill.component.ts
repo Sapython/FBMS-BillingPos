@@ -111,7 +111,7 @@ export class SettleBillComponent implements OnInit {
           "specialInstructions":"Modified",
           "totalQuantity":this.totalQuantity,
           "taxableValue":this.subTotal,
-          "date":(new Date()).toLocaleDateString(),
+          "date":(new Date()).toLocaleDateString('en-GB'),
           "cgst":(this.cgst).toFixed(2),
           "sgst":(this.sgst).toFixed(2),
           "grandTotal":(this.grandTotal).toFixed(2),

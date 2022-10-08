@@ -38,7 +38,7 @@
             </button> -->
             <mat-form-field appearance="outline">
                 <mat-label>Discounts</mat-label>
-                <mat-select [(ngModel)]="selectDiscounts" (selectionChange)="calculateTaxAndPrices()" multiple>
+                <mat-select [(ngModel)]="selectDiscounts" (selectionChange)="setDiscount($event);calculateTaxAndPrices();" multiple>
                     <mat-option *ngFor="let discount of discounts" [value]="discount">{{discount.title}}</mat-option>
                 </mat-select>
             </mat-form-field>
