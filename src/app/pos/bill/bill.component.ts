@@ -669,7 +669,8 @@ export class BillComponent implements OnInit, OnChanges {
         "specialInstructions":this.specialInstructions,
         "totalQuantity":this.totalQuantity,
         "taxableValue":this.subTotal,
-        "date":(new Date()).toLocaleDateString('en-GB'),
+        "date": (new Date()).toLocaleDateString('en-GB'),
+        "time": (new Date()).toLocaleTimeString('en-GB'),
         "cgst":(this.cgst).toFixed(2),
         "sgst":(this.sgst).toFixed(2),
         "grandTotal":(this.grandTotal).toFixed(2),
@@ -715,7 +716,6 @@ export class BillComponent implements OnInit, OnChanges {
         allProds.push(prod)
       })
     })
-    alert(allProds.length)
     if (allProds.length > 0){  
       // const inst = this.dialog.open(CancelModalComponent, {
       //   data: {},
@@ -750,14 +750,12 @@ export class BillComponent implements OnInit, OnChanges {
       //   }
       // });
     } else {
-      alert('Clearing table')
       if (this.currentTable?.type=='table') {
         this.databaseService.emptyTable(this.currentTable!.id);
-        // alert("Clearing table")
       } else {
         this.databaseService.emptyRoom(this.currentTable!.id);
-        // alert("Clearing room")
       }
+      this.dataProvider.openTableFunction()
     }
   }
 
@@ -792,7 +790,7 @@ export class BillComponent implements OnInit, OnChanges {
       console.log(data)
       if (data) {
         this.customerInfoForm.patchValue(data);
-        console.log(this.customerInfoForm.value);
+        this.currentBill!.customerInfo = data;
         this.updateBill();
       }
       inst.close();
@@ -880,6 +878,7 @@ export class BillComponent implements OnInit, OnChanges {
       "currentTable": this.currentTable,
       "allProducts":this.currentKot!.products,
       "billNo": this.currentBill?.billNo,
+      "date":(new Date()).toLocaleString(),
     }
     console.log(data)
       fetch('http://127.0.0.1:8080/printKot',{
@@ -906,6 +905,7 @@ export class BillComponent implements OnInit, OnChanges {
       "allProducts":this.cancelledItems,
       "cancelled":true,
       "billNo": this.currentBill?.billNo,
+      "date":(new Date()).toLocaleString(),
     }
     console.log(data)
       fetch('http://127.0.0.1:8080/printKot',{
@@ -931,6 +931,7 @@ export class BillComponent implements OnInit, OnChanges {
       "currentTable": this.currentTable,
       "allProducts":this.reprintKotItems,
       "billNo": this.currentBill?.billNo,
+      "date":(new Date()).toLocaleString(),
     }
     console.log(data)
       fetch('http://127.0.0.1:8080/printKot',{

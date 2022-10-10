@@ -37,6 +37,7 @@ export class ProductsComponent implements OnInit {
       this.table = table;
     });
     this.dataProvider.selectedCategory.subscribe((data: any) => {
+      console.log("Cat",data);
       this.searchedProducts = [];
       if (!this.table) {
         this.alertify.presentToast('Please select a table first', 'error');

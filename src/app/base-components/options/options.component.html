@@ -44,9 +44,10 @@
             <div class="customerContainer">
                 <div class="customer" *ngFor="let bill of customers">
                     <img src="assets/person.svg">
-                    <p>{{bill?.customerInfoForm?.fullName || 'N/P'}}</p>
-                    <p>{{bill?.customerInfoForm?.email || 'N/P'}}</p>
-                    <p>{{bill?.customerInfoForm?.phoneNumber || 'N/P'}}</p>
+                    <p>{{bill?.customerInfo?.name || 'N/P'}}</p>
+                    <p>{{bill?.customerInfo?.email || 'N/P'}}</p>
+                    <p>{{bill?.customerInfo?.phone || 'N/P'}}</p>
+                    <p>{{bill?.customerInfo?.address || 'N/P'}}</p>
                     <p>Total KOTs: {{bill?.kots?.length}}</p>
                     <p>Table: {{bill?.table?.name}}</p>
                     <p>Date: {{bill?.date?.toDate() | date}}</p>

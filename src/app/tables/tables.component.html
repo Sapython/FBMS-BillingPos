@@ -43,16 +43,19 @@
         <h3>Rooms</h3>
         <section>
             <div *ngFor="let table of dataProvider.rooms">
-                <div  [class]="table.status== 'occupied' ? 'booked room' : 'available room'"
+                <div  [class]="table.status== 'occupied' ? (table.billData?.completed==true ? 'notSettled room' : 'booked room' ) : 'available room'"
                 (click)="table.status!= 'occupied' ? selectMenu(table) : {}">
                 <p>Room No {{table.tableNo}}</p>
-                <span *ngIf="table.status != 'available'">Booked</span>
-                <span *ngIf="table.status == 'available'">Available</span>
+                <span *ngIf="table.status == 'occupied'">
+                    <ng-container *ngIf="!table.billData?.completed">Booked</ng-container>
+                    <ng-container *ngIf="table.billData?.completed">Finalized</ng-container>
+                </span>
+                <span *ngIf="table.status == 'available' || table.status != 'occupied' ">Available</span>
                 <div class="row">
                     <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="selectMenu(table)">
                         <mat-icon>check_circle</mat-icon>
                     </button>
-                    <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="settleTable(table)">
+                    <button mat-icon-button *ngIf="table.status == 'occupied' && table.billData?.completed==true" (click)="settleTable(table)">
                         <mat-icon>save</mat-icon>
                     </button>
                     <button mat-flat-button color="primary" *ngIf="table.status == 'available' || !table.status"

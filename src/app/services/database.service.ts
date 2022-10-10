@@ -200,7 +200,7 @@ export class DatabaseService {
             this.dataProvider.currentProject?.projectId +
             '/bills/bills'
         ),
-        where('customerInfoForm.phoneNumber', '!=', '')
+        where('customerInfo.phone', '!=', '')
       )
     );
   }

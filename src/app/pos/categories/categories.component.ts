@@ -105,7 +105,7 @@ export class CategoriesComponent implements OnInit {
           visible: false,
         });
       });
-      console.log(refinedCats);
+      console.log("refinedCats",refinedCats);
       this.categories = refinedCats;
       this.dataProvider.pageSetting.blur = false;
       // localStorage.setItem("categories",JSON.stringify(this.categories))
@@ -151,13 +151,14 @@ export class CategoriesComponent implements OnInit {
           visible: false,
         });
       });
-      console.log(refinedCats);
+      console.log("refinedCats",refinedCats);
       this.categories = refinedCats;
       this.dataProvider.pageSetting.blur = false;
       // localStorage.setItem("categories",JSON.stringify(this.categories))
     });
   }
   openSwitcher(data:any,category:any){
+    console.log("data,category",data,category)
     this.dataProvider.selectedCategory.next(category)
     console.log(this.categories)
     const dataCopy = JSON.parse(JSON.stringify(data))

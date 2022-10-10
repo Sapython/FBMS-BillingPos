@@ -23,6 +23,7 @@ export class ReprintKotComponent implements OnInit {
       "allProducts":kot!.products,
       "mode":"normal",
       "billNo":this.bill.billNo,
+      "date":(this.bill.date.toDate()).toLocaleString(),
     }
     console.log(data)
       fetch('http://127.0.0.1:8080/printKot',{

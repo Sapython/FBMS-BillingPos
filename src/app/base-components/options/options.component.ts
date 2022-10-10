@@ -142,7 +142,7 @@ export class OptionsComponent implements OnInit {
     this.databaseService.getCustomers().subscribe((docs) => {
       this.customers = [];
       docs.forEach((doc: any) => {
-        // console.log("savedBills",doc.data())
+        console.log("customer savedBills",doc.data())
         this.customers.push({ ...doc.data(), id: doc.id });
       });
     });
@@ -198,7 +198,6 @@ export class OptionsComponent implements OnInit {
         });
       }
     });
-    alert(allKotProducts.length)
     let disc = 0
     bill['selectedDiscounts'].forEach((discount:any)=>{
       if(discount.discountType == 'percentage'){
@@ -211,6 +210,7 @@ export class OptionsComponent implements OnInit {
     this.taxableValue = this.taxableValue - Math.floor(disc)
     const sgst = (this.taxableValue / 100) * 2.5;
     const cgst = (this.taxableValue / 100) * 2.5;
+    this.taxableValue = Math.ceil(this.taxableValue)
     console.log('sgst', sgst);
     console.log('cgst', cgst);
     const data = {
@@ -223,6 +223,7 @@ export class OptionsComponent implements OnInit {
       tokenNo: bill!.billNo,
       currentTable: bill.table,
       date: (bill.date.toDate()).toLocaleDateString('en-GB'),
+      time: (bill.date.toDate()).toLocaleTimeString('en-GB'),
       allProducts: allKotProducts,
       selectDiscounts: bill.selectedDiscounts,
       specialInstructions: 'Modified',
@@ -235,7 +236,7 @@ export class OptionsComponent implements OnInit {
       id: bill!.id,
       billNo: bill!.billNo,
     };
-    console.log(data);
+    console.log("garbage",data);
     fetch('http://127.0.0.1:8080/printBill', {
       method: 'POST',
       body: JSON.stringify(data),
