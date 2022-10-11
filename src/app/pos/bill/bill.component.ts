@@ -618,8 +618,10 @@ export class BillComponent implements OnInit, OnChanges {
         this.alertify.presentToast('Bill not found', 'error');
         return 
       };
+      alert('')
       const allKOTsTokens:string[] = []
-      billData?.['kots'].forEach((kot:any) => {
+      console.log('CURRENT KOTS BEFORE FINAL', JSON.parse(JSON.stringify(billData?.['kots'])));
+      JSON.parse(JSON.stringify(billData?.['kots'])).forEach((kot:any) => {
         if (kot.cancelled==false){
           if (!kot.finalized && kot.products.length > 0) {
             if (
@@ -648,13 +650,11 @@ export class BillComponent implements OnInit, OnChanges {
           }
         }
       });
+      console.log('CURRENT KOTS AFTER FINAL', JSON.parse(JSON.stringify(this.allKotProducts)));
       this.currentBill!.grandTotal = this.grandTotal;
       this.currentBill!.kotTokens = allKOTsTokens;
       this.changeDetection.detectChanges();
       const modifiedDiscounts = JSON.parse(JSON.stringify(this.selectDiscounts))
-      modifiedDiscounts.forEach((discount:any) => {
-        
-      })
       const data = {
         "printer":this.dataProvider.currentProject.billPrinter,
         "currentProject":this.dataProvider.currentProject,

@@ -191,10 +191,19 @@ export class OptionsComponent implements OnInit {
         alert(kot.products.length)
         kot.products.forEach((product: any) => {
           console.log('product.quantity', product.quantity);
-          this.taxableValue += product.shopPrice * product.quantity;
-          subtotal += product.shopPrice * product.quantity;
+          this.taxableValue += Number(product.shopPrice) * product.quantity;
+          subtotal += Number(product.shopPrice) * product.quantity;
           this.totalQuantity += product.quantity;
-          allKotProducts.push({...product,kot:kot.tokenNo});
+          // allKotProducts.push({...product,kot:kot.tokenNo});
+          // increase the quantity of the product if it is already present in allKotProducts array or add it to the array
+          let index = allKotProducts.findIndex(
+            (p: any) => p.id == product.id
+          );
+          if (index != -1) {
+            allKotProducts[index].quantity += product.quantity;
+          } else {
+            allKotProducts.push({...product,kot:kot.tokenNo});
+          }
         });
       }
     });

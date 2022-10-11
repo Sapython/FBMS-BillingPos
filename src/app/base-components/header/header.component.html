@@ -12,7 +12,7 @@
             <mat-button-toggle-group name="fontStyle" [value]="(this.dataProvider.modeSelected | async) || 'dineIn'"
                 aria-label="Font Style" (change)="changeBillerMode($event)">
                 <mat-button-toggle value="dineIn">Restaurant</mat-button-toggle>
-                <mat-button-toggle value="room">Room</mat-button-toggle>
+                <mat-button-toggle *ngIf="this.dataProvider.rooms.length>0" value="room">Room</mat-button-toggle>
             </mat-button-toggle-group>
             <div (mouseenter)="extraSearchClass = 'active'" id="searchBar" class="search {{extraSearchClass}}">
                 <input (change)="extraSearchClass = 'active'"
