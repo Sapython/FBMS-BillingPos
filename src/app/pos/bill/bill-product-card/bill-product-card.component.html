@@ -9,7 +9,7 @@
         <p class="price">&#8377;&nbsp;{{product.shopPrice}}</p>
         <div>
             <input min="0" type="number" [value]="product.quantity ? product.quantity : 1" [name]="product.id"
-            [(ngModel)]="product.quantity" (input)="quantityChanged.emit()" (change)="quantityChanged.emit()">
+            [(ngModel)]="product.quantity" (input)="quantityChanged.emit($event)" (change)="quantityChanged.emit($event)">
             <button mat-icon-button class="delete" (click)="deleted.emit()"><mat-icon>delete</mat-icon></button>
             <button mat-icon-button (click)="addInstruction()"><mat-icon>info</mat-icon></button>
         </div>

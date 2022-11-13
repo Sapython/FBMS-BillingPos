@@ -188,7 +188,6 @@ export class OptionsComponent implements OnInit {
     let allKotProducts: any[] = [];
     bill?.kots.forEach((kot: any) => {
       if (!kot.cancelled) {
-        alert(kot.products.length)
         kot.products.forEach((product: any) => {
           console.log('product.quantity', product.quantity);
           this.taxableValue += Number(product.shopPrice) * product.quantity;
@@ -244,6 +243,7 @@ export class OptionsComponent implements OnInit {
       paymentMethod: bill.paymentType,
       id: bill!.id,
       billNo: bill!.billNo,
+      mode:'reprint'
     };
     console.log("garbage",data);
     fetch('http://127.0.0.1:8080/printBill', {

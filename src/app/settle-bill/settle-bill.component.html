@@ -7,12 +7,12 @@
             <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'card'"
                 (click)="paymentMethod = 'card';">Card</button>
             <button mat-flat-button color="primary" *ngIf="paymentMethod == 'card'">Card</button>
-            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'dineIn'"
-                (click)="paymentMethod = 'dineIn';">Dine In</button>
-            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'dineIn'">Dine In</button>
-            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'pickUp'"
-                (click)="paymentMethod = 'pickUp';">Pick Up</button>
-            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'pickUp'">Pick Up</button>
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'upi'"
+                (click)="paymentMethod = 'upi';">UPI</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'upi'">UPI</button>
+            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'other'"
+                (click)="paymentMethod = 'other';">Other</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'other'">Other</button>
         </div>
         <hr>
         <button *ngIf="this.dataProvider.currentProject.manageBill" mat-flat-button color="primary" (click)="manageBill()">Manage Bill</button>

@@ -4,7 +4,7 @@
         [@dishCardStagger]=" currentKot && currentKot.products.length">
         <app-bill-product-card [@dishCardState]="card.deleting ? 'deleted' : 'default'" #card
             *ngFor="let product of currentKot!.products;let i = index" (deleted)="delete(product.id,card)"
-            (instructionSet)="saveBill()" (quantityChanged)="updateQuantity(card)" [product]="currentKot!.products[i]">
+            (instructionSet)="saveBill()" (quantityChanged)="updateQuantity(product,$event)" [product]="currentKot!.products[i]">
         </app-bill-product-card>
     </div>
     <div class="billActions" *ngIf="currentBill">
@@ -42,9 +42,8 @@
                     <mat-option *ngFor="let discount of discounts" [value]="discount">{{discount.title}}</mat-option>
                 </mat-select>
             </mat-form-field>
-            <span>
-                <mat-slide-toggle (change)="setComplimentary($event);calculateTaxAndPrices()" class="example-margin"
-                    [(ngModel)]="isNonChargeable" color="primary"></mat-slide-toggle>
+            <span *ngIf="!currentBill.completed">
+                <mat-slide-toggle (change)="setComplimentary($event);calculateTaxAndPrices()" class="example-margin" color="primary"></mat-slide-toggle>
                 <p>Non Chargeable</p>
             </span>
 
