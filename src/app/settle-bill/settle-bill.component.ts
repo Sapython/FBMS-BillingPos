@@ -117,7 +117,7 @@ export class SettleBillComponent implements OnInit {
           "grandTotal":(this.grandTotal).toFixed(2),
           "paymentMethod":this.paymentMethod,
           "id":modifiedData!.id,
-          "billNo":modifiedData!.billNo,
+          "billNo":this.isNonChargeable ? "NC-" + (modifiedData!.billNo).toString() : modifiedData!.billNo,
         }
         console.log(data)
         fetch('http://127.0.0.1:8080/printBill',{

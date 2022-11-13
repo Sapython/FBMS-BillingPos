@@ -19,7 +19,9 @@ fbmsDb = firestore.client(app=fbmsApp)
 dosaBucket = storage.bucket(app=dosaApp,name='dosaplaza-cv.appspot.com')
 fbmsBucket = storage.bucket(app=fbmsApp,name='fbms-shreeva-demo.appspot.com')
 
-dataframe = openpyxl.load_workbook("triveni-snagam-room-price-list(1).xlsx")
+projectId = "mahajans"
+
+dataframe = openpyxl.load_workbook("Mahajan-Menu.xlsx")
 print(dataframe)
 sheet = dataframe.get_sheet_by_name('Sheet1')
 print(sheet)
@@ -29,19 +31,20 @@ for row in sheet.rows:
     # print(row[0].value, row[1].value)
     # if len(data) == 0: continue
     if row[2].value == 'Category': continue 
-    data.append(
-        {
-            "name": row[0].value,
-            "roomPrice": row[1].value,
-            "category":row[2].value,
-            "dishPrice":row[3].value
-        }
-    )
-# print(data)
+    print (row[0].value, row[1].value, row[2].value,)
+    if (row[1].value):
+        data.append(
+            {
+                "name": row[0].value,
+                "dishPrice": row[1].value,
+                "category":row[2].value,
+            }
+        )
+# # print(data)
 categories = {}
-for item in fbmsDb.collection("business/accounts/triveniSangam/recipes/categories").stream():
+for item in fbmsDb.collection(f"business/accounts/{projectId}/recipes/categories").stream():
     categories[item.to_dict()['name']] = {**item.to_dict(), 'id': item.id}
-
+print(categories)
 for recipe in data:
     print(recipe['category'])
     recipeData ={
@@ -50,12 +53,12 @@ for recipe in data:
             {'value': 'mobile', 'checked': True, 'name': 'Mobile'}, 
             {'value': 'desktop', 'checked': True, 'name': 'Desktop'}, 
             {'value': 'other', 'checked': True, 'name': 'Other'}], 
-        'onlinePrice':recipe['roomPrice'], 
+        'onlinePrice':recipe['dishPrice'], 
         'tags': ['tagOne', 'tagTwo', 'tagThree'], 
         'orderType': None, 
-        'dishName': recipe['name'],
+        'dishName': recipe['name'].title(),
         'categories': categories[recipe['category']],
-        'thirdPartyPrice': recipe['roomPrice'], 
+        'thirdPartyPrice': recipe['dishPrice'], 
         'taxes': [], 
         'availableOnQrMenu': True, 
         'images': ['https://firebasestorage.googleapis.com/v0/b/fbms-shreeva-demo.appspot.com/o/food(1).png?alt=media&token=558c361b-00a5-4a1b-b9ae-07ddaf7151ff'], 
@@ -63,29 +66,29 @@ for recipe in data:
         'profitMargin': 1, 
         'costPrice': 0, 
         'sellingPrice':0, 
-        'shopPrice': recipe['roomPrice'], 
+        'shopPrice': recipe['dishPrice'], 
         'additionalInstructions': None
     }
     print(recipeData)
-    fbmsDb.collection("business/accounts/triveniSangam/recipes/roomRecipes").add(recipeData)
-    fbmsDb.collection("business/accounts/triveniSangam/recipes/recipes").add({**recipeData,'onlinePrice':recipe['dishPrice'], 'shopPrice': recipe['dishPrice'],'thirdPartyPrice': recipe['dishPrice']})
-    # break
+#     fbmsDb.collection("business/accounts/triveniSangam/recipes/roomRecipes").add(recipeData)
+    # fbmsDb.collection(f"business/accounts/{projectId}/recipes/recipes").add(recipeData)
+    break
 
-# print(categories)
-# categories = []
-# for i in data:
-#     if i["category"] not in categories:
-#         categories.append(i["category"])
-# print(categories)
+# # print(categories)
+# # categories = []
+# # for i in data:
+# #     if i["category"] not in categories:
+# #         categories.append(i["category"])
+# # print(categories)
 
-# for i in categories:
-#     if i == "Category": continue
-#     fbmsDb.collection("business/accounts/triveniSangam/recipes/categories").add({ 
-#         "connectedMenu": "baseMenu",
-#         "created": firestore.SERVER_TIMESTAMP,
-#         "discountList": "",
-#         "displayName": i,
-#         "isActive": False,
-#         "modified": firestore.SERVER_TIMESTAMP,
-#         "name": i,
-#     })
+# # for i in categories:
+# #     if i == "Category": continue
+# #     fbmsDb.collection("business/accounts/triveniSangam/recipes/categories").add({ 
+# #         "connectedMenu": "baseMenu",
+# #         "created": firestore.SERVER_TIMESTAMP,
+# #         "discountList": "",
+# #         "displayName": i,
+# #         "isActive": False,
+# #         "modified": firestore.SERVER_TIMESTAMP,
+# #         "name": i,
+# #     })

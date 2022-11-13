@@ -20,7 +20,7 @@
                     <p><b>Total Products:</b> {{savedMenu.user}}</p>
                     <p><b>Date:</b> {{savedMenu.date.toDate() | date}}</p>
                     <p><b>Amount:</b> {{savedMenu.grandTotal}}</p>
-                    <p><b>Bill Id:</b> {{savedMenu.billNo}}</p>
+                    <p><b>Bill Id:</b> {{savedMenu.isNonChargeable ? 'NC -' :''}} {{savedMenu.billNo}}</p>
                     <p><b>Payment Type:</b> {{savedMenu.paymentType}}</p>
                     <p><b>Table/Room No:</b> {{savedMenu.table.tableNo}}</p>
                     <button color="primary" (click)="reprintBill(savedMenu)">Re-Print Bill</button>
