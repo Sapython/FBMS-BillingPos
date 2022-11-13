@@ -47,8 +47,9 @@ import { ManageBillComponent } from './manage-bill/manage-bill.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ReprintKotComponent } from './reprint-kot/reprint-kot.component';
+import { GuestsComponent } from './pages/admin/rooms/guests/guests.component';
 @NgModule({
-  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent, CustomerInfoModalComponent, SettleBillComponent, ManageBillComponent, ReprintKotComponent],
+  declarations: [AppComponent, LockComponent, SelectProjectComponent, TablesComponent, AllKotsComponent, CancelModalComponent, CustomerInfoModalComponent, SettleBillComponent, ManageBillComponent, ReprintKotComponent, GuestsComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

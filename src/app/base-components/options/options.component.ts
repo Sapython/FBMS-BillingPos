@@ -188,13 +188,21 @@ export class OptionsComponent implements OnInit {
     let allKotProducts: any[] = [];
     bill?.kots.forEach((kot: any) => {
       if (!kot.cancelled) {
-        // alert(kot.products.length)
         kot.products.forEach((product: any) => {
           console.log('product.quantity', product.quantity);
-          this.taxableValue += product.shopPrice * product.quantity;
-          subtotal += product.shopPrice * product.quantity;
+          this.taxableValue += Number(product.shopPrice) * product.quantity;
+          subtotal += Number(product.shopPrice) * product.quantity;
           this.totalQuantity += product.quantity;
-          allKotProducts.push({...product,kot:kot.tokenNo});
+          // allKotProducts.push({...product,kot:kot.tokenNo});
+          // increase the quantity of the product if it is already present in allKotProducts array or add it to the array
+          let index = allKotProducts.findIndex(
+            (p: any) => p.id == product.id
+          );
+          if (index != -1) {
+            allKotProducts[index].quantity += product.quantity;
+          } else {
+            allKotProducts.push({...product,kot:kot.tokenNo});
+          }
         });
       }
     });
@@ -235,6 +243,7 @@ export class OptionsComponent implements OnInit {
       paymentMethod: bill.paymentType,
       id: bill!.id,
       billNo:bill.isNonChargeable ? "NC-" + (bill!.billNo).toString() : bill!.billNo,
+      mode:'reprint'
     };
     console.log("garbage",data);
     fetch('http://127.0.0.1:8080/printBill', {

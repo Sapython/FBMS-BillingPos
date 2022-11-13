@@ -200,8 +200,9 @@ export class AuthenticationService {
                         this.dataProvider.currentProject?.projectId +
                         '/counters'),{bills:0,ingredients:0});
                       } else {
-                        this.dataProvider.currentTokenNo = data.bills;
-                        this.dataProvider.billNo = data.allBills;
+                        this.dataProvider.currentTokenNo = data.bills || 0;
+                        this.dataProvider.billNo = data.allBills || 0;
+                        this.dataProvider.ncBillNo = data.ncBills || 0;
                         console.log("TOKEN NO",this.dataProvider.currentTokenNo);
                       }
                   });

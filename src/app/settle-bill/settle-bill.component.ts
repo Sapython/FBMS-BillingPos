@@ -30,7 +30,7 @@ export class SettleBillComponent implements OnInit {
     phone: new FormControl('',[Validators.pattern('[0-9]{10}')]),
     address:new FormControl('')
   })
-  paymentMethod:string = 'cash';
+  paymentMethod:string = '';
   close: EventEmitter<any> = new EventEmitter<any>();
   ngOnInit(): void {
   }
@@ -146,18 +146,22 @@ export class SettleBillComponent implements OnInit {
     } return ''
   }
   settleBill(){
-    if (this.table?.type=='table') {
-      this.databaseService.emptyTable(this.table!.id);
-      // alert("Clearing table")
+    if (this.paymentMethod!=''){
+      if (this.table?.type=='table') {
+        this.databaseService.emptyTable(this.table!.id);
+        // alert("Clearing table")
+      } else {
+        this.databaseService.emptyRoom(this.table!.id);
+        // alert("Clearing room")
+      }
+      this.databaseService.settleBill(this.table.billData,this.customerInfoForm.value,this.paymentMethod).then(()=>{
+        this.alertify.presentToast('Bill settled successfully')
+      }).catch((err)=>{
+        this.alertify.presentToast('Error settling bill','error')
+      });
+      this.close.emit();
     } else {
-      this.databaseService.emptyRoom(this.table!.id);
-      // alert("Clearing room")
+      alert("Please select a payment method")
     }
-    this.databaseService.settleBill(this.table.billData,this.customerInfoForm.value,this.paymentMethod).then(()=>{
-      this.alertify.presentToast('Bill settled successfully')
-    }).catch((err)=>{
-      this.alertify.presentToast('Error settling bill','error')
-    });
-    this.close.emit();
   }
 }

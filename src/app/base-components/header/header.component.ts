@@ -120,8 +120,8 @@ export class HeaderComponent implements OnInit {
 
   newOrder() {
     this.closeTableModal();
-    const inst = this.dialog.open(TablesComponent, { disableClose: true });
-    inst.disableClose = true;
+    const inst = this.dialog.open(TablesComponent);
+    // inst.disableClose = true;
     this.allInst.push(inst);
     inst.componentInstance?.close.subscribe(() => {
       // inst.close()

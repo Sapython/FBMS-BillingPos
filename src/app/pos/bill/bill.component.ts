@@ -165,7 +165,7 @@ export class BillComponent implements OnInit, OnChanges {
   currentTable: Table | undefined;
   totalQuantity: number = 0;
   grandTotal = 0;
-  paymentMethod: string = 'cash';
+  paymentMethod: string = '';
   cancelledItems: any[] = [];
   reprintKotItems: any[] = [];
   reprinttokenNo: number = 0;
@@ -455,8 +455,21 @@ export class BillComponent implements OnInit, OnChanges {
     this.updateBill();
   }
 
-  updateQuantity(ref: any) {
-    console.log(ref, this.currentKot);
+  updateQuantity(ref: any,event:any) {
+    let productIndex = this.currentKot!.products.findIndex(
+      (p) => p.id == ref.id
+    );
+    let kotIndex = this.currentBill!.kots.findIndex(
+      (kot) => kot.tokenNo == this.currentKot!.tokenNo
+    );
+    if (productIndex != -1) {
+      // alert("Product already exists in kot")
+      this.currentBill!.kots[kotIndex].products[productIndex].quantity = Number(event.target.value);
+    } else {
+      // alert("Product does not exist in kot")
+      this.currentBill!.kots[kotIndex].products.push(ref);
+    }
+    console.log(ref,event, this.currentKot);
     this.calculateTaxAndPrices();
     this.updateBill()
   }
@@ -467,10 +480,6 @@ export class BillComponent implements OnInit, OnChanges {
       this.dataProvider.pageSetting.blur = true;
     }
     if (this.currentBill) {
-      if(this.currentKot){
-        console.log('KOT PRODUCTS', this.currentKot!.products);
-      }
-      console.log("this.currentBill",this.currentBill)
       this.updateBillData(this.currentBill, this.currentBill.id).finally(() => {
         if (finalizedKot) {
           this.dataProvider.pageSetting.blur = false;
@@ -498,7 +507,6 @@ export class BillComponent implements OnInit, OnChanges {
     this.currentBill = {
       settled: false,
       date: new Date(),
-      billNo:this.dataProvider.billNo+1,
       customerInfo: this.customerInfoForm.value,
       completed: false,
       deviceId: this.dataProvider.deviceData.deviceId,
@@ -517,7 +525,6 @@ export class BillComponent implements OnInit, OnChanges {
       tokenNo: this.dataProvider.currentTokenNo + 1,
       kotTokens:[]
     };
-    this.databaseService.addBillNo()
     this.currentTable!.bill = this.currentBill.id;
     console.log(this.currentBill);
     this.dataProvider.allBills.find((bill) => bill.id === this.currentBill!.id)
@@ -604,13 +611,14 @@ export class BillComponent implements OnInit, OnChanges {
     this.changeDetection.detectChanges();
   }
 
-  finalizeBill() {
+  async finalizeBill() {
     if (this.paymentMethod == 'pickUp' && !this.customerInfoForm.value.name && !this.customerInfoForm.value.address) {
       alert('Cannot finalize bill without customer name and address');
       return;
     }
     console.log('CURRENT BILL BEFORE FINAL', this.currentBill);
     this.allKotProducts = [];
+    await this.setBillNo(this.currentBill!)
     this.databaseService.getBill(this.currentBill!.id).then((bill) => {
       var billData:any = bill.data()
       if (billData){
@@ -621,7 +629,8 @@ export class BillComponent implements OnInit, OnChanges {
         return 
       };
       const allKOTsTokens:string[] = []
-      billData?.['kots'].forEach((kot:any) => {
+      console.log('CURRENT KOTS BEFORE FINAL', JSON.parse(JSON.stringify(billData?.['kots'])));
+      JSON.parse(JSON.stringify(billData?.['kots'])).forEach((kot:any) => {
         if (kot.cancelled==false){
           if (!kot.finalized && kot.products.length > 0) {
             if (
@@ -650,13 +659,11 @@ export class BillComponent implements OnInit, OnChanges {
           }
         }
       });
+      console.log('CURRENT KOTS AFTER FINAL', JSON.parse(JSON.stringify(this.allKotProducts)));
       this.currentBill!.grandTotal = this.grandTotal;
       this.currentBill!.kotTokens = allKOTsTokens;
       this.changeDetection.detectChanges();
       const modifiedDiscounts = JSON.parse(JSON.stringify(this.selectDiscounts))
-      modifiedDiscounts.forEach((discount:any) => {
-        
-      })
       const data = {
         "printer":this.dataProvider.currentProject.billPrinter,
         "currentProject":this.dataProvider.currentProject,
@@ -664,7 +671,6 @@ export class BillComponent implements OnInit, OnChanges {
         "complimentaryName":this.complimentaryName,
         "customerInfoForm":this.customerInfoForm.value,
         "kotsToken":this.joinByComma(this.currentBill!.kotTokens),
-        "tokenNo":this.currentBill!.tokenNo,
         "currentTable":this.currentTable,
         "allProducts":this.allKotProducts,
         "selectDiscounts":this.selectDiscounts,
@@ -680,7 +686,14 @@ export class BillComponent implements OnInit, OnChanges {
         "id":this.currentBill!.id,
         "billNo":this.isNonChargeable ? "NC-" + (this.currentBill!.billNo).toString() : this.currentBill!.billNo,
       }
-      console.log(data)
+      this.currentBill!.sgst = (this.sgst).toFixed(2)
+      this.currentBill!.cgst = (this.cgst).toFixed(2)
+      this.currentBill!.grandTotalString = (this.grandTotal).toFixed(2)
+      this.currentBill!.subTotal = this.subTotal
+
+      this.updateBill()
+
+      console.log("SHIT",data)
       fetch('http://127.0.0.1:8080/printBill',{
         method:'POST',
         body: JSON.stringify(data),
@@ -949,7 +962,7 @@ export class BillComponent implements OnInit, OnChanges {
       })
   }
   setComplimentary(event:any){
-    console.log(event)
+    console.log("event",event)
     if (event.checked){
       let res:any = ''
       while (res==''){
@@ -958,6 +971,8 @@ export class BillComponent implements OnInit, OnChanges {
       }
       if(res){
         this.complimentaryName = res
+        this.isNonChargeable = true
+        this.currentBill!.isNonChargeable = true
         console.log('passed')
       } else {
         setTimeout(()=>{
@@ -980,17 +995,30 @@ export class BillComponent implements OnInit, OnChanges {
       return res.slice(0,-1)
     } return ''
   }
+  setBillNo(bill:Bill){
+    // alert(bill.isNonChargeable ? 'True':'False')
+    if (bill.isNonChargeable){
+      // alert(this.dataProvider.ncBillNo)
+      bill.billNo = this.dataProvider.ncBillNo
+      this.databaseService.addNcBillNo()
+      this.updateBill()
+    } else {
+      // alert(this.dataProvider.billNo)
+      bill.billNo = this.dataProvider.billNo
+      this.databaseService.addBillNo()
+      this.updateBill()
+    }
+  }
 }
 
 export type Bill = {
   settled: boolean;
   id: string;
-  billNo:number,
+  billNo?:number,
   completed: boolean;
   customerInfo: any;
   date: any;
   tokenNo: number;
-  grandTotal: number;
   selectedDiscounts: any[];
   deviceId: string;
   dineMethod: 'dineIn' | 'pickUp';
@@ -1003,6 +1031,12 @@ export type Bill = {
   isNonChargeable: boolean;
   specialInstructions: string;
   kotTokens:any[];
+  sgst?: string;
+  cgst?: string;
+  grandTotalString?: string;
+  subTotal?: number;
+  discount?: any[];
+  grandTotal: number;
 };
 
 export type Tax = {

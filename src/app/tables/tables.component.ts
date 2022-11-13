@@ -15,7 +15,34 @@ export class TablesComponent implements OnInit {
     public databaseService:DatabaseService,
     private dialog:Dialog
   ) {}
+
   close: EventEmitter<any> = new EventEmitter<any>();
+  refresh(){
+    this.getTableBills()
+    this.dataProvider.pageSetting.blur = true;
+    this.databaseService.getTablesPromise().then(async (tablesData)=>{
+      let tables:any[] = []
+      tablesData.forEach((table:any)=>{
+        tables.push(table)
+      })
+      this.dataProvider.tables = await Promise.all(tables.map(async(table:any) => {
+        table  = {...table.data(),id:table.id}
+        if (table.bill){
+          const data = await this.databaseService.getBill(table.bill)
+          table.billData = data.data();
+          return table;
+        } else {
+          return table;
+        }
+      }))
+      console.log("this.dataProvider.tables",this.dataProvider.tables)
+      // sort all tables on table no
+      this.dataProvider.tables.sort((a:any,b:any)=>{
+        return Number(a.tableNo) - Number(b.tableNo)
+      })
+      this.dataProvider.pageSetting.blur = false;
+    })
+  }
   ngOnInit(): void {
     this.getTableBills()
     this.databaseService.getTables().subscribe(()=>{

@@ -39,19 +39,13 @@ export class DatabaseService {
     return collectionSnapshots(query(collection(this.fs, 'recipes')));
   }
 
-  updateProject(projects:any[]) {
-    return updateDoc(
-      doc(
-        this.fs,
-        'business/accounts'
-      ),
-      {
-        projects: projects,
-      }
-    );
+  updateProject(projects: any[]) {
+    return updateDoc(doc(this.fs, 'business/accounts'), {
+      projects: projects,
+    });
   }
 
-  addTokenNo(){
+  addTokenNo() {
     return updateDoc(
       doc(
         this.fs,
@@ -65,7 +59,7 @@ export class DatabaseService {
     );
   }
 
-  addBillNo(){
+  addBillNo() {
     return updateDoc(
       doc(
         this.fs,
@@ -75,6 +69,20 @@ export class DatabaseService {
       ),
       {
         allBills: increment(1),
+      }
+    );
+  }
+
+  addNcBillNo() {
+    return updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/counters'
+      ),
+      {
+        ncBills: increment(1),
       }
     );
   }
@@ -164,6 +172,20 @@ export class DatabaseService {
     return res;
   }
 
+  getTablesPromise() {
+    return getDocs(
+      query(
+        collection(
+          this.fs,
+          'business/accounts/' +
+            this.dataProvider.currentProject?.projectId +
+            '/tables/tables'
+        ),
+        orderBy('tableNo')
+      )
+    );
+  }
+
   getTables() {
     return collectionSnapshots(
       query(
@@ -174,7 +196,7 @@ export class DatabaseService {
             '/tables/tables'
         ),
         orderBy('tableNo')
-      ),
+      )
     );
   }
   getRooms() {
@@ -311,20 +333,6 @@ export class DatabaseService {
         }
       );
     }
-    await setDoc(
-      doc(
-        this.fs,
-        'business/accounts/' +
-          this.dataProvider.currentProject?.projectId +
-          '/counters'
-      ),
-      {
-        bills: increment(1),
-      },
-      {
-        merge: true,
-      }
-    );
     return res;
   }
 
@@ -428,7 +436,7 @@ export class DatabaseService {
     );
   }
 
-  getCompletedBills(startDate:Date,endDate:Date) {
+  getCompletedBills(startDate: Date, endDate: Date) {
     return collectionSnapshots(
       query(
         collection(
@@ -438,7 +446,7 @@ export class DatabaseService {
             '/bills/bills'
         ),
         where('date', '>=', startDate),
-        where('date', '<=', endDate),
+        where('date', '<=', endDate)
       )
     );
   }
@@ -462,7 +470,8 @@ export class DatabaseService {
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
           '/bills/bills'
-      ),{idField: 'id'}
+      ),
+      { idField: 'id' }
     );
   }
 
@@ -601,7 +610,7 @@ export class DatabaseService {
       {
         status: 'available',
         bill: '',
-        billData:null
+        billData: null,
       }
     );
   }
@@ -618,7 +627,7 @@ export class DatabaseService {
       {
         status: 'available',
         bill: '',
-        billData:null
+        billData: null,
       }
     );
   }
@@ -713,36 +722,43 @@ export class DatabaseService {
     );
   }
 
-  settleBill(billData:Bill,customerInfo:any,paymentMethod:string){
-    return addDoc(
-      collection(
+  settleBill(billData: Bill, customerInfo: any, paymentMethod: string) {
+    return updateDoc(
+      doc(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
-          '/bills/bills'
+          '/bills/bills/' +
+          billData.id
       ),
       { ...billData, customerInfo: customerInfo, paymentType: paymentMethod }
     );
   }
 
-  async saveBillModification(oldBillData:any,newBillData:any){
+  async saveBillModification(oldBillData: any, newBillData: any) {
     await addDoc(
       collection(
         this.fs,
         'business/accounts/' +
           this.dataProvider.currentProject?.projectId +
-          '/bills/bills/'+oldBillData.id+'/modifications'
+          '/bills/bills/' +
+          oldBillData.id +
+          '/modifications'
       ),
       { oldBillData: oldBillData, newBillData: newBillData }
     );
-    return updateDoc(doc(
-      this.fs,
-      'business/accounts/' +
-        this.dataProvider.currentProject?.projectId +
-        '/bills/bills/' +
-        oldBillData.id
-    ),{
-      ...newBillData,modified:true
-    })
+    return updateDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/bills/bills/' +
+          oldBillData.id
+      ),
+      {
+        ...newBillData,
+        modified: true,
+      }
+    );
   }
 }

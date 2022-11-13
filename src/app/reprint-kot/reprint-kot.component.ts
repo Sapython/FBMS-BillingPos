@@ -21,7 +21,7 @@ export class ReprintKotComponent implements OnInit {
       "tokenNo": kot!.tokenNo,
       "currentTable": this.bill.table,
       "allProducts":kot!.products,
-      "mode":"normal",
+      "mode":"reprint",
       "billNo":this.bill.billNo,
       "date":(this.bill.date.toDate()).toLocaleString(),
     }

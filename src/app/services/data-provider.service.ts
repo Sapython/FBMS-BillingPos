@@ -40,6 +40,7 @@ export class DataProviderService {
   public allBills:any[] = [];
   public currentTokenNo:number = 0;
   public billNo:number = 0;
+  public ncBillNo:number = 0;
   public syncer:Subject<boolean> = new Subject();
   public openTable:Subject<boolean> = new Subject();
   public menuSelected:Subject<any> = new Subject();
