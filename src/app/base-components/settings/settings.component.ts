@@ -28,6 +28,7 @@ export class SettingsComponent implements OnInit {
     'printer2',
     'printer3'
   ]
+  categories:any[] = []
   constructor(private dataProvider:DataProviderService,private databaseService:DatabaseService) { }
   cancelSettings(){
     this.cancel.emit()
@@ -41,6 +42,17 @@ export class SettingsComponent implements OnInit {
     if (localStorage.getItem('printerSettings')){
       this.settingsForm.patchValue(JSON.parse(localStorage.getItem('printerSettings')!))
     }
+    this.databaseService.getCheckerCategories().then((res:any)=>{
+      this.categories = []
+      res.forEach((data:any)=>{
+        this.categories.push({...data.data(),id:data.id,control:new FormControl(''),checked:false})
+      })
+      console.log(this.categories);
+    })
+  }
+
+  setPrinters(){
+    
   }
 
   saveSettings(){

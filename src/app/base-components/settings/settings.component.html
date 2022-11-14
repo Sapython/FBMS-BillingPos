@@ -1,54 +1,92 @@
 <section>
-  <h1>Settings</h1>
-  <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>Project Name:</mat-label>
-      <input matInput type="text" formControlName="projectName">
-    </mat-form-field>
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>Phone Number:</mat-label>
-      <input matInput type="text" formControlName="phoneNumber">
-    </mat-form-field>
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>Address:</mat-label>
-      <input matInput type="text" formControlName="address">
-    </mat-form-field>
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>GST No:</mat-label>
-      <input matInput type="text" formControlName="gstNumber">
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Choose Printer For KOT</mat-label>
-      <mat-select formControlName="kotPrinter">
-        <mat-option>Clear</mat-option>
-        <mat-option [value]="printer" *ngFor="let printer of printers">{{printer}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Choose Printer For Bill</mat-label>
-      <mat-select formControlName="billPrinter">
-        <mat-option>Clear</mat-option>
-        <mat-option [value]="printer" *ngFor="let printer of printers">{{printer}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>FSSAI No:</mat-label>
-      <input matInput type="text" formControlName="fssaiNo">
-    </mat-form-field>
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>Counter No:</mat-label>
-      <input matInput type="text" formControlName="counterNo">
-    </mat-form-field>
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>Cashier Name:</mat-label>
-      <input matInput type="text" formControlName="cashierName">
-    </mat-form-field>
-    <mat-form-field class="example-form-field" appearance="fill">
-      <mat-label>Device Name:</mat-label>
-      <input matInput type="text" formControlName="deviceName">
-    </mat-form-field>
-    <button color="primary" style="margin-right:20px;" (click)="cancelSettings()" mat-stroked-button type="button">
-      Cancel</button>
-    <button color="primary" style="margin-right:20px;" mat-flat-button type="submit"> Submit</button>
-  </form>
+  <mat-tab-group>
+    <mat-tab label="General">
+      <h1>Settings</h1>
+      <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>Project Name:</mat-label>
+          <input matInput type="text" formControlName="projectName" />
+        </mat-form-field>
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>Phone Number:</mat-label>
+          <input matInput type="text" formControlName="phoneNumber" />
+        </mat-form-field>
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>Address:</mat-label>
+          <input matInput type="text" formControlName="address" />
+        </mat-form-field>
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>GST No:</mat-label>
+          <input matInput type="text" formControlName="gstNumber" />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Choose Printer For Bill</mat-label>
+          <mat-select formControlName="billPrinter">
+            <mat-option>Clear</mat-option>
+            <mat-option [value]="printer" *ngFor="let printer of printers">{{
+              printer
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>FSSAI No:</mat-label>
+          <input matInput type="text" formControlName="fssaiNo" />
+        </mat-form-field>
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>Counter No:</mat-label>
+          <input matInput type="text" formControlName="counterNo" />
+        </mat-form-field>
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>Cashier Name:</mat-label>
+          <input matInput type="text" formControlName="cashierName" />
+        </mat-form-field>
+        <mat-form-field class="example-form-field" appearance="fill">
+          <mat-label>Device Name:</mat-label>
+          <input matInput type="text" formControlName="deviceName" />
+        </mat-form-field>
+        <button
+          color="primary"
+          style="margin-right: 20px"
+          (click)="cancelSettings()"
+          mat-stroked-button
+          type="button"
+        >
+          Cancel
+        </button>
+        <button
+          color="primary"
+          style="margin-right: 20px"
+          mat-flat-button
+          type="submit"
+        >
+          Submit
+        </button>
+      </form>
+    </mat-tab>
+    <mat-tab label="Printer">
+      <h1>Printer Settings</h1>
+      <button mat-button color="primary" type="button">Add Config</button>
+      <form (ngSubmit)="setPrinters()">
+        <div class="grid">
+          <mat-form-field appearance="fill">
+            <mat-label>Choose Printer For Bill</mat-label>
+            <mat-select formControlName="billPrinter">
+              <mat-option>Clear</mat-option>
+              <mat-option [value]="printer" *ngFor="let printer of printers">{{
+                printer
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-checkbox
+          *ngFor="let category of categories"
+          class="example-margin"
+          [checked]="category.done"
+          [formControl]="category.control"
+          >{{ category.name }}</mat-checkbox
+        >
+        </div>
+        <button mat-raised-button type="submit" color="primary">Submit</button>
+      </form>
+    </mat-tab>
+  </mat-tab-group>
 </section>

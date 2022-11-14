@@ -761,4 +761,15 @@ export class DatabaseService {
       }
     );
   }
+
+  getCheckerCategories(){
+    return getDocs(
+      collection(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/recipes/categories'
+      )
+    );
+  }
 }

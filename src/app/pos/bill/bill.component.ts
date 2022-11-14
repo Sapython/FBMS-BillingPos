@@ -556,7 +556,6 @@ export class BillComponent implements OnInit, OnChanges {
     }
     console.log('finalizing kot', this.currentKot!.products);
     if (this.kotModificationMode){
-      alert("KOT Modification Mode")
       const data = {
         "printer": this.dataProvider.currentProject.kotPrinter,
         "currentProject":this.dataProvider.currentProject,
@@ -684,7 +683,7 @@ export class BillComponent implements OnInit, OnChanges {
         "grandTotal":(this.grandTotal).toFixed(2),
         "paymentMethod":this.paymentMethod,
         "id":this.currentBill!.id,
-        "billNo":this.isNonChargeable ? "NC-" + (this.currentBill!.billNo).toString() : this.currentBill!.billNo,
+        "billNo":this.isNonChargeable ? "NC-" + (this.currentBill!.billNo)!.toString() : this.currentBill!.billNo,
       }
       this.currentBill!.sgst = (this.sgst).toFixed(2)
       this.currentBill!.cgst = (this.cgst).toFixed(2)
