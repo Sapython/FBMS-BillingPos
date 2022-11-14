@@ -269,7 +269,7 @@ export class BillComponent implements OnInit, OnChanges {
       }
     });
     this.dataProvider.selectedProduct.subscribe(async (product) => {
-      if (!this.currentTable) {
+      if (!this.currentTable && !this.dataProvider.takeawayMode) {
         this.alertify.presentToast('Please select a table', 'error');
         this.dataProvider.openTableFunction();
         return;

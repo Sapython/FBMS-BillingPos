@@ -7,11 +7,12 @@
             <button class="tableNo" mat-stroked-button color="primary"
                 *ngIf="dataProvider.selectedTable">{{dataProvider.selectedTable.type=='table' ? 'Table No' : 'Room
                 No'}}: {{dataProvider.selectedTable.tableNo}}</button>
-            <button mat-stroked-button color="primary" class="higlighted" (click)="newOrder()">Select
+            <button *ngIf="!dataProvider.takeawayMode" mat-stroked-button color="primary" class="higlighted" (click)="newOrder()">Select
                 Table/Room</button>
             <mat-button-toggle-group name="fontStyle" [value]="(this.dataProvider.modeSelected | async) || 'dineIn'"
                 aria-label="Font Style" (change)="changeBillerMode($event)">
                 <mat-button-toggle value="dineIn">Restaurant</mat-button-toggle>
+                <mat-button-toggle value="takeaway">Takeaway</mat-button-toggle>
                 <mat-button-toggle *ngIf="this.dataProvider.rooms.length>0" value="room">Room</mat-button-toggle>
             </mat-button-toggle-group>
             <div (mouseenter)="extraSearchClass = 'active'" id="searchBar" class="search {{extraSearchClass}}">

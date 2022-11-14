@@ -1,5 +1,5 @@
 <main id="productsContainer">
-    <ng-container *ngIf="table">
+    <ng-container *ngIf="table || dataProvider.takeawayMode">
         <button [class]="'uk-animation-fast productCard ' + lengthWiseClass(product.dishName)"
             *ngFor="let product of searchedProducts.length > 0 ? searchedProducts : filteredProducts"
             (click)="addToBill(product)">

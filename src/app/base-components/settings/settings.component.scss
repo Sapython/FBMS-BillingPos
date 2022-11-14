@@ -18,16 +18,34 @@ section{
     //         border: 2px solid var(--primary);
     //     }
     // }
-    form{
+    .form{
         display:grid;
         grid-template-columns: 1fr 1fr;
         gap:10px;
         max-height: 70vh;
-        .grid{
-            display:grid;
-            grid-template-columns: 1fr 1fr;
-            gap:10px;
+    }
+    form{
+        button{
+            // align to bottom
+            margin-top: auto;
         }
+        h2{
+            position: relative;
+            top:50%;
+            left:100%;
+            height: min-content;
+            transform: translate(-50%,-50%);
+            color:rgb(237, 237, 237);
+            text-align: center;
+        }
+    }
+    .grid{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap:10px;
+        max-height: 60vh;
+        overflow-y: auto;
+        min-height: 300px;
     }
     
 }

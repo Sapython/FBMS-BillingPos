@@ -206,7 +206,9 @@ export class HeaderComponent implements OnInit {
   }
   changeBillerMode(event: any) {
     console.log('Change Biller Mode', event);
-    this.dataProvider.openTableFunction();
+    if (event.value!='takeaway'){
+      this.dataProvider.openTableFunction();
+    }
     this.dataProvider.modeSelected.next(event.value);
   }
 }

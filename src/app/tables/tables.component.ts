@@ -18,7 +18,6 @@ export class TablesComponent implements OnInit {
 
   close: EventEmitter<any> = new EventEmitter<any>();
   refresh(){
-    this.getTableBills()
     this.dataProvider.pageSetting.blur = true;
     this.databaseService.getTablesPromise().then(async (tablesData)=>{
       let tables:any[] = []
@@ -43,18 +42,8 @@ export class TablesComponent implements OnInit {
       this.dataProvider.pageSetting.blur = false;
     })
   }
+  
   ngOnInit(): void {
-    this.getTableBills()
-    this.databaseService.getTables().subscribe(()=>{
-      // alert("tables changed")
-      this.getTableBills()
-    })
-    this.dataProvider.tableChanged.subscribe((tables) => {
-      // alert("tables changed in")
-      this.getTableBills()
-    })
-  }
-  async getTableBills(){
   }
 
   selectRoom(table: any) {

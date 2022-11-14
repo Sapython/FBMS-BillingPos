@@ -44,6 +44,9 @@ export class CategoriesComponent implements OnInit {
           this.getDineInProducts()
         } else if (data=='room') {
           this.getRoomProducts()
+        } else if (data=='takeaway'){
+          this.getDineInProducts()
+          this.dataProvider.takeawayMode = true;
         }
       })    
     });

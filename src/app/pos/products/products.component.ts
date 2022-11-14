@@ -16,7 +16,7 @@ import { Dialog } from '@angular/cdk/dialog';
 export class ProductsComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
-    private dataProvider: DataProviderService,
+    public dataProvider: DataProviderService,
     private alertify: AlertsAndNotificationsService,
     private dialog: Dialog
   ) {}
@@ -39,7 +39,7 @@ export class ProductsComponent implements OnInit {
     this.dataProvider.selectedCategory.subscribe((data: any) => {
       console.log("Cat",data);
       this.searchedProducts = [];
-      if (!this.table) {
+      if (!this.table && !this.dataProvider.takeawayMode) {
         this.alertify.presentToast('Please select a table first', 'error');
         this.dataProvider.openTableFunction();
       }

@@ -23,6 +23,7 @@ export class SettingsComponent implements OnInit {
     cashierName: new FormControl(this.dataProvider.currentProject.cashierName,[Validators.required]),
     deviceName: new FormControl(this.dataProvider.currentProject.deviceName,[Validators.required]),
   })
+  configs:any[] = []
   printers:string[] = [
     'printer1',
     'printer2',
@@ -75,6 +76,10 @@ export class SettingsComponent implements OnInit {
     // console.log(this.dataProvider.allProjects);
     this.databaseService.updateProject(this.dataProvider.allProjects)
     // this.save.emit(this.settingsForm.value)
+  }
+
+  addConfig(){
+    this.configs.push({printerControl:new FormControl('',[Validators.required]),categoryControl:new FormControl('',[Validators.required])})
   }
 
 }

@@ -17,6 +17,7 @@ export class DataProviderService {
     spinner: false,
     messageType: 'Error',
   };
+  public takeawayMode: boolean = false;
   public selectedTable:any;
   public products:any[] = []
   public categories:any[] = []
@@ -44,7 +45,7 @@ export class DataProviderService {
   public syncer:Subject<boolean> = new Subject();
   public openTable:Subject<boolean> = new Subject();
   public menuSelected:Subject<any> = new Subject();
-  public modeSelected:Subject<'dineIn' | 'room'> = new Subject();
+  public modeSelected:Subject<'dineIn' | 'room' | 'takeaway'> = new Subject();
   public openTableFunction :any;
   public kotActive:boolean = false;
   public kotFinalizedActive:boolean = false;
