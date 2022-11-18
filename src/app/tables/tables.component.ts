@@ -14,8 +14,10 @@ export class TablesComponent implements OnInit {
     public dataProvider: DataProviderService,
     public databaseService:DatabaseService,
     private dialog:Dialog
-  ) {}
-
+  ) {
+    // setInterval(()=>{},5000)
+  }
+  interval:any;
   close: EventEmitter<any> = new EventEmitter<any>();
   refresh(){
     this.dataProvider.pageSetting.blur = true;
@@ -43,7 +45,28 @@ export class TablesComponent implements OnInit {
     })
   }
   
+  getTime(date:any){
+    let milliseconds =(new Date()).getTime() - (date.toDate().getTime());
+    // convert milliseconds to minutes and seconds
+    let minutes = Math.floor(milliseconds / 60000);
+    let seconds = ((milliseconds % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (Number(seconds) < 10 ? '0' : '') + seconds;
+  }
+
   ngOnInit(): void {
+    this.dataProvider.tables.forEach((table)=>{
+      if (table.status== 'occupied' && table.tableStart){
+        table.timeSpent = this.getTime(table.tableStart)
+      }
+    })
+    if(this.interval){clearInterval(this.interval)}
+    this.interval = setInterval(()=>{
+      this.dataProvider.tables.forEach((table)=>{
+        if (table.status== 'occupied' && table.tableStart){
+          table.timeSpent = this.getTime(table.tableStart)
+        }
+      })
+    },5000)
   }
 
   selectRoom(table: any) {

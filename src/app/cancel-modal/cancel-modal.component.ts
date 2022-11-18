@@ -11,7 +11,9 @@ export class CancelModalComponent implements OnInit {
   reason:string = "";
   phoneNumber:string = "";
   step:number = 1;
+  type:'unmade' | 'made' = 'unmade';
   ngOnInit(): void {
+
   }
   close(){
     this.completed.emit(false);
@@ -35,7 +37,8 @@ export class CancelModalComponent implements OnInit {
   submitReason(){
     this.completed.emit({
       reason:this.reason,
-      phone:this.phoneNumber
+      phone:this.phoneNumber,
+      type:this.type
     });
   }
 

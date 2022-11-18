@@ -43,6 +43,9 @@ export class SettingsComponent implements OnInit {
     if (localStorage.getItem('printerSettings')){
       this.settingsForm.patchValue(JSON.parse(localStorage.getItem('printerSettings')!))
     }
+    this.dataProvider.currentProject.printerConifgs.forEach((config:any)=>{
+      this.configs.push({printerControl:new FormControl(config.printer,[Validators.required]),categoryControl:new FormControl(config.category,[Validators.required])})
+    })
     this.databaseService.getCheckerCategories().then((res:any)=>{
       this.categories = []
       res.forEach((data:any)=>{
@@ -53,7 +56,20 @@ export class SettingsComponent implements OnInit {
   }
 
   setPrinters(){
-    
+    var configs:any[] = []
+    this.configs.forEach((config:any)=>{
+      configs.push({printer:config.printerControl.value,category:config.categoryControl.value})
+    })
+    console.log(configs);
+    var settings ={printerConifgs:configs}
+    this.dataProvider.allProjects.forEach((project:any,index:number)=>{
+      if (project.projectId === this.dataProvider.currentProject.projectId){
+        // this.dataProvider.currentProject = project
+        console.log({...project,...settings});
+        this.dataProvider.allProjects[index] = {...project,...settings}
+      }
+    })
+    this.databaseService.updateProject(this.dataProvider.allProjects)
   }
 
   saveSettings(){

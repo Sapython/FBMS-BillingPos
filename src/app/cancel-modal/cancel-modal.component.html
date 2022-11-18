@@ -2,7 +2,8 @@
     <form *ngIf="step==1">
         <h1>Cancel</h1>
         <p>Are you sure you want to cancel?</p>
-        <button mat-stroked-button color="primary" (click)="step=2" type="submit">Yes.</button>
+        <button mat-stroked-button color="primary" (click)="step=2;type='unmade'" type="submit">Cancel Un-Made</button>
+        <button mat-stroked-button color="primary" (click)="step=2;type='made'" type="submit">Cancel Made</button>
         <button mat-stroked-button color="primary" (click)="close()">No</button>
     </form>
     <form *ngIf="step==2">

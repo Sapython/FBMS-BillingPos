@@ -12,6 +12,7 @@
                         <ng-container *ngIf="table.billData?.completed">Finalized</ng-container>
                     </span>
                     <span *ngIf="table.status == 'available' || table.status != 'occupied' ">Available</span>
+                    <span class="time" *ngIf="table.status != 'available' && table.timeSpent">{{ table.timeSpent }}</span>
                     <div class="row">
                         <button mat-icon-button *ngIf="table.status == 'occupied'" (click)="selectMenu(table)">
                             <mat-icon>check_circle</mat-icon>

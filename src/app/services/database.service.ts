@@ -287,6 +287,7 @@ export class DatabaseService {
       {
         status: 'occupied',
         bill: billId,
+        tableStart:new Date()
       }
     );
   }
@@ -304,34 +305,38 @@ export class DatabaseService {
       ),
       billData
     );
-    if (billData.table.type == 'table') {
-      await updateDoc(
-        doc(
-          this.fs,
-          'business/accounts/' +
-            this.dataProvider.currentProject?.projectId +
-            '/tables/tables/' +
-            billData.tableId
-        ),
-        {
-          status: 'occupied',
-          bill: id,
-        }
-      );
-    } else {
-      await updateDoc(
-        doc(
-          this.fs,
-          'business/accounts/' +
-            this.dataProvider.currentProject?.projectId +
-            '/rooms/rooms/' +
-            billData.tableId
-        ),
-        {
-          status: 'occupied',
-          bill: id,
-        }
-      );
+    if (billData.table){
+      if (billData.table.type == 'table') {
+        await updateDoc(
+          doc(
+            this.fs,
+            'business/accounts/' +
+              this.dataProvider.currentProject?.projectId +
+              '/tables/tables/' +
+              billData.tableId
+          ),
+          {
+            status: 'occupied',
+            bill: id,
+            tableStart:new Date()
+          }
+        );
+      } else {
+        await updateDoc(
+          doc(
+            this.fs,
+            'business/accounts/' +
+              this.dataProvider.currentProject?.projectId +
+              '/rooms/rooms/' +
+              billData.tableId
+          ),
+          {
+            status: 'occupied',
+            bill: id,
+            tableStart:new Date()
+          }
+        );
+      }
     }
     return res;
   }
@@ -490,7 +495,7 @@ export class DatabaseService {
     );
   }
 
-  deleteBill(id: string, reason: string, phone: string) {
+  deleteBill(id: string, reason: string, phone: string,type:'made'|'unmade') {
     // /business/accounts//bills/bills/vuh0GUX9K609Gjr9szaP
     return updateDoc(
       doc(
@@ -504,6 +509,7 @@ export class DatabaseService {
         deleted: true,
         reason: reason,
         phone: phone,
+        type:type
       }
     );
   }

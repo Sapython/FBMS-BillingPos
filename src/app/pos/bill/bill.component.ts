@@ -350,28 +350,38 @@ export class BillComponent implements OnInit, OnChanges {
         }
         this.changeDetection.detectChanges()
       }
-      if (this.currentTable.bill) {
-        if (!this.currentBill) {
-          const bill = this.dataProvider.allBills.find(
-            (bill) => bill.id == this.currentTable!.bill
-          );
-          if (bill) {
-            this.currentBill = bill;
-            this.dataProvider.allBills.push(this.currentBill);
-            this.setupKot();
-          } else {
-            this.dataProvider.pageSetting.blur = true;
-            const bill = await this.databaseService.getBill(
-              this.currentTable!.bill
+      alert("Cont")
+      if (this.currentTable && !this.dataProvider.takeawayMode){
+        alert("Passed")
+        if (this.currentTable.bill) {
+          if (!this.currentBill) {
+            const bill = this.dataProvider.allBills.find(
+              (bill) => bill.id == this.currentTable!.bill
             );
-            this.currentBill = bill.data() as Bill;
-            this.dataProvider.allBills.push(this.currentBill);
-            this.setupKot();
-            this.dataProvider.pageSetting.blur = false;
+            if (bill) {
+              this.currentBill = bill;
+              this.dataProvider.allBills.push(this.currentBill);
+              this.setupKot();
+            } else {
+              this.dataProvider.pageSetting.blur = true;
+              const bill = await this.databaseService.getBill(
+                this.currentTable!.bill
+              );
+              this.currentBill = bill.data() as Bill;
+              this.dataProvider.allBills.push(this.currentBill);
+              this.setupKot();
+              this.dataProvider.pageSetting.blur = false;
+            }
           }
+        } else {
+          this.createBill();
         }
-      } else {
+      } else if (this.dataProvider.takeawayMode) {
+        alert("Takeaway")
+        console.log('Takeaway')
         this.createBill();
+      } else {
+        alert("Unknown mode selected")
       }
     });
   }
@@ -504,33 +514,62 @@ export class BillComponent implements OnInit, OnChanges {
 
   createBill() {
     this.dataProvider.kotActive = true;
-    this.currentBill = {
-      settled: false,
-      date: new Date(),
-      customerInfo: this.customerInfoForm.value,
-      completed: false,
-      deviceId: this.dataProvider.deviceData.deviceId,
-      dineMethod: 'dineIn',
-      kots: this.offlineKot,
-      paymentType: 'cash',
-      project: this.dataProvider.currentProject,
-      table: this.currentTable!,
-      tableId: this.currentTable!.id,
-      user: this.dataProvider.userData?.userId || '',
-      grandTotal: this.grandTotal,
-      id: this.generateRandomId(),
-      isNonChargeable: false,
-      selectedDiscounts: [],
-      specialInstructions: '',
-      tokenNo: this.dataProvider.currentTokenNo + 1,
-      kotTokens:[]
-    };
-    this.currentTable!.bill = this.currentBill.id;
-    console.log(this.currentBill);
-    this.dataProvider.allBills.find((bill) => bill.id === this.currentBill!.id)
-      ? null
-      : this.dataProvider.allBills.push(this.currentBill);
-    this.databaseService.createBill(this.currentBill, this.currentBill.id);
+    if (!this.dataProvider.takeawayMode){
+      this.currentBill = {
+        settled: false,
+        date: new Date(),
+        customerInfo: this.customerInfoForm.value,
+        completed: false,
+        deviceId: this.dataProvider.deviceData.deviceId,
+        dineMethod: 'dineIn',
+        kots: this.offlineKot,
+        paymentType: 'cash',
+        project: this.dataProvider.currentProject,
+        table: this.currentTable!,
+        tableId: this.currentTable!.id,
+        user: this.dataProvider.userData?.userId || '',
+        grandTotal: this.grandTotal,
+        id: this.generateRandomId(),
+        isNonChargeable: false,
+        selectedDiscounts: [],
+        specialInstructions: '',
+        tokenNo: this.dataProvider.currentTokenNo + 1,
+        kotTokens:[]
+      };
+      this.currentTable!.bill = this.currentBill.id;
+      console.log(this.currentBill);
+      this.dataProvider.allBills.find((bill) => bill.id === this.currentBill!.id)
+        ? null
+        : this.dataProvider.allBills.push(this.currentBill);
+      this.databaseService.createBill(this.currentBill, this.currentBill.id);
+    } else {
+      alert('CCreatig tkwy')
+      this.currentBill = {
+        settled: false,
+        date: new Date(),
+        customerInfo: this.customerInfoForm.value,
+        completed: false,
+        deviceId: this.dataProvider.deviceData.deviceId,
+        dineMethod: 'dineIn',
+        kots: this.offlineKot,
+        paymentType: 'cash',
+        project: this.dataProvider.currentProject,
+        user: this.dataProvider.userData?.userId || '',
+        grandTotal: this.grandTotal,
+        id: this.generateRandomId(),
+        isNonChargeable: false,
+        selectedDiscounts: [],
+        specialInstructions: '',
+        tokenNo: this.dataProvider.currentTokenNo + 1,
+        kotTokens:[]
+      };
+      // this.currentTable!.bill = this.currentBill.id;
+      console.log(this.currentBill);
+      this.dataProvider.allBills.find((bill) => bill.id === this.currentBill!.id)
+        ? null
+        : this.dataProvider.allBills.push(this.currentBill);
+      this.databaseService.createBill(this.currentBill, this.currentBill.id);
+    }
   }
 
   async updateBillData(data: Bill, id: string) {
@@ -739,7 +778,7 @@ export class BillComponent implements OnInit, OnChanges {
         if (data && data.phone && data.reason) {
           this.dataProvider.pageSetting.blur = true;
           this.databaseService
-          .deleteBill(this.currentBill!.id, data.reason, data.phone.toString())
+          .deleteBill(this.currentBill!.id, data.reason, data.phone.toString(),data.type)
           .then((data) => {
             this.alertify.presentToast('Bill cancelled.');
             inst.close();
@@ -1024,8 +1063,8 @@ export type Bill = {
   kots: any[];
   paymentType: 'cash' | 'card';
   project: any;
-  table: Table;
-  tableId: string;
+  table?: Table;
+  tableId?: string;
   user: string;
   isNonChargeable: boolean;
   specialInstructions: string;
