@@ -64,9 +64,10 @@ export class TablesComponent implements OnInit {
       this.dataProvider.tables.forEach((table)=>{
         if (table.status== 'occupied' && table.tableStart){
           table.timeSpent = this.getTime(table.tableStart)
+          table.minutes = Number(table.timeSpent.split(':')[0])
         }
       })
-    },5000)
+    },500)
   }
 
   selectRoom(table: any) {

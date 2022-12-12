@@ -21,6 +21,8 @@ export class PosComponent implements OnInit {
   billStreamSubscription: Subscription = Subscription.EMPTY;
   roomsStreamSubscription: Subscription = Subscription.EMPTY;
   ngOnInit(): void {
+    console.log("this.dataProvider.settings",this.dataProvider.settings)
+    this.databaseService.setSettings();
     this.databaseService.getTables().subscribe(async (tables)=>{
       this.dataProvider.tables = await Promise.all(tables.map(async(table:any) => {
         table  = {...table.data(),id:table.id}

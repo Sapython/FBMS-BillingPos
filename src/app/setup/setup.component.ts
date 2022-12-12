@@ -107,6 +107,7 @@ export class SetupComponent implements OnInit, OnDestroy {
     }
   }
   finishSetup() {
+    this.authService.setSettings()
     this.router.navigate(['']);
   }
 }

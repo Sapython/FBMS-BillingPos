@@ -1,10 +1,11 @@
 <main>
-    <button mat-flat-button color="primary" (click)="refresh()">Refresh</button>
+    <button autofocus mat-stroked-button color="primary" (click)="close.emit()"><mat-icon>close</mat-icon></button>
+    <button class="refresh" mat-flat-button color="primary" (click)="refresh()">Refresh</button>
     <ng-container *ngIf="dataProvider.tables.length > 0">
         <h3>Tables</h3>
         <section>
             <div *ngFor="let table of dataProvider.tables">
-                <div [class]="table.status== 'occupied' ? (table.billData?.completed==true ? 'notSettled' : 'booked' ) : 'available'"
+                <div [class]="table.status== 'occupied' ? (table.billData?.completed==true ? 'notSettled' : table.minutes > this.dataProvider.settings?.waitingMinutes ? 'booked lateBooked' : 'booked' ) : 'available'"
                     (click)="table.status!= 'occupied' ? selectMenu(table) : {}">
                     <p>Tbl No {{table.tableNo}}</p>
                     <span *ngIf="table.status == 'occupied'">
