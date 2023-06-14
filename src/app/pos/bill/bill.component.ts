@@ -929,6 +929,7 @@ export class BillComponent implements OnInit, OnChanges {
       "printer": this.dataProvider.currentProject.kotPrinter,
       "currentProject":this.dataProvider.currentProject,
       "tokenNo": tokenNo,
+      "mode":"normal",
       "currentTable": this.currentTable,
       "allProducts":this.currentKot!.products,
       "billNo": this.currentBill?.billNo,
@@ -955,14 +956,15 @@ export class BillComponent implements OnInit, OnChanges {
     const data = {
       "printer": this.dataProvider.currentProject.kotPrinter,
       "currentProject":this.dataProvider.currentProject,
-      "tokenNo": this.cancelledtokenNo,
+      "tokenNo": this.cancelledtokenNo, 
       "currentTable": this.currentTable,
       "allProducts":this.cancelledItems,
-      "cancelled":true,
+      "deleted":true,
+      "mode":"modified",
       "billNo": this.currentBill?.billNo,
       "date":(new Date()).toLocaleString(),
     }
-    console.log(data)
+    console.log("DATA",data)
       fetch('http://127.0.0.1:8080/printKot',{
         method:'POST',
         body: JSON.stringify(data),
