@@ -7,12 +7,12 @@
   }
 }
 main {
-  width: 90vw;
-  height: 70vh;
+  width: calc(100vw - 40px);
+  height: calc(100vh - 40px);
   animation: slideUp 0.3s ease-in-out;
   background: white;
-  border-radius: 15px;
-  border: 2px solid var(--primary);
+  // border-radius: 15px;
+  // border: 2px solid var(--primary);
   font-family: var(--primary-font);
   overflow-y: auto;
   padding:20px;
@@ -119,6 +119,10 @@ main {
         cursor: pointer;
       }
     }
+    .lateBooked{
+      background-color: rgb(90, 90, 255);
+      border: 3px solid rgb(90, 90, 255);
+    }
     .room{
       height: 130px;
     }
@@ -151,4 +155,9 @@ main {
   //   border-radius: 10px;
   //   font-family: var(--primary-font);
   // }
+}
+.refresh{
+  position: absolute;
+  left: 100vw;
+  transform: translateX(-150%);
 }

@@ -287,7 +287,7 @@ export class DatabaseService {
       {
         status: 'occupied',
         bill: billId,
-        tableStart:new Date()
+        tableStart: new Date(),
       }
     );
   }
@@ -305,7 +305,7 @@ export class DatabaseService {
       ),
       billData
     );
-    if (billData.table){
+    if (billData.table) {
       if (billData.table.type == 'table') {
         await updateDoc(
           doc(
@@ -318,7 +318,7 @@ export class DatabaseService {
           {
             status: 'occupied',
             bill: id,
-            tableStart:new Date()
+            tableStart: new Date(),
           }
         );
       } else {
@@ -333,7 +333,7 @@ export class DatabaseService {
           {
             status: 'occupied',
             bill: id,
-            tableStart:new Date()
+            tableStart: new Date(),
           }
         );
       }
@@ -495,7 +495,12 @@ export class DatabaseService {
     );
   }
 
-  deleteBill(id: string, reason: string, phone: string,type:'made'|'unmade') {
+  deleteBill(
+    id: string,
+    reason: string,
+    phone: string,
+    type: 'made' | 'unmade'
+  ) {
     // /business/accounts//bills/bills/vuh0GUX9K609Gjr9szaP
     return updateDoc(
       doc(
@@ -509,7 +514,7 @@ export class DatabaseService {
         deleted: true,
         reason: reason,
         phone: phone,
-        type:type
+        type: type,
       }
     );
   }
@@ -768,7 +773,7 @@ export class DatabaseService {
     );
   }
 
-  getCheckerCategories(){
+  getCheckerCategories() {
     return getDocs(
       collection(
         this.fs,
@@ -777,5 +782,103 @@ export class DatabaseService {
           '/recipes/categories'
       )
     );
+  }
+
+  setSettings() {
+    console.log(
+      'setting settings letm',
+      'business/accounts/' +
+        this.dataProvider.currentProject?.projectId +
+        '/settings'
+    );
+    getDoc(
+      doc(
+        this.fs,
+        'business/accounts/' +
+          this.dataProvider.currentProject?.projectId +
+          '/settings'
+      )
+    ).then((data) => {
+      this.dataProvider.settings = data.data();
+      console.log('settings', this.dataProvider.settings);
+      // if (this.dataProvider.settings.billTokenRefreshTime == 'monthly') {
+      //   let currentDate = new Date();
+      //   // get last day of the month
+      //   let lastMonthDate = new Date(
+      //     currentDate.getFullYear(),
+      //     currentDate.getMonth() + 1,
+      //     0
+      //   );
+      //   // check if it's the last day of the month
+      //   if (currentDate.getDate() == lastMonthDate.getDate()) {
+      //     updateDoc(
+      //       doc(
+      //         this.fs,
+      //         'business/accounts/' +
+      //           this.dataProvider.currentProject?.projectId +
+      //           '/settings'
+      //       ),
+      //       { allBills: 0, lastRefreshDate: currentDate }
+      //     );
+      //   }
+      // } else if (this.dataProvider.settings.billTokenRefreshTime == 'daily') {
+      //   let currentDate = new Date();
+      //   let lastRefreshDate = this.dataProvider.settings.lastRefreshDate.toDate();
+      //   if (
+      //     currentDate.getDate() != lastRefreshDate.getDate() ||
+      //     currentDate.getMonth() != lastRefreshDate.getMonth() ||
+      //     currentDate.getFullYear() != lastRefreshDate.getFullYear()
+      //   ) {
+      //     updateDoc(
+      //       doc(
+      //         this.fs,
+      //         'business/accounts/' +
+      //           this.dataProvider.currentProject?.projectId +
+      //           '/settings'
+      //       ),
+      //       { allBills: 0, lastRefreshDate: currentDate }
+      //     );
+      //   }
+      // } else if (this.dataProvider.settings.billTokenRefreshTime == 'weekly') {
+      //   let currentDate = new Date();
+      //   let lastDayOfTheWeek = new Date(
+      //     currentDate.getFullYear(),
+      //     currentDate.getMonth(),
+      //     currentDate.getDate() + (7 - currentDate.getDay())
+      //   );
+      //   // check if it's the last day of the month
+      //   if (currentDate.getDate() == lastDayOfTheWeek.getDate()) {
+      //     updateDoc(
+      //       doc(
+      //         this.fs,
+      //         'business/accounts/' +
+      //           this.dataProvider.currentProject?.projectId +
+      //           '/settings'
+      //       ),
+      //       { allBills: 0, lastRefreshDate: currentDate }
+      //     );
+      //   }
+      // } else if (this.dataProvider.settings.billTokenRefreshTime == 'yearly') {
+      //   let currentDate = new Date();
+      //   // get last day of the month
+      //   let lastYearDate = new Date(
+      //     currentDate.getFullYear() + 1,
+      //     currentDate.getMonth() + 1,
+      //     0
+      //   );
+      //   // check if it's the last day of the month
+      //   if (currentDate.getDate() == lastYearDate.getDate()) {
+      //     updateDoc(
+      //       doc(
+      //         this.fs,
+      //         'business/accounts/' +
+      //           this.dataProvider.currentProject?.projectId +
+      //           '/settings'
+      //       ),
+      //       { allBills: 0, lastRefreshDate: currentDate }
+      //     );
+      //   }
+      // }
+    });
   }
 }

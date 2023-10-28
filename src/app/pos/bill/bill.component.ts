@@ -140,6 +140,7 @@ export class BillComponent implements OnInit, OnChanges {
   currentKot: Kot | undefined;
   discounts: any[] = [];
   offlineKot: any[] = [];
+  simpleKotViewProducts: any[] = [];
   offlineKotSubject: Subject<any> = new Subject();
   offlineBillSubject: Subject<any> = new Subject();
   searchedProducts: any[] = [];
@@ -351,9 +352,7 @@ export class BillComponent implements OnInit, OnChanges {
         }
         this.changeDetection.detectChanges()
       }
-      alert("Cont")
       if (this.currentTable && !this.dataProvider.takeawayMode){
-        alert("Passed")
         if (this.currentTable.bill) {
           if (!this.currentBill) {
             const bill = this.dataProvider.allBills.find(
@@ -378,13 +377,13 @@ export class BillComponent implements OnInit, OnChanges {
           this.createBill();
         }
       } else if (this.dataProvider.takeawayMode) {
-        alert("Takeaway")
         console.log('Takeaway')
         this.createBill();
-      } else {
-        alert("Unknown mode selected")
       }
     });
+    setInterval(() => {
+      this.getProducts()
+    }, 1000);
   }
 
   setupKot() {
@@ -508,6 +507,7 @@ export class BillComponent implements OnInit, OnChanges {
       this.alertify.presentToast('No bill to update', 'error');
     }
   }
+
   saveBill(){
     this.updateBill();
     this.calculateTaxAndPrices();
@@ -544,7 +544,6 @@ export class BillComponent implements OnInit, OnChanges {
         : this.dataProvider.allBills.push(this.currentBill);
       this.databaseService.createBill(this.currentBill, this.currentBill.id);
     } else {
-      alert('CCreatig tkwy')
       this.currentBill = {
         settled: false,
         date: new Date(),
@@ -859,6 +858,7 @@ export class BillComponent implements OnInit, OnChanges {
       this.dataProvider.selectedTable = event.value;
     }
   }
+
   seeAllKots() {
     this.dataProvider.pageSetting.blur = true;
     this.databaseService
@@ -923,12 +923,14 @@ export class BillComponent implements OnInit, OnChanges {
         this.alertify.presentToast('Error cannot fetch bill.', 'error');
       });
   }
+
   printKot(products: any[], tokenNo: number) {
     console.log(products);
     const data = {
       "printer": this.dataProvider.currentProject.kotPrinter,
       "currentProject":this.dataProvider.currentProject,
       "tokenNo": tokenNo,
+      "mode":"normal",
       "currentTable": this.currentTable,
       "allProducts":this.currentKot!.products,
       "billNo": this.currentBill?.billNo,
@@ -947,6 +949,7 @@ export class BillComponent implements OnInit, OnChanges {
         console.log("Error",err)
       })
   }
+
   printCancelledKot(products:any[],tokenNo:number){
     this.cancelledItems = products
     this.cancelledtokenNo = tokenNo
@@ -954,14 +957,15 @@ export class BillComponent implements OnInit, OnChanges {
     const data = {
       "printer": this.dataProvider.currentProject.kotPrinter,
       "currentProject":this.dataProvider.currentProject,
-      "tokenNo": this.cancelledtokenNo,
+      "tokenNo": this.cancelledtokenNo, 
       "currentTable": this.currentTable,
       "allProducts":this.cancelledItems,
-      "cancelled":true,
+      "deleted":true,
+      "mode":"modified",
       "billNo": this.currentBill?.billNo,
       "date":(new Date()).toLocaleString(),
     }
-    console.log(data)
+    console.log("DATA",data)
       fetch('http://127.0.0.1:8080/printKot',{
         method:'POST',
         body: JSON.stringify(data),
@@ -974,6 +978,7 @@ export class BillComponent implements OnInit, OnChanges {
         console.log("Error",err)
       })
   }
+
   rePrintKot(products:any[],tokenNo:number){
     this.reprintKotItems = products
     this.reprinttokenNo = tokenNo
@@ -1000,6 +1005,7 @@ export class BillComponent implements OnInit, OnChanges {
         console.log("Error",err)
       })
   }
+
   setComplimentary(event:any){
     console.log("event",event)
     if (event.checked){
@@ -1034,6 +1040,7 @@ export class BillComponent implements OnInit, OnChanges {
       return res.slice(0,-1)
     } return ''
   }
+
   setBillNo(bill:Bill){
     // alert(bill.isNonChargeable ? 'True':'False')
     if (bill.isNonChargeable){
@@ -1047,6 +1054,22 @@ export class BillComponent implements OnInit, OnChanges {
       this.databaseService.addBillNo()
       this.updateBill()
     }
+  }
+
+  getProducts(){
+    this.simpleKotViewProducts = []
+    for (const kot of this.currentBill?.kots || []) {
+      kot.products.forEach((product:any)=>{
+        // check if product is already present in simpleKotViewProducts if exists increase quantity else add it
+        let index = this.simpleKotViewProducts.findIndex((p:any)=>p.dishName==product.dishName)
+        if(index!=-1){
+          this.simpleKotViewProducts[index].quantity += product.quantity
+        } else {
+          this.simpleKotViewProducts.push({...product,shopPrice:Number(product.shopPrice),quantity:product.quantity})
+        }
+      })
+    }
+    return this.simpleKotViewProducts
   }
 }
 

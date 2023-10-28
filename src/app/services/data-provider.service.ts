@@ -17,6 +17,7 @@ export class DataProviderService {
     spinner: false,
     messageType: 'Error',
   };
+  public settings:any;
   public takeawayMode: boolean = false;
   public selectedTable:any;
   public products:any[] = []

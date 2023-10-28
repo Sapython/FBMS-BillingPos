@@ -65,7 +65,13 @@ export class AuthenticationService {
     }
   }
   authorized: any;
-
+  setSettings(){
+    console.log('setting settings letm','business/accounts/'+ this.dataProvider.currentProject?.projectId+'/settings')
+    getDoc(doc(this.firestore, 'business/accounts/'+ this.dataProvider.currentProject?.projectId+'/settings')).then((data) => {
+      this.dataProvider.settings = data.data();
+      console.log('settings', this.dataProvider.settings);
+    })
+  }
   async signInWithEmailAndPassword(email: string, password: string) {
     try {
       const value: UserCredential = await signInWithEmailAndPassword(
@@ -90,6 +96,8 @@ export class AuthenticationService {
                 this.router.navigate(['/projectSelector']);
               } else {
                 this.dataProvider.currentProject = projects[0];
+                // get settings
+                this.setSettings()
                 return true;
               }
             } else {
@@ -200,7 +208,7 @@ export class AuthenticationService {
                         this.dataProvider.currentProject?.projectId +
                         '/counters'),{bills:0,ingredients:0});
                       } else {
-                        this.dataProvider.currentTokenNo = data.bills || 0;
+                        this.dataProvider.currentTokenNo = data.kotNo || 0;
                         this.dataProvider.billNo = data.allBills || 0;
                         this.dataProvider.ncBillNo = data.ncBills || 0;
                         console.log("TOKEN NO",this.dataProvider.currentTokenNo);

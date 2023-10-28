@@ -1,5 +1,5 @@
 <main>
-    <img src="assets/notFound.svg" class="nothing" *ngIf="(!currentKot || currentKot.products.length == 0)">
+    <img src="assets/notFound.svg" class="nothing" *ngIf="(!currentKot || currentKot.products.length == 0) && !currentBill">
     <div class="products" *ngIf="currentKot && currentKot.products.length"
         [@dishCardStagger]=" currentKot && currentKot.products.length">
         <app-bill-product-card [@dishCardState]="card.deleting ? 'deleted' : 'default'" #card
@@ -7,9 +7,24 @@
             (instructionSet)="saveBill()" (quantityChanged)="updateQuantity(product,$event)" [product]="currentKot!.products[i]">
         </app-bill-product-card>
     </div>
+    <ng-container *ngIf="(!currentKot || currentKot.products.length == 0) && currentBill!">
+        <table class="uk-table uk-table-hover uk-table-divider uk-table-small ">
+            <tr>
+                <th>Name</th>
+                <th>Qty</th>
+                <th>Amt</th>
+            </tr>
+            
+            <tr *ngFor="let kot of simpleKotViewProducts">
+                <td>{{kot.dishName}}</td>
+                <td>{{kot.quantity}}</td>
+                <td>{{kot.quantity * kot.shopPrice }}</td>
+            </tr>
+        </table>
+    </ng-container>
     <div class="billActions" *ngIf="currentBill">
         <div class="actions">
-            <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'cash'"
+            <!-- <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'cash'"
                 (click)="paymentMethod = 'cash';saveBill()">Cash</button>
             <button mat-flat-button color="primary" *ngIf="paymentMethod == 'cash'">Cash</button>
             <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'card'"
@@ -20,7 +35,7 @@
             <button mat-flat-button color="primary" *ngIf="paymentMethod == 'dineIn'">Dine In</button>
             <button mat-stroked-button color="primary" *ngIf="paymentMethod != 'pickUp'"
                 (click)="paymentMethod = 'pickUp';saveBill()">Pick Up</button>
-            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'pickUp'">Pick Up</button>
+            <button mat-flat-button color="primary" *ngIf="paymentMethod == 'pickUp'">Pick Up</button> -->
             <button mat-raised-button color="primary" (click)="seeAllKots()"  *ngIf="!currentBill.completed">Manage KOTs</button>
         </div>
         <div class="money">
