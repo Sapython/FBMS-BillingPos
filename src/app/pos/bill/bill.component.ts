@@ -223,6 +223,7 @@ export class BillComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    this.dataProvider.openTableFunction()
     this.dataProvider.tableChanged.subscribe(async (table) => {
       this.resetValues();
       // this.currentKot!.products = []

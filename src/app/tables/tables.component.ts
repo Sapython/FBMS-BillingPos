@@ -78,6 +78,7 @@ export class TablesComponent implements OnInit {
     this.dataProvider.tableChanged.next(table);
     this.close.emit();
   }
+
   emptyTable(table:any){
     if(table.status=='occupied'){
       alert('Please either finalize bill or cancel order to empty table')
@@ -89,6 +90,7 @@ export class TablesComponent implements OnInit {
       this.databaseService.emptyTable(table.id);
     }
   }
+  
   selectMenu(table:any){
     if(table.type=='room'){
       this.dataProvider.modeSelected.next('room');
